@@ -37,7 +37,7 @@ public final class Beans {
 
     private static final Pattern POINT_PATTERN = Pattern.compile("\\.(\\w)");
 
-    private static final Function<String, String[]> splitter = (str) -> str == null ? new String[] {}
+    private static final Function<String, String[]> splitter = (str) -> str == null ? new String[]{}
             : str.split("\\.");
     private static final Function<String[], String> joiner = (array) -> array == null ? null
             : Stream.of(array).filter(Objects::nonNull).collect(Collectors.joining("."));
@@ -52,7 +52,7 @@ public final class Beans {
      * </p>
      *
      * @param clazz 被实例化的类
-     * @param <T> 类范型
+     * @param <T>   类范型
      * @return 实例化后的对象
      * @throws BeansException bean异常
      */
@@ -74,7 +74,7 @@ public final class Beans {
      * 实例化集合对象
      *
      * @param type 被实例化的类
-     * @param <T> 类范型
+     * @param <T>  类范型
      * @return 实例化后的对象
      */
     public static <T> Collection<T> instanceCollection(Type type) {
@@ -82,31 +82,37 @@ public final class Beans {
         if (Types.getConstructorIfAvailable(rawClass) != null) {
             return (Collection<T>) instance(rawClass);
         }
-        Collection<T> list;
-        if (rawClass == AbstractCollection.class || rawClass == Collection.class) {
-            list = new ArrayList<>();
-        } else if (rawClass.isAssignableFrom(HashSet.class)) {
-            list = new HashSet<>();
-        } else if (rawClass.isAssignableFrom(LinkedHashSet.class)) {
-            list = new LinkedHashSet<>();
-        } else if (rawClass.isAssignableFrom(TreeSet.class)) {
-            list = new TreeSet<>();
-        } else if (rawClass.isAssignableFrom(ArrayList.class)) {
-            list = new ArrayList<>();
-        } else if (rawClass.isAssignableFrom(EnumSet.class)) {
-            Type itemType;
-            if (type instanceof ParameterizedType) {
-                itemType = ((ParameterizedType) type).getActualTypeArguments()[0];
+        if (List.class.isAssignableFrom(rawClass)) {
+            if (rawClass.isInterface()) {
+                return new ArrayList<>();
+            } else if (ArrayList.class.isAssignableFrom(rawClass)) {
+                return new ArrayList<>();
+            } else if (LinkedList.class.isAssignableFrom(rawClass)) {
+                return new LinkedList<>();
             } else {
-                itemType = Object.class;
+                return new ArrayList<>();
             }
-            list = (Collection<T>) EnumSet.noneOf((Class<Enum>) itemType);
-        } else if (rawClass.isAssignableFrom(Queue.class) || rawClass.isAssignableFrom(Deque.class)) {
-            list = new LinkedList<>();
+        } else if (Set.class.isAssignableFrom(rawClass)) {
+            if (LinkedHashSet.class.isAssignableFrom(rawClass)) {
+                return new LinkedHashSet<>();
+            } else if (EnumSet.class.isAssignableFrom(rawClass)) {
+                Type itemType;
+                if (type instanceof ParameterizedType) {
+                    itemType = ((ParameterizedType) type).getActualTypeArguments()[0];
+                } else {
+                    itemType = Object.class;
+                }
+                return (Collection<T>) EnumSet.noneOf((Class<Enum>) itemType);
+            } else {
+                return new HashSet<>();
+            }
+        } else if (Queue.class.isAssignableFrom(rawClass)) {
+            return new LinkedList<>();
+        } else if (rawClass.isInterface()) {
+            return new LinkedList<>();
         } else {
-            list = (Collection<T>) instance(rawClass);
+            return (Collection<T>) instance(rawClass);
         }
-        return list;
     }
 
     /**
@@ -139,9 +145,9 @@ public final class Beans {
      * 如果属性不存在，抛出异常BeansException
      * </p>
      *
-     * @param obj 对象
+     * @param obj          对象
      * @param propertyName 属性名称
-     * @param value 值
+     * @param value        值
      * @throws BeansException 异常信息
      */
     public static void setProperty(Object obj, String propertyName, Object value, boolean ignored)
@@ -155,9 +161,9 @@ public final class Beans {
      * 如果属性不存在，抛出异常BeansException
      * </p>
      *
-     * @param obj 对象
+     * @param obj          对象
      * @param propertyName 属性名称
-     * @param value 值
+     * @param value        值
      * @throws BeansException 异常信息
      */
     public static void setProperty(Object obj, String propertyName, Object value) throws BeansException {
@@ -167,10 +173,10 @@ public final class Beans {
     /**
      * 设置对象属性
      *
-     * @param obj 对象
+     * @param obj          对象
      * @param propertyName 属性名称
-     * @param value 值
-     * @param ignored 属否忽略异常
+     * @param value        值
+     * @param ignored      属否忽略异常
      * @throws BeansException
      */
     public static void setProperty(Object obj, String propertyName, Object value, boolean convert, boolean ignored)
@@ -181,15 +187,15 @@ public final class Beans {
     /**
      * 设置对象属性
      *
-     * @param objType 对象类型
-     * @param obj 对象
+     * @param objType      对象类型
+     * @param obj          对象
      * @param propertyName 属性名称
-     * @param value 值
-     * @param ignored 属否忽略异常
+     * @param value        值
+     * @param ignored      属否忽略异常
      * @throws BeansException
      */
     public static void setProperty(Type objType, Object obj, String propertyName, Object value, boolean convert,
-            boolean ignored) throws BeansException {
+                                   boolean ignored) throws BeansException {
         try {
             String[] propertyCascade = splitter.apply(propertyName);
             // 仅一级属性
@@ -262,7 +268,7 @@ public final class Beans {
     }
 
     private static void doSetMapProperty(Type beanType, Map<String, Object> map, String propertyName, Object value,
-            boolean convert) throws ConversionException {
+                                         boolean convert) throws ConversionException {
         if (value == null) {
             map.put(propertyName, null);
         } else {
@@ -282,7 +288,7 @@ public final class Beans {
     /**
      * 获取对象属性
      *
-     * @param obj 对象
+     * @param obj          对象
      * @param propertyName 属性名
      * @return
      */
@@ -355,7 +361,7 @@ public final class Beans {
     /**
      * 设置对象属性
      *
-     * @param obj 对象
+     * @param obj   对象
      * @param props 属性
      */
     public static void setProperties(Object obj, Map<String, Object> props) {
@@ -367,7 +373,7 @@ public final class Beans {
     /**
      * 获取属性的类型
      *
-     * @param clazz 目标类型
+     * @param clazz        目标类型
      * @param propertyName 属性名称
      * @return 属性的类型
      */
@@ -398,8 +404,8 @@ public final class Beans {
      * 对象转换
      *
      * @param source 源对象
-     * @param clazz 目标类
-     * @param <T> 目标类范型
+     * @param clazz  目标类
+     * @param <T>    目标类范型
      * @return 返回目标类对象
      * @throws BeansException
      */
@@ -410,10 +416,10 @@ public final class Beans {
     /**
      * 对象转换
      *
-     * @param source 源对象
-     * @param clazz 目标类
+     * @param source           源对象
+     * @param clazz            目标类
      * @param ignoreProperties 忽略拷贝属性
-     * @param <T> 目标类范型
+     * @param <T>              目标类范型
      * @return 返回目标类对象
      * @throws BeansException
      */
@@ -425,8 +431,8 @@ public final class Beans {
      * 对象转换(浅拷贝，无转换)
      *
      * @param source 源对象
-     * @param clazz 目标类
-     * @param <T> 目标类范型
+     * @param clazz  目标类
+     * @param <T>    目标类范型
      * @return 返回目标类对象
      * @throws BeansException
      */
@@ -437,10 +443,10 @@ public final class Beans {
     /**
      * 对象转换(浅拷贝，无转换)
      *
-     * @param source 源对象
-     * @param clazz 目标类
+     * @param source           源对象
+     * @param clazz            目标类
      * @param ignoreProperties 忽略拷贝属性
-     * @param <T> 目标类范型
+     * @param <T>              目标类范型
      * @return 返回目标类对象
      * @throws BeansException
      */
@@ -451,11 +457,11 @@ public final class Beans {
     /**
      * 对象转换
      *
-     * @param source 源对象
-     * @param clazz 目标类
-     * @param convert 是否转化
+     * @param source           源对象
+     * @param clazz            目标类
+     * @param convert          是否转化
      * @param ignoreProperties 忽略拷贝属性
-     * @param <T> 目标类范型
+     * @param <T>              目标类范型
      * @return 返回目标类对象
      * @throws BeansException
      */
@@ -467,11 +473,11 @@ public final class Beans {
     /**
      * 对象转换
      *
-     * @param source 源对象
-     * @param targetType 目标类
-     * @param convert 是否转化
+     * @param source           源对象
+     * @param targetType       目标类
+     * @param convert          是否转化
      * @param ignoreProperties 忽略拷贝属性
-     * @param <T> 目标类范型
+     * @param <T>              目标类范型
      * @return 返回目标类对象
      * @throws BeansException
      */
@@ -483,11 +489,11 @@ public final class Beans {
     /**
      * 对象转换
      *
-     * @param source 源对象
-     * @param targetType 目标类
-     * @param convert 是否转化
+     * @param source           源对象
+     * @param targetType       目标类
+     * @param convert          是否转化
      * @param ignoreProperties 忽略拷贝属性
-     * @param <T> 目标类范型
+     * @param <T>              目标类范型
      * @return 返回目标类对象
      * @throws BeansException
      */
@@ -509,9 +515,9 @@ public final class Beans {
      * sourceProps 与 targetProps 数量要保持一致，属性设置按顺序设置
      * </p>
      *
-     * @param source 源对象
+     * @param source      源对象
      * @param sourceProps 源属性
-     * @param target 目标对象
+     * @param target      目标对象
      * @param targetProps 目标属性
      * @throws BeansException 对象异常
      */
@@ -551,7 +557,7 @@ public final class Beans {
      *
      * @param source 源对象
      * @param target 目标对象
-     * @param merge 是否合并属性
+     * @param merge  是否合并属性
      * @throws BeansException 对象异常
      */
     public static void copyProperties(Object source, Object target, boolean merge) throws BeansException {
@@ -561,8 +567,8 @@ public final class Beans {
     /**
      * 拷贝对象属性
      *
-     * @param source 源对象
-     * @param target 目标对象
+     * @param source           源对象
+     * @param target           目标对象
      * @param ignoreProperties 忽略拷贝属性
      * @throws BeansException 对象异常
      */
@@ -573,9 +579,9 @@ public final class Beans {
     /**
      * 拷贝对象属性(深拷贝+属性转化)
      *
-     * @param source 源对象
-     * @param target 目标对象
-     * @param merge 是否合并属性
+     * @param source           源对象
+     * @param target           目标对象
+     * @param merge            是否合并属性
      * @param ignoreProperties 忽略拷贝属性
      * @throws BeansException 对象异常
      */
@@ -598,8 +604,8 @@ public final class Beans {
     /**
      * 拷贝对象属性（浅拷贝，无属性转化）
      *
-     * @param source 源对象
-     * @param target 目标对象
+     * @param source           源对象
+     * @param target           目标对象
      * @param ignoreProperties 忽略拷贝属性
      * @throws BeansException 对象异常
      */
@@ -610,8 +616,8 @@ public final class Beans {
     /**
      * 拷贝对象属性（浅拷贝，无属性转化）
      *
-     * @param source 源对象
-     * @param target 目标对象
+     * @param source           源对象
+     * @param target           目标对象
      * @param ignoreProperties 忽略拷贝属性
      * @throws BeansException 对象异常
      */
@@ -622,58 +628,58 @@ public final class Beans {
     /**
      * 拷贝对象属性（浅拷贝，无属性转化）
      *
-     * @param source 源对象
-     * @param target 目标对象
+     * @param source           源对象
+     * @param target           目标对象
      * @param ignoreProperties 忽略拷贝属性
      * @throws BeansException 对象异常
      */
     public static void shallowCopyProperties(Object source, Object target, Type targetType, boolean merge,
-            String... ignoreProperties) {
+                                             String... ignoreProperties) {
         copyProperties(source, target, targetType, merge, false, ignoreProperties);
     }
 
     /**
      * 拷贝对象属性
      *
-     * @param source 源对象
-     * @param target 目标对象
-     * @param merge 是否合并属性
-     * @param convert 是否转化
+     * @param source           源对象
+     * @param target           目标对象
+     * @param merge            是否合并属性
+     * @param convert          是否转化
      * @param ignoreProperties 忽略拷贝属性
      * @throws BeansException 对象异常
      */
     public static void copyProperties(Object source, Object target, Type targetType, boolean merge, boolean convert,
-            String... ignoreProperties) throws BeansException {
+                                      String... ignoreProperties) throws BeansException {
         copyProperties(source, target, targetType, merge, convert, true, ignoreProperties);
     }
 
     /**
      * 拷贝对象属性
      *
-     * @param source 源对象
-     * @param target 目标对象
-     * @param merge 是否合并属性
-     * @param convert 是否转化
+     * @param source           源对象
+     * @param target           目标对象
+     * @param merge            是否合并属性
+     * @param convert          是否转化
      * @param ignoreProperties 忽略拷贝属性
      * @throws BeansException 对象异常
      */
     public static void copyProperties(Object source, Object target, boolean merge, boolean convert,
-            boolean supportMapKV, String... ignoreProperties) throws BeansException {
+                                      boolean supportMapKV, String... ignoreProperties) throws BeansException {
         copyProperties(source, target, null, merge, convert, supportMapKV, ignoreProperties);
     }
 
     /**
      * 拷贝对象属性
      *
-     * @param source 源对象
-     * @param target 目标对象
-     * @param merge 是否合并属性
-     * @param convert 是否转化
+     * @param source           源对象
+     * @param target           目标对象
+     * @param merge            是否合并属性
+     * @param convert          是否转化
      * @param ignoreProperties 忽略拷贝属性
      * @throws BeansException 对象异常
      */
     public static void copyProperties(Object source, Object target, Type targetType, boolean merge, boolean convert,
-            boolean supportMapKV, String... ignoreProperties) throws BeansException {
+                                      boolean supportMapKV, String... ignoreProperties) throws BeansException {
         Assert.notNull(source, "source con't be null");
         Assert.notNull(target, "target con't be null");
         String[][] mapper = Properties.getCommonPropertyNameMapper(source, target, supportMapKV, ignoreProperties);
@@ -683,17 +689,17 @@ public final class Beans {
     /**
      * 拷贝对象属性
      *
-     * @param source 源对象
-     * @param target 目标对象
-     * @param targetType 目标对象类型
+     * @param source      源对象
+     * @param target      目标对象
+     * @param targetType  目标对象类型
      * @param sourceProps 源对象属性
-     * @param alias 目标对象属性
-     * @param merge 是否合并属性
-     * @param convert 是否转化
+     * @param alias       目标对象属性
+     * @param merge       是否合并属性
+     * @param convert     是否转化
      * @throws BeansException
      */
     public static void copyProperties(Object source, Object target, Type targetType, String[] sourceProps,
-            String[] alias, boolean merge, boolean convert) throws BeansException {
+                                      String[] alias, boolean merge, boolean convert) throws BeansException {
         Assert.notNull(source, "source con't be null");
         Assert.notNull(target, "target con't be null");
         Assert.notNull(sourceProps, "sourceProps con't be null");
@@ -720,7 +726,7 @@ public final class Beans {
      * * @Data public class Test { private String text; private Inner inner; } * @Data public class Inner { private
      * String inner; private String inner2; } * @EG unfold(test) -> {innerInner=i1, innerInner2=i2, text=zhangsan}
      *
-     * @param source 源头
+     * @param source           源头
      * @param ignoreProperties 忽略属性
      * @return 平铺后map
      */
@@ -767,15 +773,15 @@ public final class Beans {
      * sourceProps 与 alias 数量要保持一致，属性设置按顺序设置
      * </p>
      *
-     * @param source 源对象
-     * @param sourceProps 需要转化的属性名称
-     * @param alias 需要转化的key值
+     * @param source         源对象
+     * @param sourceProps    需要转化的属性名称
+     * @param alias          需要转化的key值
      * @param filterCallback 过滤器
      * @return 转换后的map对象
      * @throws BeansException
      */
     public static Map<String, Object> toMapWithFilter(Object source, String[] sourceProps, String[] alias,
-            FilterCallback filterCallback) throws BeansException {
+                                                      FilterCallback filterCallback) throws BeansException {
         Map<String, Object> result = new HashMap<>();
         if (sourceProps != null && sourceProps.length != 0) {
             for (int i = 0; i < sourceProps.length; ++i) {
@@ -813,9 +819,9 @@ public final class Beans {
      * sourceProps 与 alias 数量要保持一致，属性设置按顺序设置
      * </p>
      *
-     * @param source 源对象
+     * @param source      源对象
      * @param sourceProps 需要转化的属性名称
-     * @param alias 需要转化的key值
+     * @param alias       需要转化的key值
      * @return 转换后的map对象
      * @throws BeansException
      */
@@ -838,7 +844,7 @@ public final class Beans {
     /**
      * bean 转 map
      *
-     * @param source 源对象
+     * @param source      源对象
      * @param sourceProps 需要转化的属性名称
      * @return 转换后的map对象
      * @throws BeansException
@@ -854,15 +860,15 @@ public final class Beans {
      * sourceProps 与 alias 数量要保持一致，属性设置按顺序设置
      * </p>
      *
-     * @param source 源对象
-     * @param sourceProps 需要转化的属性名称
-     * @param alias 需要转化的key值
+     * @param source         源对象
+     * @param sourceProps    需要转化的属性名称
+     * @param alias          需要转化的key值
      * @param filterCallback 过滤器
      * @return 转换后的map对象
      * @throws BeansException
      */
     public static List<Map<String, Object>> toMap(Collection<?> source, String[] sourceProps, String[] alias,
-            Map<String, Object> other, FilterCallback filterCallback) {
+                                                  Map<String, Object> other, FilterCallback filterCallback) {
         List<Map<String, Object>> list = new LinkedList<>();
 
         for (Object object : source) {
@@ -883,14 +889,14 @@ public final class Beans {
      * sourceProps 与 targetProps 数量要保持一致，属性设置按顺序设置
      * </p>
      *
-     * @param source 源对象
+     * @param source      源对象
      * @param sourceProps 需要转化的属性名称
-     * @param alias 需要转化的key值
+     * @param alias       需要转化的key值
      * @return 转换后的map对象
      * @throws BeansException
      */
     public static List<Map<String, Object>> toMap(Collection<?> source, String[] sourceProps, String[] alias,
-            Map<String, Object> other) {
+                                                  Map<String, Object> other) {
         return toMap(source, sourceProps, alias, other, null);
     }
 
@@ -901,9 +907,9 @@ public final class Beans {
      * sourceProps 与 targetProps 数量要保持一致，属性设置按顺序设置
      * </p>
      *
-     * @param source 源对象
+     * @param source      源对象
      * @param sourceProps 需要转化的属性名称
-     * @param alias 需要转化的key值
+     * @param alias       需要转化的key值
      * @return 转换后的map对象
      * @throws BeansException
      */
@@ -918,7 +924,7 @@ public final class Beans {
      * sourceProps 与 targetProps 数量要保持一致，属性设置按顺序设置
      * </p>
      *
-     * @param source 源对象
+     * @param source      源对象
      * @param sourceProps 需要转化的属性名称
      * @return 转换后的map对象
      * @throws BeansException
@@ -941,7 +947,7 @@ public final class Beans {
      * </p>
      *
      * @param source 源对象
-     * @param prop 需要转化的属性名称
+     * @param prop   需要转化的属性名称
      * @return 转换后的map对象
      * @throws BeansException
      */
@@ -958,7 +964,7 @@ public final class Beans {
     /**
      * 集合Bean 转 List
      *
-     * @param source 源对象
+     * @param source     源对象
      * @param propGetter 需要转化的属性名称
      * @return 转换后的map对象
      * @throws BeansException
