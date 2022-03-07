@@ -7,7 +7,7 @@ import java.util.Objects;
 
 /**
  * @author hongfeng.li
- * @since 2022/3/5
+ * @since 2021/3/5
  */
 public class ParameterizedTypeImpl implements ParameterizedType {
 

@@ -6,7 +6,7 @@ import java.util.Objects;
 
 /**
  * @author hongfeng.li
- * @since 2022/3/5
+ * @since 2021/3/5
  */
 public class GenericArrayTypeImpl implements GenericArrayType {
     private final Type genericComponentType;

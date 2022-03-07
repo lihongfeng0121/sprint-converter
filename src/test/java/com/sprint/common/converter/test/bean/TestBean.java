@@ -2,7 +2,7 @@ package com.sprint.common.converter.test.bean;
 
 /**
  * @author hongfeng.li
- * @since 2022/2/11
+ * @since 2021/2/11
  */
 public class TestBean<T> {
     private T str;

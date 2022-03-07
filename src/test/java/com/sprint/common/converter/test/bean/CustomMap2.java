@@ -6,7 +6,7 @@ import java.util.HashMap;
  * 自定义map,map内 存在自定义属性
  * 
  * @author hongfeng.li
- * @since 2022/1/25
+ * @since 2021/1/25
  */
 public class CustomMap2<K, V> extends HashMap<K, V> {
 

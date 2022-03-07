@@ -5,7 +5,7 @@ import java.util.List;
 
 /**
  * @author hongfeng.li
- * @since 2022/1/25
+ * @since 2021/1/25
  */
 public class TypeBean2<T> {
 
