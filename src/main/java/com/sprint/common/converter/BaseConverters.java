@@ -10,11 +10,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
+ * 转换器
+ *
  * @author hongfeng-li
  * @version 1.0
- * @title Converts
- * @desc 转换器
- * @date 2019年12月25日
+ * @since 2019年12月25日
  */
 public final class BaseConverters {
 
@@ -28,6 +28,8 @@ public final class BaseConverters {
      *
      * @param sourceClass 源类型
      * @param targetClass 目标类型
+     * @param <S>         s
+     * @param <T>         t
      * @return Converter
      */
     public static <S, T> Converter<S, T> getConverter(Class<S> sourceClass, Class<T> targetClass) {
@@ -61,6 +63,7 @@ public final class BaseConverters {
      *
      * @param source      源对象
      * @param targetClass 目标类型
+     * @param <T>         t
      * @return target
      */
     public static <T> T convertIgnore(Object source, Class<T> targetClass) {
@@ -78,6 +81,7 @@ public final class BaseConverters {
      *
      * @param source      源
      * @param targetClass 目标类型
+     * @param <T>         t
      * @return target
      */
     public static <T> T convertRuntime(Object source, Class<T> targetClass) {
@@ -95,6 +99,7 @@ public final class BaseConverters {
      *
      * @param source      源
      * @param targetClass 目标类型
+     * @param <T>         t
      * @return target
      * @throws ConversionException ex
      */
@@ -111,6 +116,7 @@ public final class BaseConverters {
      * @param source       源
      * @param targetClass  target类型
      * @param errorHandler 异常处理
+     * @param <T>          t
      * @return target
      * @throws ConversionException ex
      */

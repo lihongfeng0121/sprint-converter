@@ -7,10 +7,10 @@ import java.util.function.Consumer;
 import java.util.function.Supplier;
 
 /**
+ * 转换器
+ *
  * @author hongfeng.li
  * @version 1.0
- * @title Converter
- * @desc 转换器
  * @since 2021年02月05日
  */
 @FunctionalInterface
@@ -28,6 +28,7 @@ public interface Converter<S, T> {
     /**
      * 转换之前转换
      *
+     * @param <V>    v
      * @param before 转换前转换器
      * @return 转换前转换器
      */
@@ -38,7 +39,8 @@ public interface Converter<S, T> {
 
     /**
      * 转换之后转换
-     * 
+     *
+     * @param <V>   v
      * @param after 转换后转换器
      * @return 转换后转换器
      */
@@ -50,6 +52,8 @@ public interface Converter<S, T> {
     /**
      * 转换之后转换
      *
+     * @param <S1> s1
+     * @param <V1> v1
      * @return 转换后转换器
      */
     default <S1, V1> Converter<S1, V1> enforce() {
@@ -59,8 +63,8 @@ public interface Converter<S, T> {
     /**
      * 当转换发生异常
      *
-     * @param handler
-     * @return
+     * @param handler handler
+     * @return Converter
      */
     default Converter<S, T> onError(ErrorHandler<S, T> handler) {
         Objects.requireNonNull(handler);
@@ -76,8 +80,8 @@ public interface Converter<S, T> {
     /**
      * 当转换发生异常获取值
      *
-     * @param supplier
-     * @return
+     * @param supplier supplier
+     * @return Converter
      */
     default Converter<S, T> onErrorGet(Supplier<T> supplier) {
         Objects.requireNonNull(supplier);
@@ -93,7 +97,8 @@ public interface Converter<S, T> {
     /**
      * 当转换发生异常获取值
      *
-     * @return
+     * @param consumer consumer
+     * @return Converter
      */
     default Converter<S, T> ignoreError(Consumer<Throwable> consumer) {
         return (s) -> {
@@ -111,7 +116,7 @@ public interface Converter<S, T> {
     /**
      * 当转换发生异常获取值
      *
-     * @return
+     * @return Converter
      */
     default Converter<S, T> ignoreError() {
         return (s) -> {
@@ -126,8 +131,8 @@ public interface Converter<S, T> {
     /**
      * 当转换发生异常获取值
      *
-     * @param supplier
-     * @return
+     * @param supplier supplier
+     * @return Converter
      */
     default Converter<S, T> onNullGet(Supplier<T> supplier) {
         Objects.requireNonNull(supplier);
@@ -146,7 +151,8 @@ public interface Converter<S, T> {
 
     /**
      * 返回自身
-     * 
+     *
+     * @param <T> t
      * @return 自身转换器
      */
     static <T> Converter<T, T> identity() {
@@ -156,6 +162,8 @@ public interface Converter<S, T> {
     /**
      * 强制转换
      *
+     * @param <S> s
+     * @param <T> t
      * @return 自身转换器
      */
     static <S, T> Converter<S, T> enforcer() {

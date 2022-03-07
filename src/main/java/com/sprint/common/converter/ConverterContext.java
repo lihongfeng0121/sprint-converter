@@ -8,10 +8,10 @@ import java.util.Map;
 import java.util.Objects;
 
 /**
+ * 转换上下文
+ *
  * @author hongfeng.li
  * @version 1.0
- * @title ConverterContext
- * @desc 转换上下文
  * @since 2021年02月05日
  */
 public class ConverterContext {
@@ -56,11 +56,6 @@ public class ConverterContext {
         THREAD_LOCAL.remove();
     }
 
-    /**
-     * 设置上下文
-     *
-     * @return
-     */
     public static <S, T> Converter<S, T> whitContext(Converter<S, T> converter, Type sourceType, Type targetType) {
         Objects.requireNonNull(converter);
         Objects.requireNonNull(sourceType);
@@ -75,13 +70,8 @@ public class ConverterContext {
         };
     }
 
-    /**
-     * 设置上下文
-     *
-     * @return
-     */
     public static <S, T> Converter<S, T> whitContext(Converter<S, T> converter, Type sourceBeanType, Type sourceType,
-            Type targetBeanType, Type targetType) {
+                                                     Type targetBeanType, Type targetType) {
         Objects.requireNonNull(converter);
         Objects.requireNonNull(sourceType);
         Objects.requireNonNull(targetType);

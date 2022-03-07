@@ -5,11 +5,11 @@ import com.sprint.common.converter.util.Types;
 import java.lang.reflect.Type;
 
 /**
+ * 类型引用
+ *
  * @author hongfeng-li
  * @version 1.0
- * @title TypeReference
- * @desc 类型引用
- * @date 2021年03月29日
+ * @since 2021年03月29日
  */
 public abstract class TypeReference<T> implements Comparable<TypeReference<T>> {
 
