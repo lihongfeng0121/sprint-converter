@@ -16,11 +16,11 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
+ * 时间转换器
+ *
  * @author hongfeng-li
  * @version 1.0
- * @title DateTimeConverters
- * @desc 时间转换器
- * @date 2019年12月25日
+ * @since 2019年12月25日
  */
 public class DateTimeConverters implements SpecificConverterLoader {
 
@@ -85,9 +85,9 @@ public class DateTimeConverters implements SpecificConverterLoader {
         int length = dateString.length();
         String pattern = length < 6 ? YEAR_PATTERN_1
                 : length < 8 ? MONTH_PATTERN_2
-                        : length < 10 ? DATE_PATTERN_1
-                                : length < 12 ? DATE_PATTERN_HOUR_2
-                                        : length < 14 ? DATE_PATTERN_HOUR_MM_2 : DATETIME_PATTERN_1;
+                : length < 10 ? DATE_PATTERN_1
+                : length < 12 ? DATE_PATTERN_HOUR_2
+                : length < 14 ? DATE_PATTERN_HOUR_MM_2 : DATETIME_PATTERN_1;
         return pattern;
     }
 

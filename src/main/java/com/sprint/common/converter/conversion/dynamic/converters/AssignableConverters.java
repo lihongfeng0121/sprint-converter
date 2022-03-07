@@ -5,10 +5,10 @@ import com.sprint.common.converter.conversion.dynamic.DynamicConverterLoader;
 import com.sprint.common.converter.exception.ConversionException;
 
 /**
+ * 继承属性转换器
+ *
  * @author hongfeng.li
  * @version 1.0
- * @title AssignableConverters
- * @desc 继承属性转换器
  * @since 2021年02月05日
  */
 public class AssignableConverters implements DynamicConverterLoader {

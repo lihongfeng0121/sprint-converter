@@ -2,7 +2,6 @@ package com.sprint.common.converter.conversion.specific.converters;
 
 import com.sprint.common.converter.conversion.specific.SpecificConverter;
 import com.sprint.common.converter.conversion.specific.SpecificConverterLoader;
-import com.sprint.common.converter.conversion.specific.converters.DateTimeConverters;
 import com.sprint.common.converter.exception.ConversionException;
 
 import java.text.ParseException;
@@ -10,10 +9,10 @@ import java.time.*;
 import java.util.Date;
 
 /**
+ * 年转换
+ *
  * @author hongfeng.li
  * @version 1.0
- * @title YearConverters
- * @desc 年转换
  * @since 2021年02月05日
  */
 public class YearConverters implements SpecificConverterLoader {

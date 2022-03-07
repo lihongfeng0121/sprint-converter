@@ -5,11 +5,11 @@ import com.sprint.common.converter.conversion.specific.SpecificConverterLoader;
 import com.sprint.common.converter.exception.ConversionException;
 
 /**
+ * Boolean转换器
+ *
  * @author hongfeng-li
  * @version 1.0
- * @title BooleanConverters
- * @desc Boolean转换器
- * @date 2019年12月25日
+ * @since 2019年12月25日
  */
 public class BooleanConverters implements SpecificConverterLoader {
 

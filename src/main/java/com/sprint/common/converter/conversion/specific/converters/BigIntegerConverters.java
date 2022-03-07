@@ -8,10 +8,10 @@ import java.math.BigDecimal;
 import java.math.BigInteger;
 
 /**
+ * BigInteger转换器
+ *
  * @author hongfeng.li
  * @version 1.0
- * @title BigIntegerConverters
- * @desc BigInteger转换器
  * @since 2021年02月05日
  */
 public class BigIntegerConverters implements SpecificConverterLoader {
@@ -40,7 +40,7 @@ public class BigIntegerConverters implements SpecificConverterLoader {
         public BigInteger convert(String source) throws ConversionException {
             return source == null ? null
                     : source.contains(".") ? BigInteger.valueOf(Double.valueOf(source).longValue())
-                            : new BigInteger(source);
+                    : new BigInteger(source);
         }
 
         @Override

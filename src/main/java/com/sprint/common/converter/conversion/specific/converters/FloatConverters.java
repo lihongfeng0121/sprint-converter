@@ -7,11 +7,11 @@ import com.sprint.common.converter.exception.ConversionException;
 import java.math.BigDecimal;
 
 /**
+ * Float转换器
+ *
  * @author hongfeng-li
  * @version 1.0
- * @title FloatConverters
- * @desc Float转换器
- * @date 2019年12月25日
+ * @since 2019年12月25日
  */
 public class FloatConverters implements SpecificConverterLoader {
 

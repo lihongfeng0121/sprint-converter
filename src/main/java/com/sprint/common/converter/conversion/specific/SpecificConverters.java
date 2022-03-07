@@ -11,10 +11,10 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
 /**
+ * 指定类型转化器
+ *
  * @author hongfeng.li
  * @version 1.0
- * @title SpecificConverters
- * @desc 指定类型转化器
  * @since 2021年02月05日
  */
 public final class SpecificConverters {
@@ -73,9 +73,9 @@ public final class SpecificConverters {
     /**
      * 是否支持
      *
-     * @param sourceClass
-     * @param targetClass
-     * @return
+     * @param sourceClass sourceClass
+     * @param targetClass targetClass
+     * @return support
      */
     public static boolean support(Class<?> sourceClass, Class<?> targetClass) {
         return getConverter(sourceClass, targetClass) != null;
@@ -84,11 +84,11 @@ public final class SpecificConverters {
     /**
      * 获取转换器
      *
-     * @param sourceClass
-     * @param targetClass
-     * @param <S>
-     * @param <T>
-     * @return
+     * @param sourceClass sourceClass
+     * @param targetClass targetClass
+     * @param <S>         s
+     * @param <T>         t
+     * @return converter
      */
     public static <S, T> Converter<S, T> getConverter(Class<S> sourceClass, Class<T> targetClass) {
         String key = getKey(sourceClass, targetClass);

@@ -4,10 +4,10 @@ import com.sprint.common.converter.conversion.nested.bean.PropertyInfoAnnotation
 import com.sprint.common.converter.conversion.nested.bean.PropertyInfoHolder;
 
 /**
+ * 默认属性注解解析器
+ *
  * @author hongfeng.li
  * @version 1.0
- * @title DefaultPropertyInfoAnnotationParser
- * @desc 默认属性注解解析起
  * @since 2021年02月05日
  */
 public class DefaultPropertyInfoAnnotationParser implements PropertyInfoAnnotationParser<PropertyInfo> {

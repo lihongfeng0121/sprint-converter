@@ -1,11 +1,11 @@
 package com.sprint.common.converter.conversion.dynamic;
 
 /**
+ * 转换器加载
+ *
  * @author hongfeng-li
  * @version 1.0
- * @title ConverterLoader
- * @desc 转换器加载
- * @date 2019年12月25日
+ * @since 2019年12月25日
  */
 public interface DynamicConverterLoader {
 

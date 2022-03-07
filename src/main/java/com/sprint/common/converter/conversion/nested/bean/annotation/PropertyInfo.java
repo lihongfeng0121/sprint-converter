@@ -5,13 +5,13 @@ import com.sprint.common.converter.conversion.nested.bean.Access;
 import java.lang.annotation.*;
 
 /**
+ * Bean属性信息
+ *
  * @author hongfeng.li
  * @version 1.0
- * @title PropertyInfo
- * @desc Bean属性信息
  * @since 2021年02月05日
  */
-@Target({ ElementType.METHOD, ElementType.FIELD })
+@Target({ElementType.METHOD, ElementType.FIELD})
 @Retention(RetentionPolicy.RUNTIME)
 @Documented
 public @interface PropertyInfo {

@@ -22,11 +22,11 @@ public final class AnyConverter {
 
     /**
      * 获取转换器
-     * 
-     * @param typePath
-     * @param <S>
-     * @param <T>
-     * @return
+     *
+     * @param typePath 类型ath
+     * @param <S>      源类范型
+     * @param <T>      目标类范型
+     * @return target
      */
     public static <S, T> Converter<S, T> getConverter(Type... typePath) {
         Assert.isTrue(typePath.length > 0, "types should ge 1");
@@ -42,10 +42,12 @@ public final class AnyConverter {
      * 对象转换
      *
      * @param source 源对象
-     * @param types 目标类
-     * @param <T> 目标类范型
+     * @param first  first
+     * @param types  目标类
+     * @param <S>    源类范型
+     * @param <T>    目标类范型
      * @return 返回目标类对象
-     * @throws BeansException
+     * @throws BeansException bean exception
      */
     public static <S, T> T doConvert(S source, Type first, Type... types) {
         try {
@@ -63,10 +65,10 @@ public final class AnyConverter {
      * 对象转换
      *
      * @param source 源对象
-     * @param type 目标类
-     * @param <T> 目标类范型
+     * @param type   目标类
+     * @param <T>    目标类范型
      * @return 返回目标类对象
-     * @throws BeansException
+     * @throws BeansException bean exception
      */
     public static <T> T convert(Object source, Class<T> type) {
         return doConvert(source, type);
@@ -75,11 +77,11 @@ public final class AnyConverter {
     /**
      * 对象转换
      *
-     * @param source 源对象
+     * @param source   源对象
      * @param typePath 目标类
-     * @param <T> 目标类范型
+     * @param <T>      目标类范型
      * @return 返回目标类对象
-     * @throws BeansException
+     * @throws BeansException bean exception
      */
     public static <T> T convert(Object source, Type type, Type... typePath) {
         return doConvert(source, type, typePath);
@@ -89,10 +91,10 @@ public final class AnyConverter {
      * 对象转换
      *
      * @param source 源对象
-     * @param clazz 目标类
-     * @param <T> 目标类范型
+     * @param clazz  目标类
+     * @param <T>    目标类范型
      * @return 返回目标类对象
-     * @throws BeansException
+     * @throws BeansException bean exception
      */
     public static <T> T convert(Object source, TypeReference<T> clazz) throws BeansException {
         return doConvert(source, clazz.getType());

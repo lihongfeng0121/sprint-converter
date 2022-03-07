@@ -1,11 +1,11 @@
 package com.sprint.common.converter.exception;
 
 /**
+ * 转换异常类
+ *
  * @author hongfeng-li
  * @version 1.0
- * @title ConversionException
- * @desc 转换异常类
- * @date 2019年12月25日
+ * @since 2019年12月25日
  */
 public class ConversionExceptionWrapper extends RuntimeException {
 

@@ -7,10 +7,10 @@ import com.sprint.common.converter.exception.ConversionException;
 import java.math.BigDecimal;
 
 /**
+ * 数字转换
+ *
  * @author hongfeng.li
  * @version 1.0
- * @title BigDecimalConverters
- * @desc 数字转换
  * @since 2021年02月05日
  */
 public class BigDecimalConverters implements SpecificConverterLoader {

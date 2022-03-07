@@ -17,10 +17,10 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 
 /**
+ * 属性
+ *
  * @author hongfeng.li
  * @version 1.0
- * @title PropertyAccess
- * @desc 属性
  * @since 2021年02月05日
  */
 public class PropertyAccess implements Cloneable {
@@ -70,7 +70,7 @@ public class PropertyAccess implements Cloneable {
     }
 
     private Map<Class<?>, Annotation> doGetBeanPropertyAnnotations(String name, Class<?> beanClass, Method readMethod,
-            Method writeMethod) {
+                                                                   Method writeMethod) {
         Map<Class<?>, Annotation> annotations = new HashMap<>();
         if (readMethod != null) {
             annotations.putAll(Arrays.stream(readMethod.getAnnotations())

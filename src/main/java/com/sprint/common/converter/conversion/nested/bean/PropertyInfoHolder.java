@@ -5,10 +5,10 @@ import com.sprint.common.converter.conversion.nested.bean.introspection.Property
 import java.util.Objects;
 
 /**
+ * 属性信息
+ *
  * @author hongfeng.li
  * @version 1.0
- * @title PropertyInfo
- * @desc PropertyInfo
  * @since 2021年02月05日
  */
 public class PropertyInfoHolder {

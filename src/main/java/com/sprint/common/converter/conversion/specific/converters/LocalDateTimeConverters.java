@@ -13,19 +13,19 @@ import java.time.ZoneId;
 import java.util.Date;
 
 /**
+ * 时间转换器
+ *
  * @author hongfeng-li
  * @version 1.0
- * @title LocalDateTimeDateConverters
- * @desc 时间转换器
- * @date 2019年12月25日
+ * @since 2019年12月25日
  */
 public class LocalDateTimeConverters implements SpecificConverterLoader {
 
     /**
      * 转时间戳
      *
-     * @param localDateTime
-     * @return
+     * @param localDateTime LocalDateTime
+     * @return ts
      */
     public static Long toTime(LocalDateTime localDateTime) {
         if (localDateTime == null) {
@@ -37,8 +37,8 @@ public class LocalDateTimeConverters implements SpecificConverterLoader {
     /**
      * 转时间
      *
-     * @param date
-     * @return
+     * @param date date
+     * @return LocalDateTime
      */
     public static LocalDateTime toLocalDateTime(Date date) {
         if (date == null) {
@@ -50,8 +50,8 @@ public class LocalDateTimeConverters implements SpecificConverterLoader {
     /**
      * 转时间
      *
-     * @param localDate
-     * @return
+     * @param localDate LocalDateTime
+     * @return LocalDateTime
      */
     public static LocalDateTime toLocalDateTime(LocalDate localDate) {
         if (localDate == null) {
@@ -63,8 +63,8 @@ public class LocalDateTimeConverters implements SpecificConverterLoader {
     /**
      * 时间戳转时间
      *
-     * @param ts
-     * @return
+     * @param ts 时间戳
+     * @return LocalDateTime
      */
     public static LocalDateTime toLocalDateTime(Long ts) {
         if (ts == null) {

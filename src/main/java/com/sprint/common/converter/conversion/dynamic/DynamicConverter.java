@@ -3,10 +3,10 @@ package com.sprint.common.converter.conversion.dynamic;
 import com.sprint.common.converter.exception.ConversionException;
 
 /**
+ * 动态转换器
+ *
  * @author hongfeng.li
  * @version 1.0
- * @title DynamicConverter
- * @desc 动态转换器
  * @since 2021年02月05日
  */
 public interface DynamicConverter<T> {
@@ -14,7 +14,7 @@ public interface DynamicConverter<T> {
     /**
      * 加载顺序
      *
-     * @return
+     * @return 序号
      */
     int sort();
 
@@ -23,16 +23,17 @@ public interface DynamicConverter<T> {
      *
      * @param sourceType 源类型
      * @param targetType 目标类型
-     * @return
+     * @return 是否支持
      */
     boolean support(Class<?> sourceType, Class<?> targetType);
 
     /**
      * 转换
      *
-     * @param source
-     * @param targetType
-     * @return
+     * @param source     source
+     * @param targetType targetType
+     * @return target
+     * @throws ConversionException e
      */
     T convert(Object source, Class<T> targetType) throws ConversionException;
 }

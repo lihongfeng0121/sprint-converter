@@ -23,11 +23,11 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 /**
+ * Bean操作工具
+ *
  * @author hongfeng-li
  * @version 1.0
- * @title Beans
- * @desc Bean操作工具
- * @date 2021年11月22日
+ * @since 2021年11月22日
  */
 public final class Beans {
 
@@ -118,10 +118,10 @@ public final class Beans {
     /**
      * 创建一个Map
      *
-     * @param mapClass
-     * @param <K>
-     * @param <V>
-     * @return
+     * @param mapClass mapClass
+     * @param <K>      k
+     * @param <V>      v
+     * @return map
      */
     public static <K, V> Map<K, V> instanceMap(Class<?> mapClass) {
         Map<K, V> newMap;
@@ -148,6 +148,7 @@ public final class Beans {
      * @param obj          对象
      * @param propertyName 属性名称
      * @param value        值
+     * @param ignored      ignored
      * @throws BeansException 异常信息
      */
     public static void setProperty(Object obj, String propertyName, Object value, boolean ignored)
@@ -176,8 +177,9 @@ public final class Beans {
      * @param obj          对象
      * @param propertyName 属性名称
      * @param value        值
+     * @param convert      是否转换
      * @param ignored      属否忽略异常
-     * @throws BeansException
+     * @throws BeansException e
      */
     public static void setProperty(Object obj, String propertyName, Object value, boolean convert, boolean ignored)
             throws BeansException {
@@ -192,7 +194,8 @@ public final class Beans {
      * @param propertyName 属性名称
      * @param value        值
      * @param ignored      属否忽略异常
-     * @throws BeansException
+     * @param convert      convert
+     * @throws BeansException e
      */
     public static void setProperty(Type objType, Object obj, String propertyName, Object value, boolean convert,
                                    boolean ignored) throws BeansException {
@@ -290,7 +293,7 @@ public final class Beans {
      *
      * @param obj          对象
      * @param propertyName 属性名
-     * @return
+     * @return property
      */
     public static Object getProperty(Object obj, String propertyName) {
         String[] propertyCascade = splitter.apply(propertyName);
@@ -407,7 +410,7 @@ public final class Beans {
      * @param clazz  目标类
      * @param <T>    目标类范型
      * @return 返回目标类对象
-     * @throws BeansException
+     * @throws BeansException e
      */
     public static <T> T cast(Object source, Class<T> clazz) throws BeansException {
         return cast(source, clazz, STRING_ARRAY);
@@ -421,7 +424,7 @@ public final class Beans {
      * @param ignoreProperties 忽略拷贝属性
      * @param <T>              目标类范型
      * @return 返回目标类对象
-     * @throws BeansException
+     * @throws BeansException e
      */
     public static <T> T cast(Object source, Class<T> clazz, String... ignoreProperties) throws BeansException {
         return cast(source, clazz, true, ignoreProperties);
@@ -434,7 +437,7 @@ public final class Beans {
      * @param clazz  目标类
      * @param <T>    目标类范型
      * @return 返回目标类对象
-     * @throws BeansException
+     * @throws BeansException e
      */
     public static <T> T shallowCast(Object source, Class<T> clazz) throws BeansException {
         return cast(source, clazz, false, STRING_ARRAY);
@@ -448,7 +451,7 @@ public final class Beans {
      * @param ignoreProperties 忽略拷贝属性
      * @param <T>              目标类范型
      * @return 返回目标类对象
-     * @throws BeansException
+     * @throws BeansException e
      */
     public static <T> T shallowCast(Object source, Class<T> clazz, String... ignoreProperties) throws BeansException {
         return cast(source, clazz, false, ignoreProperties);
@@ -463,7 +466,7 @@ public final class Beans {
      * @param ignoreProperties 忽略拷贝属性
      * @param <T>              目标类范型
      * @return 返回目标类对象
-     * @throws BeansException
+     * @throws BeansException e
      */
     public static <T> T cast(Object source, Class<T> clazz, boolean convert, String... ignoreProperties)
             throws BeansException {
@@ -479,7 +482,7 @@ public final class Beans {
      * @param ignoreProperties 忽略拷贝属性
      * @param <T>              目标类范型
      * @return 返回目标类对象
-     * @throws BeansException
+     * @throws BeansException e
      */
     public static <T> T cast(Object source, Type targetType, boolean convert, String... ignoreProperties)
             throws BeansException {
@@ -495,7 +498,7 @@ public final class Beans {
      * @param ignoreProperties 忽略拷贝属性
      * @param <T>              目标类范型
      * @return 返回目标类对象
-     * @throws BeansException
+     * @throws BeansException e
      */
     public static <T> T cast(Object source, TypeReference<T> targetType, boolean convert, String... ignoreProperties)
             throws BeansException {
@@ -618,6 +621,7 @@ public final class Beans {
      *
      * @param source           源对象
      * @param target           目标对象
+     * @param merge            merge
      * @param ignoreProperties 忽略拷贝属性
      * @throws BeansException 对象异常
      */
@@ -630,6 +634,8 @@ public final class Beans {
      *
      * @param source           源对象
      * @param target           目标对象
+     * @param targetType       目标类型
+     * @param merge            是否合并
      * @param ignoreProperties 忽略拷贝属性
      * @throws BeansException 对象异常
      */
@@ -643,6 +649,7 @@ public final class Beans {
      *
      * @param source           源对象
      * @param target           目标对象
+     * @param targetType       目标类型
      * @param merge            是否合并属性
      * @param convert          是否转化
      * @param ignoreProperties 忽略拷贝属性
@@ -660,6 +667,7 @@ public final class Beans {
      * @param target           目标对象
      * @param merge            是否合并属性
      * @param convert          是否转化
+     * @param supportMapKV     是否支持map
      * @param ignoreProperties 忽略拷贝属性
      * @throws BeansException 对象异常
      */
@@ -673,9 +681,11 @@ public final class Beans {
      *
      * @param source           源对象
      * @param target           目标对象
+     * @param targetType       目标类型
      * @param merge            是否合并属性
      * @param convert          是否转化
      * @param ignoreProperties 忽略拷贝属性
+     * @param supportMapKV     map kv
      * @throws BeansException 对象异常
      */
     public static void copyProperties(Object source, Object target, Type targetType, boolean merge, boolean convert,
@@ -696,7 +706,7 @@ public final class Beans {
      * @param alias       目标对象属性
      * @param merge       是否合并属性
      * @param convert     是否转化
-     * @throws BeansException
+     * @throws BeansException e
      */
     public static void copyProperties(Object source, Object target, Type targetType, String[] sourceProps,
                                       String[] alias, boolean merge, boolean convert) throws BeansException {
@@ -722,13 +732,23 @@ public final class Beans {
 
     /**
      * 展开内部属性
-     * <p>
-     * * @Data public class Test { private String text; private Inner inner; } * @Data public class Inner { private
-     * String inner; private String inner2; } * @EG unfold(test) -> {innerInner=i1, innerInner2=i2, text=zhangsan}
      *
      * @param source           源头
      * @param ignoreProperties 忽略属性
      * @return 平铺后map
+     * <p>
+     * public class Test {
+     * private String text;
+     * private Inner inner;
+     * }
+     * <p>
+     * public class Inner {
+     * private String inner;
+     * private String inner2;
+     * }
+     * <p>
+     * Beans.unfold(test) sout: {innerInner=i1, innerInner2=i2, text=zhangsan}
+     * </p>
      */
     public static Map<String, Object> unfold(Object source, String... ignoreProperties) {
         List<String> propertyNames = Properties.getReadPropertyNames(source, true);
@@ -778,7 +798,7 @@ public final class Beans {
      * @param alias          需要转化的key值
      * @param filterCallback 过滤器
      * @return 转换后的map对象
-     * @throws BeansException
+     * @throws BeansException e
      */
     public static Map<String, Object> toMapWithFilter(Object source, String[] sourceProps, String[] alias,
                                                       FilterCallback filterCallback) throws BeansException {
@@ -823,7 +843,7 @@ public final class Beans {
      * @param sourceProps 需要转化的属性名称
      * @param alias       需要转化的key值
      * @return 转换后的map对象
-     * @throws BeansException
+     * @throws BeansException e
      */
     public static Map<String, Object> toMap(Object source, String[] sourceProps, String[] alias) {
         return toMapWithFilter(source, sourceProps, alias, null);
@@ -834,7 +854,7 @@ public final class Beans {
      *
      * @param source 源对象
      * @return 转换后的map对象
-     * @throws BeansException
+     * @throws BeansException e
      */
     public static Map<String, Object> toMap(Object source) {
         String[][] mapper = Properties.getCommonPropertyNameMapper(source, Collections.emptyMap(), true);
@@ -847,7 +867,7 @@ public final class Beans {
      * @param source      源对象
      * @param sourceProps 需要转化的属性名称
      * @return 转换后的map对象
-     * @throws BeansException
+     * @throws BeansException e
      */
     public static Map<String, Object> toMap(Object source, String[] sourceProps) {
         return toMap(source, sourceProps, null);
@@ -864,8 +884,9 @@ public final class Beans {
      * @param sourceProps    需要转化的属性名称
      * @param alias          需要转化的key值
      * @param filterCallback 过滤器
+     * @param other          other
      * @return 转换后的map对象
-     * @throws BeansException
+     * @throws BeansException e
      */
     public static List<Map<String, Object>> toMap(Collection<?> source, String[] sourceProps, String[] alias,
                                                   Map<String, Object> other, FilterCallback filterCallback) {
@@ -892,8 +913,9 @@ public final class Beans {
      * @param source      源对象
      * @param sourceProps 需要转化的属性名称
      * @param alias       需要转化的key值
+     * @param other       other
      * @return 转换后的map对象
-     * @throws BeansException
+     * @throws BeansException e
      */
     public static List<Map<String, Object>> toMap(Collection<?> source, String[] sourceProps, String[] alias,
                                                   Map<String, Object> other) {
@@ -911,7 +933,7 @@ public final class Beans {
      * @param sourceProps 需要转化的属性名称
      * @param alias       需要转化的key值
      * @return 转换后的map对象
-     * @throws BeansException
+     * @throws BeansException e
      */
     public static List<Map<String, Object>> toMap(Collection<?> source, String[] sourceProps, String[] alias) {
         return toMap(source, sourceProps, alias, null);
@@ -927,7 +949,7 @@ public final class Beans {
      * @param source      源对象
      * @param sourceProps 需要转化的属性名称
      * @return 转换后的map对象
-     * @throws BeansException
+     * @throws BeansException e
      */
     public static List<Map<String, Object>> toMap(Collection<?> source, String[] sourceProps) {
         List<Map<String, Object>> list = new LinkedList<>();
@@ -949,7 +971,7 @@ public final class Beans {
      * @param source 源对象
      * @param prop   需要转化的属性名称
      * @return 转换后的map对象
-     * @throws BeansException
+     * @throws BeansException e
      */
     public static List<Object> toList(Collection<?> source, String prop) {
         List<Object> list = new LinkedList<>();
@@ -966,8 +988,10 @@ public final class Beans {
      *
      * @param source     源对象
      * @param propGetter 需要转化的属性名称
+     * @param <S>        s
+     * @param <T>        t
      * @return 转换后的map对象
-     * @throws BeansException
+     * @throws BeansException e
      */
     public static <S, T> List<T> toList(Collection<S> source, Function<S, T> propGetter) {
         if (source == null || source.isEmpty()) {

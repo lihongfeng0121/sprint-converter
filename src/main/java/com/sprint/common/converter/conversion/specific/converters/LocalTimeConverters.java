@@ -12,10 +12,10 @@ import java.time.temporal.TemporalAccessor;
 import java.util.Date;
 
 /**
+ * 时间转换
+ *
  * @author hongfeng.li
  * @version 1.0
- * @title LocalTimeConverters
- * @desc 时间转换
  * @since 2021年02月05日
  */
 public class LocalTimeConverters implements SpecificConverterLoader {

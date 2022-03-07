@@ -10,11 +10,11 @@ import java.util.Date;
 import java.util.Optional;
 
 /**
+ * long转换器
+ *
  * @author hongfeng-li
  * @version 1.0
- * @title LongConverters
- * @desc long转换器
- * @date 2019年12月25日
+ * @since 2019年12月25日
  */
 public class LongConverters implements SpecificConverterLoader {
 

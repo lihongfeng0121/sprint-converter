@@ -8,10 +8,10 @@ import java.util.IdentityHashMap;
 import java.util.Map;
 
 /**
+ * 包装类转换
+ *
  * @author hongfeng.li
  * @version 1.0
- * @title PrimitiveConverters
- * @desc 包装类转换
  * @since 2021年02月05日
  */
 public class PrimitiveConverters implements DynamicConverterLoader {
@@ -39,8 +39,8 @@ public class PrimitiveConverters implements DynamicConverterLoader {
     /**
      * 获取基本类型包装类
      *
-     * @param primitiveType
-     * @return
+     * @param primitiveType primitiveType
+     * @return class
      */
     public static Class<?> getWrapperType(Class<?> primitiveType) {
         return primitiveTypeToWrapperMap.getOrDefault(primitiveType, primitiveType);
@@ -49,8 +49,8 @@ public class PrimitiveConverters implements DynamicConverterLoader {
     /**
      * 获取基本类型类
      *
-     * @param wrapperType
-     * @return
+     * @param wrapperType wrapperType
+     * @return class
      */
     public static Class<?> getPrimitiveType(Class<?> wrapperType) {
         return primitiveWrapperTypeMap.get(wrapperType);

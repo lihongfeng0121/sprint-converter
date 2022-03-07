@@ -1,7 +1,7 @@
 package com.sprint.common.converter.conversion.nested.bean.introspection;
 
-import com.sprint.common.converter.util.ConcurrentReferenceHashMap;
 import com.sprint.common.converter.conversion.nested.bean.BeansException;
+import com.sprint.common.converter.util.ConcurrentReferenceHashMap;
 
 import java.beans.BeanInfo;
 import java.beans.IntrospectionException;
@@ -16,10 +16,10 @@ import java.util.Set;
 import java.util.concurrent.ConcurrentMap;
 
 /**
+ * 内省缓存
+ *
  * @author hongfeng.li
  * @version 1.0
- * @title CachedIntrospectionResults
- * @desc 内省缓存
  * @since 2021年02月05日
  */
 public class CachedIntrospectionResults {
@@ -137,7 +137,7 @@ public class CachedIntrospectionResults {
     /**
      * 获取所有可读属性名字
      *
-     * @return
+     * @return PropertyAccess[]
      */
     public PropertyAccess[] getReadPropertyAccess() {
         return this.propertyAccessCache.values().stream().filter(PropertyAccess::isReadAccessible)
@@ -147,7 +147,7 @@ public class CachedIntrospectionResults {
     /**
      * 获取所有可读属性名字
      *
-     * @return
+     * @return PropertyAccess[]
      */
     public PropertyAccess[] getWritePropertyAccess() {
         return this.propertyAccessCache.values().stream().filter(PropertyAccess::isWriteAccessible)

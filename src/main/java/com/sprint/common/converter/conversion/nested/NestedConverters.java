@@ -2,9 +2,9 @@ package com.sprint.common.converter.conversion.nested;
 
 import com.sprint.common.converter.BaseConverters;
 import com.sprint.common.converter.Converter;
-import com.sprint.common.converter.util.Types;
 import com.sprint.common.converter.conversion.nested.bean.Beans;
 import com.sprint.common.converter.exception.ConversionException;
+import com.sprint.common.converter.util.Types;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -13,10 +13,10 @@ import java.lang.reflect.Type;
 import java.util.*;
 
 /**
+ * 嵌套属性转换
+ *
  * @author hongfeng.li
  * @version 1.0
- * @title NestedConverters
- * @desc 嵌套属性转换
  * @since 2021年02月05日
  */
 public final class NestedConverters {
@@ -57,11 +57,13 @@ public final class NestedConverters {
 
     /**
      * 获取转换器
-     * 
-     * @param sourceClass
-     * @param targetBeanType
-     * @param targetFiledType
-     * @return
+     *
+     * @param sourceClass     sourceClass
+     * @param targetBeanType  targetBeanType
+     * @param targetFiledType targetFiledType
+     * @param <S>             s
+     * @param <T>             t
+     * @return converter
      */
     public static <S, T> Converter<S, T> getConverter(Class<S> sourceClass, Type targetBeanType, Type targetFiledType) {
         Class<?> targetClass = Types.extractClass(targetFiledType, targetBeanType);
@@ -74,10 +76,12 @@ public final class NestedConverters {
 
     /**
      * 获取转换器
-     * 
-     * @param sourceClass
-     * @param targetClass
-     * @return
+     *
+     * @param sourceClass sourceClass
+     * @param targetClass targetClass
+     * @param <S>         s
+     * @param <T>         t
+     * @return converter
      */
     public static <S, T> Converter<S, T> getConverter(Class<S> sourceClass, Class<T> targetClass) {
         NestedConverter nestedConverter = NESTED_CONVERTERS.stream()
@@ -88,11 +92,13 @@ public final class NestedConverters {
 
     /**
      * 获取转换器
-     * 
-     * @param value
-     * @param targetBeanType
-     * @param targetFiledType
-     * @return
+     *
+     * @param value           value
+     * @param targetBeanType  targetBeanType
+     * @param targetFiledType targetFiledType
+     * @param <S>             s
+     * @param <T>             t
+     * @return converter
      */
     public static <S, T> Converter<S, T> getConverter(S value, Type targetBeanType, Type targetFiledType) {
         Class<?> extractClass = Types.extractClass(targetFiledType, targetBeanType);
@@ -103,15 +109,17 @@ public final class NestedConverters {
     }
 
     /**
-     * 转化为目标类型
+     * 获取转换器
      *
-     * @param targetBeanType
-     * @param targetType
-     * @param value
-     * @return
-     * @throws ConversionException
+     * @param value          value
+     * @param targetBeanType targetBeanType
+     * @param targetType     targetType
+     * @param <S>            s
+     * @param <T>            t
+     * @return target
+     * @throws ConversionException e
      */
-    public static <S,T> T convert(S value, Type targetBeanType, Type targetType) throws ConversionException {
+    public static <S, T> T convert(S value, Type targetBeanType, Type targetType) throws ConversionException {
         if (value == null) {
             return null;
         }

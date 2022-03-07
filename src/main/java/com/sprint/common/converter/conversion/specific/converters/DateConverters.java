@@ -12,11 +12,11 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 /**
+ * 时间转换器
+ *
  * @author hongfeng-li
  * @version 1.0
- * @title DateTimeConverters
- * @desc 时间转换器
- * @date 2019年12月25日
+ * @since 2019年12月25日
  */
 public class DateConverters implements SpecificConverterLoader {
 

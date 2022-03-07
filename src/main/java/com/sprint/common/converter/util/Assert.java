@@ -1,10 +1,10 @@
 package com.sprint.common.converter.util;
 
 /**
+ * Assert
+ *
  * @author hongfeng.li
  * @version 1.0
- * @title Assert
- * @desc Assert
  * @since 2021年02月05日
  */
 public class Assert {
@@ -12,8 +12,8 @@ public class Assert {
     /**
      * 表达式应为true
      *
-     * @param expression
-     * @param message
+     * @param expression expression
+     * @param message message
      */
     public static void isTrue(boolean expression, String message) {
         if (!expression) {
@@ -24,8 +24,8 @@ public class Assert {
     /**
      * 不能为空
      *
-     * @param object
-     * @param message
+     * @param object object
+     * @param message message
      */
     public static void notNull(Object object, String message) {
         if (object == null) {
@@ -36,8 +36,8 @@ public class Assert {
     /**
      * 状态判断
      *
-     * @param expression
-     * @param message
+     * @param expression expression
+     * @param message message
      */
     public static void state(boolean expression, String message) {
         if (!expression) {

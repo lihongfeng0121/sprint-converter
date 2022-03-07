@@ -12,10 +12,10 @@ import java.util.Collection;
 import java.util.Objects;
 
 /**
+ * jackson转换器
+ *
  * @author hongfeng.li
  * @version 1.0
- * @title JacksonConverter
- * @desc jackson转换器
  * @since 2021年02月05日
  */
 public class JacksonConverter implements JsonConverter {
@@ -24,8 +24,7 @@ public class JacksonConverter implements JsonConverter {
 
     /**
      * 设置一些通用的属性
-     */
-    {
+     */ {
         mapper = new ObjectMapper();
         // 如果json中有新增的字段并且是实体类类中不存在的，不报错
         // mapper.configure(DeserializationFeature.FAIL_ON_IGNORED_PROPERTIES, false);

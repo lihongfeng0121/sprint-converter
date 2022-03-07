@@ -2,7 +2,6 @@ package com.sprint.common.converter.conversion.specific.converters;
 
 import com.sprint.common.converter.conversion.specific.SpecificConverter;
 import com.sprint.common.converter.conversion.specific.SpecificConverterLoader;
-import com.sprint.common.converter.conversion.specific.converters.DateTimeConverters;
 import com.sprint.common.converter.exception.ConversionException;
 
 import java.sql.Timestamp;
@@ -13,11 +12,11 @@ import java.time.ZoneId;
 import java.util.Date;
 
 /**
+ * 时间戳转换器
+ *
  * @author hongfeng-li
  * @version 1.0
- * @title TimestampConverters
- * @desc 时间戳转换器
- * @date 2019年12月25日
+ * @since 2019年12月25日
  */
 public class TimestampConverters implements SpecificConverterLoader {
 

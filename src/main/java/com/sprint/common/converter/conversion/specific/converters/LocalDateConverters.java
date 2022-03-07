@@ -13,11 +13,11 @@ import java.time.ZoneId;
 import java.util.Date;
 
 /**
+ * 时间转换器
+ *
  * @author hongfeng-li
  * @version 1.0
- * @title LocalDateConverters
- * @desc 时间转换器
- * @date 2019年12月25日
+ * @since 2019年12月25日
  */
 public class LocalDateConverters implements SpecificConverterLoader {
 

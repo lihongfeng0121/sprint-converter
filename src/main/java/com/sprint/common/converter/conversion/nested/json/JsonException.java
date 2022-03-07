@@ -1,11 +1,11 @@
 package com.sprint.common.converter.conversion.nested.json;
 
 /**
+ * Json异常
+ *
  * @author hongfeng-li
  * @version 1.0
- * @title JsonException
- * @desc Json异常
- * @date 2021年02月05日
+ * @since 2021年02月05日
  */
 public class JsonException extends Exception {
 

@@ -5,11 +5,11 @@ import java.time.temporal.Temporal;
 import java.util.*;
 
 /**
+ * 类操作工具
+ *
  * @author hongfeng-li
  * @version 1.0
- * @title Types
- * @desc 类操作工具
- * @date 2019年12月11日
+ * @since 2019年12月11日
  */
 public class Types {
 
@@ -22,7 +22,7 @@ public class Types {
     private static final ConcurrentReferenceHashMap<ParameterizedType, Type> COLLECTION_PARAMETER_TYPE_CACHE = new ConcurrentReferenceHashMap<>();
 
     private static final Class<?> OBJECT_CLASS = Object.class;
-    private static final Type[] OBJECT_K_V_TYPE = { OBJECT_CLASS, OBJECT_CLASS };
+    private static final Type[] OBJECT_K_V_TYPE = {OBJECT_CLASS, OBJECT_CLASS};
     private static final ClassLoader APP_CLASS_LOADER = ClassLoader.getSystemClassLoader();
 
     static {
@@ -86,7 +86,7 @@ public class Types {
      * 获取类的范型
      *
      * @param clazz 类
-     * @return
+     * @return ClassSuperclassType
      */
     public static Type[] getClassSuperclassType(Class<?> clazz) {
         if (clazz.isInterface()) {
@@ -95,11 +95,11 @@ public class Types {
         Type type = clazz.getGenericSuperclass();
 
         if (type instanceof Class) {
-            return new Type[] {};
+            return new Type[]{};
         } else if (type instanceof ParameterizedType) {
             return ((ParameterizedType) clazz.getGenericSuperclass()).getActualTypeArguments();
         } else {
-            return new Type[] {};
+            return new Type[]{};
         }
     }
 
@@ -107,7 +107,8 @@ public class Types {
      * 获取类的范型
      *
      * @param clazz 类
-     * @return
+     * @param lc    lc
+     * @return ClassSuperclassType
      */
     public static Type getClassSuperclassType(Class<?> clazz, int lc) {
         return at(getClassSuperclassType(clazz), lc, null);
@@ -117,7 +118,7 @@ public class Types {
      * 获取类的范型
      *
      * @param clazz 类
-     * @return
+     * @return ClassSuperclassTypeMap
      */
     public static Map<TypeVariable<?>, Type> getClassSuperclassTypeMap(Class<?> clazz) {
         if (clazz.isInterface()) {
@@ -131,9 +132,9 @@ public class Types {
      * 获取指定类的范型
      *
      * @param clazz 原类
-     * @param intf 目标接口
-     * @param lc 位置
-     * @return
+     * @param intf  目标接口
+     * @param lc    位置
+     * @return InterfaceSuperclass
      */
     public static Class<?> getInterfaceSuperclass(Class<?> clazz, Class<?> intf, int lc) {
         return at(getInterfaceSuperclass(clazz, intf), lc, null);
@@ -143,8 +144,8 @@ public class Types {
      * 获取指定类的范型
      *
      * @param clazz 原类
-     * @param intf 目标接口
-     * @return
+     * @param intf  目标接口
+     * @return InterfaceSuperclass
      */
     public static Class<?>[] getInterfaceSuperclass(Class<?> clazz, Class<?> intf) {
         Type[] types = getInterfaceSuperclassType(clazz, intf);
@@ -154,15 +155,15 @@ public class Types {
                 classes.add((Class<?>) type);
             }
         }
-        return classes.toArray(new Class[] {});
+        return classes.toArray(new Class[]{});
     }
 
     /**
      * 获取指定类的范型
      *
      * @param clazz 原类
-     * @param intf 目标接口
-     * @return
+     * @param intf  目标接口
+     * @return InterfaceSuperclassType
      */
     public static Type[] getInterfaceSuperclassType(Class clazz, Class intf) {
         if (!intf.isInterface()) {
@@ -175,15 +176,15 @@ public class Types {
                 return parameterizedType.getActualTypeArguments();
             }
         }
-        return new Class[] {};
+        return new Class[]{};
     }
 
     /**
      * 获取类的范型
      *
-     * @param beanType 类
+     * @param beanType  类
      * @param fieldType 类
-     * @return
+     * @return ComponentType
      */
     public static Type getComponentType(Type beanType, Type fieldType) {
         if (fieldType instanceof TypeVariable) {
@@ -197,7 +198,7 @@ public class Types {
      * 获取类的范型
      *
      * @param type 类
-     * @return
+     * @return ClassTypeMap
      */
     public static Map<TypeVariable<?>, Type> getClassTypeMap(Type type) {
         Class<?> clazz = extractClass(type);
@@ -237,7 +238,8 @@ public class Types {
     /**
      * 提取Class对象
      *
-     * @param type 类型
+     * @param type      类型
+     * @param clazzType clazzType
      * @return Class对象
      */
     public static Class<?> extractClass(Type type, Type clazzType) {
@@ -275,8 +277,8 @@ public class Types {
     /**
      * 获取对象范型参数
      *
-     * @param type
-     * @return
+     * @param type type
+     * @return actualTypeArguments
      */
     public static Type[] getActualTypeArguments(Type type) {
         if (type instanceof ParameterizedType) {
@@ -285,7 +287,7 @@ public class Types {
             System.arraycopy(paramTypes, 0, classes, 0, paramTypes.length);
             return classes;
         }
-        return new Type[] {};
+        return new Type[]{};
     }
 
     static <T> T at(T[] ts, int i, T defaultValue) {
@@ -298,11 +300,13 @@ public class Types {
         return ts.length > i ? ts[i] : defaultValue;
     }
 
+
     /**
      * 获取数组中元素的Class对象
      *
-     * @param type 组数类型
-     * @return 数组中元素的Class对象
+     * @param type      type
+     * @param clazzType clazzType
+     * @return ArrayComponentType
      */
     public static Type getArrayComponentType(Type type, Type clazzType) {
         if (type instanceof Class<?>) {
@@ -387,8 +391,8 @@ public class Types {
         Type rawType = parameterizedType.getRawType();
         Type[] actualTypeArguments = parameterizedType.getActualTypeArguments();
         if (rawType == Map.class) {
-            return new Type[] { getWildcardTypeUpperBounds(actualTypeArguments[0]),
-                    getWildcardTypeUpperBounds(actualTypeArguments[1]) };
+            return new Type[]{getWildcardTypeUpperBounds(actualTypeArguments[0]),
+                    getWildcardTypeUpperBounds(actualTypeArguments[1])};
         }
         Class<?> rawClass = (Class<?>) rawType;
         Map<TypeVariable<?>, Type> actualTypeMap = toMap(rawClass.getTypeParameters(), actualTypeArguments);
@@ -458,7 +462,7 @@ public class Types {
     }
 
     private static ParameterizedType makeParameterizedType(Class<?> rawClass, Type[] typeParameters,
-            Map<TypeVariable<?>, Type> actualTypeMap) {
+                                                           Map<TypeVariable<?>, Type> actualTypeMap) {
         int length = typeParameters.length;
         Type[] actualTypeArguments = new Type[length];
         for (int i = 0; i < length; i++) {
@@ -505,12 +509,7 @@ public class Types {
         return type;
     }
 
-    /**
-     * @param clazz
-     * @param paramTypes
-     * @param <T>
-     * @return
-     */
+
     public static <T> Constructor<T> getConstructorIfAvailable(Class<T> clazz, Class<?>... paramTypes) {
         try {
             return clazz.getConstructor(paramTypes);
@@ -547,9 +546,6 @@ public class Types {
         return false;
     }
 
-    /**
-     * 判断类型是否是 基础类型
-     */
     public static boolean isPrimitiveTypeClass(Class<?> clazz) {
         return primitiveTypeToWrapperMap.containsKey(clazz);
     }
@@ -557,8 +553,8 @@ public class Types {
     /**
      * 是否是基础类型或着基础类型包装类
      *
-     * @param clazz
-     * @return
+     * @param clazz clazz
+     * @return isPrimitiveTypeOrWrapClass
      */
     public static boolean isPrimitiveTypeOrWrapClass(Class<?> clazz) {
         return isPrimitiveTypeWrapClass(clazz) || isPrimitiveTypeClass(clazz);
@@ -613,8 +609,8 @@ public class Types {
     /**
      * 是否是集合类
      *
-     * @param clazz
-     * @return
+     * @param clazz clazz
+     * @return isCollection
      */
     public static boolean isCollection(Class<?> clazz) {
         return Collection.class.isAssignableFrom(clazz);
@@ -623,8 +619,8 @@ public class Types {
     /**
      * 是否是可遍历的
      *
-     * @param clazz
-     * @return
+     * @param clazz clazz
+     * @return isIterable
      */
     public static boolean isIterable(Class<?> clazz) {
         return Iterable.class.isAssignableFrom(clazz);
@@ -633,8 +629,8 @@ public class Types {
     /**
      * 是否是map
      *
-     * @param clazz
-     * @return
+     * @param clazz clazz
+     * @return isMap
      */
     public static boolean isMap(Class<?> clazz) {
         return Map.class.isAssignableFrom(clazz);

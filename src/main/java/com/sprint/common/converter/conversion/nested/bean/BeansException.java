@@ -1,10 +1,10 @@
 package com.sprint.common.converter.conversion.nested.bean;
 
 /**
+ * Beans 转换异常
+ *
  * @author hongfeng.li
  * @version 1.0
- * @title BeansException
- * @desc Bean转换异常
  * @since 2021年02月05日
  */
 public class BeansException extends RuntimeException {

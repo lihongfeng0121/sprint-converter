@@ -1,23 +1,23 @@
 package com.sprint.common.converter.conversion.specific;
 
-import com.sprint.common.converter.util.Types;
 import com.sprint.common.converter.exception.ConversionException;
+import com.sprint.common.converter.util.Types;
 
 /**
+ * 转换器
+ *
  * @author hongfeng-li
  * @version 1.0
- * @title Converter
- * @desc 转换器
- * @date 2019年12月25日
+ * @since 2019年12月25日
  */
 public interface SpecificConverter<S, T> {
 
     /**
      * 是否支持
      *
-     * @param sourceType
-     * @param targetType
-     * @return
+     * @param sourceType sourceType
+     * @param targetType targetType
+     * @return support
      */
     default boolean support(Class<?> sourceType, Class<?> targetType) {
         return getSourceClass().isAssignableFrom(sourceType) && targetType.isAssignableFrom(getTargetClass());
@@ -26,7 +26,7 @@ public interface SpecificConverter<S, T> {
     /**
      * 源类型
      *
-     * @return
+     * @return sourceClass
      */
     default Class<S> getSourceClass() {
         return (Class<S>) Types.getInterfaceSuperclass(getClass(), SpecificConverter.class, 0);
@@ -35,7 +35,7 @@ public interface SpecificConverter<S, T> {
     /**
      * 目标类型
      *
-     * @return
+     * @return targetClass
      */
     default Class<T> getTargetClass() {
         return (Class<T>) Types.getInterfaceSuperclass(getClass(), SpecificConverter.class, 1);

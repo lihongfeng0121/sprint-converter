@@ -5,11 +5,11 @@ import com.sprint.common.converter.conversion.specific.SpecificConverterLoader;
 import com.sprint.common.converter.exception.ConversionException;
 
 /**
+ * Integer转换器
+ *
  * @author hongfeng-li
  * @version 1.0
- * @title IntegerConverters
- * @desc Integer转换器
- * @date 2019年12月25日
+ * @since 2019年12月25日
  */
 public class IntegerConverters implements SpecificConverterLoader {
 

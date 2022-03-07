@@ -9,10 +9,10 @@ import java.lang.reflect.Modifier;
 import java.util.*;
 
 /**
+ * 动态属性转换器
+ *
  * @author hongfeng.li
  * @version 1.0
- * @title DynamicConverters
- * @desc 动态属性转换器
  * @since 2021年02月05日
  */
 public final class DynamicConverters {
@@ -61,9 +61,9 @@ public final class DynamicConverters {
     /**
      * 是否支持
      *
-     * @param sourceClass
-     * @param targetClass
-     * @return
+     * @param sourceClass sourceClass
+     * @param targetClass targetClass
+     * @return 是否支持
      */
     public static boolean support(Class<?> sourceClass, Class<?> targetClass) {
         return DYNAMIC_CONVERTER_CACHE.stream().anyMatch(item -> item.support(sourceClass, targetClass));
@@ -72,11 +72,11 @@ public final class DynamicConverters {
     /**
      * 获取转换器
      *
-     * @param sourceClass
-     * @param targetClass
-     * @param <S>
-     * @param <T>
-     * @return
+     * @param sourceClass sourceClass
+     * @param targetClass targetClass
+     * @param <S>         s
+     * @param <T>         t
+     * @return converter
      */
     public static <S, T> Converter<S, T> getConverter(Class<S> sourceClass, Class<T> targetClass) {
         Optional<Converter<?, ?>> converterOptional = cache.computeIfAbsent(getKey(sourceClass, targetClass), (k) -> {
@@ -87,7 +87,7 @@ public final class DynamicConverters {
             }
             return Optional.of((source) -> ((DynamicConverter<T>) dynamicConverter).convert(source, targetClass));
         });
-        return converterOptional.<Converter<S, T>> map(Converter::enforce).orElse(null);
+        return converterOptional.<Converter<S, T>>map(Converter::enforce).orElse(null);
     }
 
 }

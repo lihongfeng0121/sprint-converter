@@ -5,10 +5,10 @@ import com.sprint.common.converter.conversion.dynamic.DynamicConverterLoader;
 import com.sprint.common.converter.exception.ConversionException;
 
 /**
+ * 枚举转换
+ *
  * @author hongfeng.li
  * @version 1.0
- * @title EnumConverter
- * @desc 枚举转换
  * @since 2021年02月05日
  */
 public class EnumConverter implements DynamicConverterLoader {

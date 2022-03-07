@@ -1,9 +1,9 @@
 package com.sprint.common.converter.conversion.nested.bean;
 
-import com.sprint.common.converter.util.Types;
 import com.sprint.common.converter.conversion.nested.bean.annotation.DefaultPropertyInfoAnnotationParser;
 import com.sprint.common.converter.conversion.nested.bean.introspection.CachedIntrospectionResults;
 import com.sprint.common.converter.conversion.nested.bean.introspection.PropertyAccess;
+import com.sprint.common.converter.util.Types;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -11,10 +11,10 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 /**
+ * Property工具
+ *
  * @author hongfeng.li
  * @version 1.0
- * @title Properties
- * @desc Property工具
  * @since 2021年02月05日
  */
 public class Properties {
@@ -92,7 +92,7 @@ public class Properties {
     private static final PropertyInfoAnnotationParser<?> DEFAULT_ANNOTATION_PARSER = new DefaultPropertyInfoAnnotationParser();
 
     static {// 通过ServiceLoader 加载service， 可自定义属性解析器 META-INF
-            // 增加com.sprint.common.converter.bean.PropertyInfoAnnotationParser 文件
+        // 增加com.sprint.common.converter.bean.PropertyInfoAnnotationParser 文件
         // 将PropertyInfoAnnotationParser实现类全路径复制到文件内
         try {
             ClassLoader loader = Thread.currentThread().getContextClassLoader();
@@ -108,9 +108,9 @@ public class Properties {
 
     /**
      * 解析Bean属性信息
-     * 
-     * @param propertyAccess
-     * @return
+     *
+     * @param propertyAccess propertyAccess
+     * @return PropertyInfoHolder
      */
     public static PropertyInfoHolder parsePropertyInfo(
             PropertyAccess propertyAccess) {
@@ -153,8 +153,8 @@ public class Properties {
     /**
      * 获取map的所有key值
      *
-     * @param obj
-     * @return
+     * @param obj obj
+     * @return list
      */
     public static List<String> getMapPropertyNames(Map<String, ?> obj) {
         return new ArrayList<>(obj.keySet());
@@ -163,8 +163,8 @@ public class Properties {
     /**
      * 获取对象所有属性名字
      *
-     * @param obj
-     * @return
+     * @param obj obj
+     * @return list
      */
     public static List<String> getPropertyNames(Object obj) {
         return getPropertyNames(obj, false);
@@ -173,8 +173,8 @@ public class Properties {
     /**
      * 获取对象所有可读属性名字
      *
-     * @param obj
-     * @return
+     * @param obj obj
+     * @return list
      */
     public static List<String> getReadPropertyNames(Object obj) {
         return getReadPropertyNames(obj, false);
@@ -183,8 +183,8 @@ public class Properties {
     /**
      * 获取对象所有可读属性名字
      *
-     * @param obj
-     * @return
+     * @param obj obj
+     * @return list
      */
     public static List<PropertyAccess> getReadPropertyAccess(Object obj) {
         CachedIntrospectionResults introspectionResults = CachedIntrospectionResults.forClass(obj.getClass());
@@ -194,8 +194,8 @@ public class Properties {
     /**
      * 获取对象所有可写属性名字
      *
-     * @param obj
-     * @return
+     * @param obj 对象
+     * @return list
      */
     public static List<PropertyAccess> getWritePropertyAccess(Object obj) {
         CachedIntrospectionResults introspectionResults = CachedIntrospectionResults.forClass(obj.getClass());
@@ -205,8 +205,8 @@ public class Properties {
     /**
      * 获取所有对象可写属性名字
      *
-     * @param obj
-     * @return
+     * @param obj 对象
+     * @return list
      */
     public static List<String> getWritePropertyNames(Object obj) {
         return getWritePropertyNames(obj, false);
@@ -215,9 +215,9 @@ public class Properties {
     /**
      * 获取对象名字（嵌套获取） eg:test.test.name
      *
-     * @param obj
-     * @param inner
-     * @return
+     * @param obj   obj
+     * @param inner inner
+     * @return list
      */
     public static List<String> getPropertyNames(Object obj, boolean inner) {
         List<String> propertyNames = new LinkedList<>();
@@ -232,9 +232,9 @@ public class Properties {
     /**
      * 获取对象可读属性名字（嵌套获取） eg:test.test.name
      *
-     * @param obj
-     * @param inner
-     * @return
+     * @param obj   obj
+     * @param inner inner
+     * @return list
      */
     public static List<String> getReadPropertyNames(Object obj, boolean inner) {
         List<String> propertyNames = new LinkedList<>();
@@ -249,9 +249,9 @@ public class Properties {
     /**
      * 获取对象可写属性名字（嵌套获取） eg:test.test.name
      *
-     * @param obj
-     * @param inner
-     * @return
+     * @param obj   obj
+     * @param inner inner
+     * @return list
      */
     public static List<String> getWritePropertyNames(Object obj, boolean inner) {
         List<String> propertyNames = new LinkedList<>();
@@ -266,13 +266,14 @@ public class Properties {
     /**
      * 获取公共属性名称
      *
-     * @param source 源对象
-     * @param target 目标对象
-     * @param supportMapKV 是否支持map内属性
+     * @param source           源对象
+     * @param target           目标对象
+     * @param supportMapKV     是否支持map内属性
+     * @param ignoreProperties 忽略属性
      * @return 属性映射
      */
     public static String[][] getCommonPropertyNameMapper(Object source, Object target, boolean supportMapKV,
-            String... ignoreProperties) {
+                                                         String... ignoreProperties) {
         Set<String> ignore = new HashSet<>(Arrays.asList(ignoreProperties));
         Map<String, PropertyAccess> sourceReadPropertyAccess = getReadAblePropertyAccessMap(source, ignore);
         Map<String, PropertyAccess> targetWritePropertyAccess = getWriteAblePropertyAccessMap(target, ignore);
@@ -295,7 +296,7 @@ public class Properties {
             }
         }
 
-        return new String[][] { sourceProperty.toArray(STRING_ARRAY), targetProperty.toArray(STRING_ARRAY) };
+        return new String[][]{sourceProperty.toArray(STRING_ARRAY), targetProperty.toArray(STRING_ARRAY)};
     }
 
     private static Map<String, PropertyAccess> getReadAblePropertyAccessMap(Object source, Set<String> ignore) {
@@ -314,8 +315,8 @@ public class Properties {
 
     // 获取map 属性映射
     private static List<String> getMapPropertyMapper(Object source,
-            Map<String, PropertyAccess> sourceReadPropertyAccess, Object target,
-            Map<String, PropertyAccess> targetWritePropertyAccess, Set<String> ignore) {
+                                                     Map<String, PropertyAccess> sourceReadPropertyAccess, Object target,
+                                                     Map<String, PropertyAccess> targetWritePropertyAccess, Set<String> ignore) {
         Set<String> propertyNames = new HashSet<>();
         if (target instanceof Map) {
             if (source instanceof Map) {

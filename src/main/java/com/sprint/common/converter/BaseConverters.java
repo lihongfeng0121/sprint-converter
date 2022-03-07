@@ -1,14 +1,13 @@
 package com.sprint.common.converter;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.sprint.common.converter.conversion.dynamic.DynamicConverters;
 import com.sprint.common.converter.conversion.specific.SpecificConverters;
 import com.sprint.common.converter.exception.ConversionException;
 import com.sprint.common.converter.exception.ConversionExceptionWrapper;
 import com.sprint.common.converter.exception.ConvertErrorException;
 import com.sprint.common.converter.exception.NotSupportConvertException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * @author hongfeng-li
@@ -26,10 +25,10 @@ public final class BaseConverters {
 
     /**
      * 获取转换器
-     * 
-     * @param sourceClass
-     * @param targetClass
-     * @return
+     *
+     * @param sourceClass 源类型
+     * @param targetClass 目标类型
+     * @return Converter
      */
     public static <S, T> Converter<S, T> getConverter(Class<S> sourceClass, Class<T> targetClass) {
         if (Object.class == targetClass) {
@@ -49,9 +48,9 @@ public final class BaseConverters {
     /**
      * 是否支持转化
      *
-     * @param sourceClass
-     * @param targetClass
-     * @return
+     * @param sourceClass 源类型
+     * @param targetClass 目标类型
+     * @return 是否支持
      */
     public static boolean isSupport(Class<?> sourceClass, Class<?> targetClass) {
         return getConverter(sourceClass, targetClass) != null;
@@ -60,10 +59,9 @@ public final class BaseConverters {
     /**
      * 忽略转换异常
      *
-     * @param source
-     * @param targetClass
-     * @param <T>
-     * @return
+     * @param source      源对象
+     * @param targetClass 目标类型
+     * @return target
      */
     public static <T> T convertIgnore(Object source, Class<T> targetClass) {
         try {
@@ -78,10 +76,9 @@ public final class BaseConverters {
     /**
      * 忽略 运行时异常
      *
-     * @param source
-     * @param targetClass
-     * @param <T>
-     * @return
+     * @param source      源
+     * @param targetClass 目标类型
+     * @return target
      */
     public static <T> T convertRuntime(Object source, Class<T> targetClass) {
         try {
@@ -96,11 +93,10 @@ public final class BaseConverters {
     /**
      * 转换
      *
-     * @param source
-     * @param targetClass
-     * @param <T>
-     * @return
-     * @throws ConversionException
+     * @param source      源
+     * @param targetClass 目标类型
+     * @return target
+     * @throws ConversionException ex
      */
     public static <T> T convert(Object source, Class<T> targetClass) throws ConversionException {
         return convert(source, targetClass, (ex, var1) -> {
@@ -112,12 +108,11 @@ public final class BaseConverters {
     /**
      * 转换
      *
-     * @param source
-     * @param targetClass
-     * @param errorHandler
-     * @param <T>
-     * @return
-     * @throws ConversionException
+     * @param source       源
+     * @param targetClass  target类型
+     * @param errorHandler 异常处理
+     * @return target
+     * @throws ConversionException ex
      */
     public static <T> T convert(Object source, Class<T> targetClass, ErrorHandler<Object, T> errorHandler)
             throws ConversionException {

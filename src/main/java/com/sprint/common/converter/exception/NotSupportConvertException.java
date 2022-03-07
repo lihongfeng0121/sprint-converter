@@ -1,10 +1,10 @@
 package com.sprint.common.converter.exception;
 
 /**
+ * 转换异常类
+ *
  * @author hongfeng.li
  * @version 1.0
- * @title NotSupportConvertException
- * @desc 转换异常类
  * @since 2019年12月25日
  */
 public class NotSupportConvertException extends ConversionException {

@@ -9,10 +9,10 @@ import java.time.*;
 import java.util.Date;
 
 /**
+ * 年月转化
+ *
  * @author hongfeng.li
  * @version 1.0
- * @title YearMonthConverters
- * @desc 年月转化
  * @since 2021年02月05日
  */
 public class YearMonthConverters implements SpecificConverterLoader {
