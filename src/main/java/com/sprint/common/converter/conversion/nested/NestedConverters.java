@@ -151,14 +151,20 @@ public final class NestedConverters {
             }
             if (Objects.equals(targetClassType, Object.class)
                     && (Types.isBean(sourceType) || Types.isMulti(sourceType))) {
-                return Beans.cast(sourceValue, sourceValue.getClass());
+                return NestedConverters.convert(sourceValue, null, sourceType);
             } else if (targetClassType.isInterface() && targetClassType.isAssignableFrom(sourceType)) {
-                return Beans.cast(sourceValue, sourceValue.getClass());
+                return castBaseOrBase(sourceType, sourceType, sourceValue, sourceType);
             } else if (Modifier.isAbstract(targetClassType.getModifiers())
-                    && targetClassType.isAssignableFrom(sourceValue.getClass())) {
-                return Beans.cast(sourceValue, sourceValue.getClass());
-            } else if (Types.isBean(sourceType) && Types.isBean(targetClassType)) {
-                return Beans.cast(sourceValue, Types.getComponentType(targetBeanType, targetFiledType), true);
+                    && targetClassType.isAssignableFrom(sourceType)) {
+                return castBaseOrBase(sourceType, sourceType, sourceValue, sourceType);
+            } else {
+                return castBaseOrBase(sourceType, targetClassType, sourceValue, Types.getComponentType(targetBeanType, targetFiledType));
+            }
+        }
+
+        private Object castBaseOrBase(Class<?> sourceClassType, Class<?> targetClassType, Object sourceValue, Type targetType) throws ConversionException {
+            if (Types.isBean(sourceClassType) && Types.isBean(targetClassType)) {
+                return Beans.cast(sourceValue, targetType, true);
             } else {
                 return BaseConverters.convert(sourceValue, targetClassType);
             }

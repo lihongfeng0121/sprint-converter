@@ -108,7 +108,7 @@ public class TestConverter {
     }
 
     @Test
-    public void testBaseConvert() throws ConversionException {
+    public void testBaseConvert() {
         long tms = System.currentTimeMillis();
         System.out.println(AnyConverter.convert(1, Boolean.class));
         System.out.println(AnyConverter.convert("TRUE", Boolean.class));
@@ -183,7 +183,7 @@ public class TestConverter {
     }
 
     @Test
-    public void test() throws ConversionException {
+    public void test() {
         Converter<Number, String> nc = String::valueOf;
         Converter<String, String> nc2 = nc.compose((Converter<CharSequence, Number>) CharSequence::length);
         Converter<Number, BigDecimal> nc3 = nc.andThen(BigDecimal::new);
@@ -196,7 +196,7 @@ public class TestConverter {
     }
 
     @Test
-    public void test2() throws ConversionException {
+    public void test2() {
         TestBean<Map<String, String>> bean = new TestBean<>();
         bean.setStr(Collections.singletonMap("12121", "23123145"));
         TestBean<MMap<String>> res = AnyConverter.convert(bean, new TypeReference<TestBean<MMap<String>>>() {
@@ -207,28 +207,7 @@ public class TestConverter {
     @Test
     public void testMap() {
         Type type = new TypeReference<MMap<String>>(){}.getType();
-
-        //System.out.println(Types.getSuperType(type, Map.class));
-
         Type[] types = Types.getMapKVType(null, type);
         System.out.println(Arrays.toString(types));
-
-        // Type rawType = parameterizedType.getRawType();
-        // Type[] actualTypeArguments = parameterizedType.getActualTypeArguments();
-        // if (rawType == Collection.class) {
-        // return getWildcardTypeUpperBounds(actualTypeArguments[0]);
-        // }
-        // Class<?> rawClass = (Class<?>) rawType;
-        // Map<TypeVariable<?>, Type> actualTypeMap = toMap(rawClass.getTypeParameters(), actualTypeArguments);
-        // Type superType = getCollectionSuperType(rawClass);
-        // if (superType instanceof ParameterizedType) {
-        // Class<?> superClass = Types.extractClass(superType);
-        // Type[] superClassTypeParameters = ((ParameterizedType) superType).getActualTypeArguments();
-        // return superClassTypeParameters.length > 0
-        // ? getCollectionItemType(makeParameterizedType(superClass, superClassTypeParameters, actualTypeMap))
-        // : getCollectionItemType(superClass);
-        // }
-        //
-
     }
 }
