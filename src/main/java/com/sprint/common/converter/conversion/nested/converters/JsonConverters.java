@@ -68,7 +68,7 @@ public class JsonConverters implements NestedConverterLoader {
                 return String.class.isAssignableFrom(sourceClass)
                         && (Types.isBean(targetClass) || Types.isMap(targetClass))
                         && Optional.of(((String) sourceValue).trim())
-                                .map(str -> (str.startsWith("{") && str.endsWith("}"))).orElse(false);
+                                .map(Types::isJsonObject).orElse(false);
             }
         }
 
@@ -104,7 +104,7 @@ public class JsonConverters implements NestedConverterLoader {
             } else {
                 return String.class.isAssignableFrom(sourceValue.getClass()) && Types.isCollection(targetClass)
                         && Optional.of(((String) sourceValue).trim())
-                                .map(str -> str.startsWith("[") && str.endsWith("]")).orElse(false);
+                                .map(Types::isJsonArray).orElse(false);
             }
         }
 
@@ -140,7 +140,7 @@ public class JsonConverters implements NestedConverterLoader {
             } else {
                 return String.class.isAssignableFrom(sourceValue.getClass()) && Types.isArray(targetClass)
                         && Optional.of(((String) sourceValue).trim())
-                                .map(str -> str.startsWith("[") && str.endsWith("]")).orElse(false);
+                                .map(Types::isJsonArray).orElse(false);
             }
         }
 

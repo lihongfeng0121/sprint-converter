@@ -130,6 +130,10 @@ public class CollectionConverters implements NestedConverterLoader {
             Class<?> extractClass = Types.extractClass(targetFiledType, targetBeanType);
             Collection<Object> targetCValue = Beans.instanceCollection(extractClass);
             Type actualType = Types.getCollectionItemType(targetBeanType, targetFiledType);
+            Class<?> actualTypeClass = Types.extractClass(actualType);
+            if (Types.isBean(actualTypeClass) && Types.isBean(extractClass)) {
+                Beans.copyProperties(sourceValue, targetCValue);
+            }
             targetCValue.add(NestedConverters.convert(sourceValue, targetBeanType, actualType));
             return targetCValue;
         }

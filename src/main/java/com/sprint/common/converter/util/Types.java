@@ -635,4 +635,41 @@ public class Types {
     public static boolean isMap(Class<?> clazz) {
         return Map.class.isAssignableFrom(clazz);
     }
+
+
+    /**
+     * 是否是json
+     *
+     * @param str
+     * @return
+     */
+    public static boolean isJson(String str) {
+        return isJsonObject(str) || isJsonArray(str);
+    }
+
+    /**
+     * 是否是json对象
+     *
+     * @param str
+     * @return
+     */
+    public static boolean isJsonObject(String str) {
+        if (str == null || str.isEmpty()) {
+            return false;
+        }
+        return str.startsWith("{") && str.endsWith("}");
+    }
+
+    /**
+     * 是否是json数组
+     *
+     * @param str
+     * @return
+     */
+    public static boolean isJsonArray(String str) {
+        if (str == null || str.isEmpty()) {
+            return false;
+        }
+        return str.startsWith("[") && str.endsWith("]");
+    }
 }
