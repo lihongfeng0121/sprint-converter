@@ -23,6 +23,15 @@ public interface NestedConverter {
     }
 
     /**
+     * 是否可放入缓存
+     *
+     * @return
+     */
+    default boolean specific() {
+        return false;
+    }
+
+    /**
      * 是否支持
      *
      * @param sourceValue sourceValue

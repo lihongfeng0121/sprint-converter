@@ -21,6 +21,11 @@ public class MapConverters implements NestedConverterLoader {
     public static class Map2Map implements NestedConverter {
 
         @Override
+        public boolean specific() {
+            return true;
+        }
+
+        @Override
         public int sort() {
             return 7;
         }

@@ -1,10 +1,10 @@
 package com.sprint.common.converter.conversion.nested.converters;
 
-import com.sprint.common.converter.util.Types;
 import com.sprint.common.converter.conversion.nested.NestedConverter;
 import com.sprint.common.converter.conversion.nested.NestedConverterLoader;
 import com.sprint.common.converter.conversion.nested.NestedConverters;
 import com.sprint.common.converter.exception.ConversionException;
+import com.sprint.common.converter.util.Types;
 
 import java.lang.reflect.Array;
 import java.lang.reflect.Type;
@@ -23,6 +23,11 @@ public class ArrayConverters implements NestedConverterLoader {
      * 数组转数组
      */
     public static class Array2Array implements NestedConverter {
+
+        @Override
+        public boolean specific() {
+            return true;
+        }
 
         @Override
         public int sort() {
@@ -87,6 +92,11 @@ public class ArrayConverters implements NestedConverterLoader {
      * 集合转数组
      */
     public static class Collection2Array implements NestedConverter {
+
+        @Override
+        public boolean specific() {
+            return true;
+        }
 
         @Override
         public int sort() {

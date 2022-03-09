@@ -60,7 +60,7 @@ public class TestConverter {
         inner1.setInner("100000");
         bean1.setListList(Collections.singletonList(Collections.singletonList(inner1)));
         bean1.setHouse(Collections.singletonList("yanchengyuan"));
-        bean1.setArray("[\"1231231\"]");
+        //bean1.setArray("[\"1231231\"]");
 
         TypeBean2<List<List<Integer>>> bean2 = AnyConverter.convert(bean1,
                 new TypeReference<TypeBean2<List<List<Integer>>>>() {
