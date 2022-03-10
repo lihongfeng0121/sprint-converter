@@ -66,6 +66,11 @@ public class JsonConverters implements NestedConverterLoader {
         }
 
         @Override
+        public boolean preCheckSourceVal(Object sourceValue) {
+            return sourceValue != null && Types.isJsonObject((String) sourceValue);
+        }
+
+        @Override
         public Object convert(Object sourceValue, Type targetBeanType, Type targetFiledType)
                 throws ConversionException {
             if (sourceValue == null) {
@@ -98,6 +103,11 @@ public class JsonConverters implements NestedConverterLoader {
         @Override
         public boolean support(Class<?> sourceClass, Class<?> targetClass) {
             return String.class.isAssignableFrom(sourceClass) && Types.isCollection(targetClass);
+        }
+
+        @Override
+        public boolean preCheckSourceVal(Object sourceValue) {
+            return sourceValue != null && Types.isJsonArray((String) sourceValue);
         }
 
         @Override
@@ -135,6 +145,11 @@ public class JsonConverters implements NestedConverterLoader {
         @Override
         public boolean support(Class<?> sourceClass, Class<?> targetClass) {
             return String.class.isAssignableFrom(sourceClass) && Types.isArray(targetClass);
+        }
+
+        @Override
+        public boolean preCheckSourceVal(Object sourceValue) {
+            return sourceValue != null && Types.isJsonArray((String) sourceValue);
         }
 
         @Override

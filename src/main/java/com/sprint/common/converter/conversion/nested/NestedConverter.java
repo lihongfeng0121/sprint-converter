@@ -23,15 +23,6 @@ public interface NestedConverter {
     }
 
     /**
-     * 是否可放入缓存
-     *
-     * @return
-     */
-    default boolean specific() {
-        return false;
-    }
-
-    /**
      * 是否支持
      *
      * @param sourceClass sourceClass
@@ -39,6 +30,16 @@ public interface NestedConverter {
      * @return 是否支持
      */
     boolean support(Class<?> sourceClass, Class<?> targetClass);
+
+
+    /**
+     * 是否支持源对象
+     *
+     * @return 对象
+     */
+    default boolean preCheckSourceVal(Object sourceValue) {
+        return true;
+    }
 
     /**
      * 转化

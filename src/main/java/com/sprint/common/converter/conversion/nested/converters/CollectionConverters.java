@@ -23,11 +23,6 @@ public class CollectionConverters implements NestedConverterLoader {
     public static class Array2Collection implements NestedConverter {
 
         @Override
-        public boolean specific() {
-            return true;
-        }
-
-        @Override
         public int sort() {
             return 0;
         }
@@ -61,11 +56,6 @@ public class CollectionConverters implements NestedConverterLoader {
      * 集合转集合
      */
     public static class Collection2Collection implements NestedConverter {
-
-        @Override
-        public boolean specific() {
-            return true;
-        }
 
         @Override
         public int sort() {

@@ -68,7 +68,7 @@ public class TestConverter {
 
         long tms = System.currentTimeMillis();
 
-        for (int i = 0; i < 10000; i++) {
+        for (int i = 0; i < 100000; i++) {
             TypeBean2<List<List<Integer>>> item = AnyConverter.convert(bean1,
                     new TypeReference<TypeBean2<List<List<Integer>>>>() {
                     });
