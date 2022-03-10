@@ -5,7 +5,6 @@ import com.sprint.common.converter.Converter;
 import com.sprint.common.converter.conversion.nested.bean.Beans;
 import com.sprint.common.converter.exception.ConversionException;
 import com.sprint.common.converter.exception.NotSupportConvertException;
-import com.sprint.common.converter.util.ConcurrentReferenceHashMap;
 import com.sprint.common.converter.util.Types;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -62,8 +61,8 @@ public final class NestedConverters {
         NESTED_CONVERTERS.sort(Comparator.comparingInt(NestedConverter::sort));
     }
 
-    private static String getKey(Class<?> sourceClass, Class<?> targetClass) {
-        return sourceClass.getName().concat(DELIMITER).concat(targetClass.getName());
+    private static String getKey(Class<?> sourceClass, Type targetBeanType, Type targetType) {
+        return sourceClass.getName().concat(DELIMITER).concat(targetBeanType == null ? "" : targetBeanType.getTypeName() + "@").concat(targetType.getTypeName());
     }
 
     /**
@@ -76,8 +75,8 @@ public final class NestedConverters {
      * @param <T>            t
      * @return converter
      */
-    public static <S, T> Converter<S, T> getConverter(Class<S> sourceClass, Type targetBeanType, Type targetType) {
-        Converter<S, ?> stConverter = getCacheConverter(sourceClass, targetBeanType, targetType);
+    public static <S, T> Converter<S, T> getConverter(Class<?> sourceClass, Type targetBeanType, Type targetType) {
+        Converter<?, ?> stConverter = getCacheConverter(sourceClass, targetBeanType, targetType);
         if (stConverter == null) {
             return null;
         }
@@ -93,13 +92,13 @@ public final class NestedConverters {
      * @param <T>         t
      * @return converter
      */
-    public static <S, T> Converter<S, T> getConverter(Class<S> sourceClass, Class<T> targetClass) {
-        return getCacheConverter(sourceClass, null, targetClass);
+    public static <S, T> Converter<S, T> getConverter(Class<?> sourceClass, Class<?> targetClass) {
+        return getCacheConverter(sourceClass, null, targetClass).enforce();
     }
 
-    private static <S, T> Converter<S, T> getCacheConverter(Class<S> sourceClass, Type targetBeanType, Type targetType) {
-        Class<?> targetClass = Types.extractClass(targetType, targetBeanType);
-        Optional<Converter<?, ?>> converterOptional = SPECIFIC_NESTED_CONVERTER_CACHE.computeIfAbsent(getKey(sourceClass, targetClass), (k) -> {
+    private static Converter<?, ?> getCacheConverter(Class<?> sourceClass, Type targetBeanType, Type targetType) {
+        Optional<Converter<?, ?>> converterOptional = SPECIFIC_NESTED_CONVERTER_CACHE.computeIfAbsent(getKey(sourceClass, targetBeanType, targetType), (k) -> {
+            Class<?> targetClass = Types.extractClass(targetType, targetBeanType);
             List<NestedConverter> nestedConverters = NESTED_CONVERTERS.stream()
                     .filter(item -> item.support(sourceClass, targetClass)).collect(Collectors.toList());
             Converter<Object, Object> defaultConverter = (source) -> DEFAULT_NESTED_CONVERTER.convert(source, targetBeanType, targetType);
@@ -107,12 +106,16 @@ public final class NestedConverters {
                 return Optional.of(defaultConverter);
             }
             Converter<Object, Object> converter = (source) -> {
-                NestedConverter nestedConverter = nestedConverters.stream().filter(c -> c.preCheckSourceVal(source)).findFirst().orElse(DEFAULT_NESTED_CONVERTER);
-                return nestedConverter.convert(source, targetBeanType, targetType);
+                for (NestedConverter nestedConverter : nestedConverters) {
+                    if (nestedConverter.preCheckSourceVal(source)) {
+                        return nestedConverter.convert(source, targetBeanType, targetType);
+                    }
+                }
+                return DEFAULT_NESTED_CONVERTER.convert(source, targetBeanType, targetType);
             };
             return Optional.of(converter);
         });
-        return converterOptional.<Converter<S, T>>map(Converter::enforce).orElse(null);
+        return converterOptional.orElse(null);
     }
 
     /**
@@ -131,12 +134,11 @@ public final class NestedConverters {
             return null;
         }
         Class<?> sourceClass = value.getClass();
-        Converter<?, ?> converter = getConverter(sourceClass, targetBeanType, targetType);
+        Converter<S, T> converter = getConverter(sourceClass, targetBeanType, targetType);
         if (converter == null) {
             throw new NotSupportConvertException(sourceClass, Types.extractClass(targetType, targetBeanType));
         }
-        Converter<S, T> enforce = converter.enforce();
-        return enforce.convert(value);
+        return converter.convert(value);
     }
 
     /**

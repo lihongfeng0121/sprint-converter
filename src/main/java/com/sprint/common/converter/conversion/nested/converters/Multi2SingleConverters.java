@@ -35,14 +35,16 @@ public class Multi2SingleConverters implements NestedConverterLoader {
         }
 
         @Override
+        public boolean preCheckSourceVal(Object sourceValue) {
+            return sourceValue != null && ((Collection<?>) sourceValue).size() == 1;
+        }
+
+        @Override
         public Object convert(Object sourceValue, Type targetBeanType, Type targetFiledType)
                 throws ConversionException {
             Collection<?> collection = (Collection<?>) sourceValue;
             if (collection == null || collection.isEmpty()) {
                 return null;
-            }
-            if (collection.size() != 1) {
-                throw new NotSupportConvertException(sourceValue.getClass(), Types.extractClass(targetFiledType, targetBeanType));
             }
             return NestedConverters.convert(collection.stream().findFirst().get(), targetBeanType, targetFiledType);
         }
@@ -61,6 +63,11 @@ public class Multi2SingleConverters implements NestedConverterLoader {
         @Override
         public boolean support(Class<?> sourceClass, Class<?> targetClass) {
             return Types.isArray(sourceClass) && !Types.isMulti(targetClass);
+        }
+
+        @Override
+        public boolean preCheckSourceVal(Object sourceValue) {
+            return sourceValue != null && Array.getLength(sourceValue) == 1;
         }
 
         @Override
