@@ -35,7 +35,7 @@ public class ArrayConverters implements NestedConverterLoader {
         }
 
         @Override
-        public boolean support(Object sourceValue, Class<?> sourceClass, Class<?> targetClass) {
+        public boolean support(Class<?> sourceClass, Class<?> targetClass) {
             return Types.isArray(sourceClass) && Types.isArray(targetClass);
         }
 
@@ -71,7 +71,7 @@ public class ArrayConverters implements NestedConverterLoader {
         }
 
         @Override
-        public boolean support(Object sourceValue, Class<?> sourceClass, Class<?> targetClass) {
+        public boolean support(Class<?> sourceClass, Class<?> targetClass) {
             return !Types.isMulti(sourceClass) && Types.isArray(targetClass);
         }
 
@@ -104,7 +104,7 @@ public class ArrayConverters implements NestedConverterLoader {
         }
 
         @Override
-        public boolean support(Object sourceValue, Class<?> sourceClass, Class<?> targetClass) {
+        public boolean support(Class<?> sourceClass, Class<?> targetClass) {
             return Types.isCollection(sourceClass) && Types.isArray(targetClass);
         }
 

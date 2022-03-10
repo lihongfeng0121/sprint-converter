@@ -31,7 +31,7 @@ public class MapConverters implements NestedConverterLoader {
         }
 
         @Override
-        public boolean support(Object sourceValue, Class<?> sourceClass, Class<?> targetClass) {
+        public boolean support(Class<?> sourceClass, Class<?> targetClass) {
             return Types.isMap(sourceClass) && Types.isMap(targetClass);
         }
 
