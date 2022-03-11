@@ -1,5 +1,7 @@
 package com.sprint.common.converter.exception;
 
+import java.lang.reflect.Type;
+
 /**
  * 转换异常类
  *
@@ -12,26 +14,26 @@ public class NotSupportConvertException extends ConversionException {
     private static final String FORMAT = "not support %s -> %s";
     private static final long serialVersionUID = -1923092816144168582L;
 
-    private final Class<?> sourceType;
-    private final Class<?> targetType;
+    private final Type sourceType;
+    private final Type targetType;
 
     public NotSupportConvertException(Class<?> sourceType, Class<?> targetType, Throwable cause) {
-        super(String.format(FORMAT, sourceType.getName(), targetType.getName()), cause);
+        super(String.format(FORMAT, sourceType.getTypeName(), targetType.getTypeName()));
         this.sourceType = sourceType;
         this.targetType = targetType;
     }
 
-    public NotSupportConvertException(Class<?> sourceType, Class<?> targetType) {
-        super(String.format(FORMAT, sourceType.getName(), targetType.getName()));
+    public NotSupportConvertException(Type sourceType, Type targetType) {
+        super(String.format(FORMAT, sourceType.getTypeName(), targetType.getTypeName()));
         this.sourceType = sourceType;
         this.targetType = targetType;
     }
 
-    public Class<?> getSourceType() {
+    public Type getSourceType() {
         return sourceType;
     }
 
-    public Class<?> getTargetType() {
+    public Type getTargetType() {
         return targetType;
     }
 }

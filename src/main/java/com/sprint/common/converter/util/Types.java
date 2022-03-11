@@ -21,7 +21,7 @@ public class Types {
     private static final ConcurrentReferenceHashMap<ParameterizedType, Type[]> MAP_PARAMETER_TYPE_CACHE = new ConcurrentReferenceHashMap<>();
     private static final ConcurrentReferenceHashMap<ParameterizedType, Type> COLLECTION_PARAMETER_TYPE_CACHE = new ConcurrentReferenceHashMap<>();
 
-    private static final Class<?> OBJECT_CLASS = Object.class;
+    public static final Class<?> OBJECT_CLASS = Object.class;
     private static final Type[] OBJECT_K_V_TYPE = {OBJECT_CLASS, OBJECT_CLASS};
     private static final ClassLoader APP_CLASS_LOADER = ClassLoader.getSystemClassLoader();
 
@@ -634,5 +634,46 @@ public class Types {
      */
     public static boolean isMap(Class<?> clazz) {
         return Map.class.isAssignableFrom(clazz);
+    }
+
+
+    /**
+     * 是否是json
+     *
+     * @param str
+     * @return
+     */
+    public static boolean isJson(String str) {
+        return isJsonObject(str) || isJsonArray(str);
+    }
+
+    /**
+     * 是否是json对象
+     *
+     * @param str
+     * @return
+     */
+    public static boolean isJsonObject(String str) {
+        if (str == null || str.isEmpty()) {
+            return false;
+        }
+        return str.startsWith("{") && str.endsWith("}");
+    }
+
+    /**
+     * 是否是json数组
+     *
+     * @param str
+     * @return
+     */
+    public static boolean isJsonArray(String str) {
+        if (str == null || str.isEmpty()) {
+            return false;
+        }
+        return str.startsWith("[") && str.endsWith("]");
+    }
+
+    public static boolean isObjectType(Type type) {
+        return OBJECT_CLASS.equals(type);
     }
 }

@@ -26,7 +26,7 @@ public class MapConverters implements NestedConverterLoader {
         }
 
         @Override
-        public boolean support(Object sourceValue, Class<?> sourceClass, Class<?> targetClass) {
+        public boolean support(Class<?> sourceClass, Class<?> targetClass) {
             return Types.isMap(sourceClass) && Types.isMap(targetClass);
         }
 
@@ -57,11 +57,11 @@ public class MapConverters implements NestedConverterLoader {
                     Object val = entry.getValue();
                     if (key != null) {
                         key = NestedConverters.convert(key, targetBeanType,
-                                keyActualType == null ? key.getClass() : keyActualType);
+                                Types.isObjectType(keyActualType) ? key.getClass() : keyActualType);
                     }
                     if (val != null) {
                         val = NestedConverters.convert(val, targetBeanType,
-                                valActualType == null ? val.getClass() : valActualType);
+                                Types.isObjectType(valActualType) ? val.getClass() : valActualType);
                     }
                     targetMValue.put(key, val);
                 }

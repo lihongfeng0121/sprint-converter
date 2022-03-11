@@ -28,7 +28,7 @@ public class CollectionConverters implements NestedConverterLoader {
         }
 
         @Override
-        public boolean support(Object sourceValue, Class<?> sourceClass, Class<?> targetClass) {
+        public boolean support(Class<?> sourceClass, Class<?> targetClass) {
             return Types.isArray(sourceClass) && Types.isCollection(targetClass);
         }
 
@@ -41,7 +41,7 @@ public class CollectionConverters implements NestedConverterLoader {
             for (int i = 0, length = Array.getLength(sourceValue); i < length; i++) {
                 Object item = Array.get(sourceValue, i);
                 if (item != null) {
-                    Type thisActualType = actualType == null ? item.getClass() : actualType;
+                    Type thisActualType = actualType == null || Types.isObjectType(actualType) ? item.getClass() : actualType;
                     targetCValue
                             .add(NestedConverters.convert(Array.get(sourceValue, i), targetBeanType, thisActualType));
                 } else {
@@ -63,7 +63,7 @@ public class CollectionConverters implements NestedConverterLoader {
         }
 
         @Override
-        public boolean support(Object sourceValue, Class<?> sourceClass, Class<?> targetClass) {
+        public boolean support(Class<?> sourceClass, Class<?> targetClass) {
             return Types.isCollection(sourceClass) && Types.isCollection(targetClass);
         }
 
@@ -88,7 +88,7 @@ public class CollectionConverters implements NestedConverterLoader {
                         targetCValue.add(null);
                     } else {
                         targetCValue.add(NestedConverters.convert(item, targetBeanType,
-                                actualType == null ? item.getClass() : actualType));
+                                actualType == null || Types.isObjectType(actualType) ? item.getClass() : actualType));
                     }
                 }
             }
@@ -107,8 +107,8 @@ public class CollectionConverters implements NestedConverterLoader {
         }
 
         @Override
-        public boolean support(Object sourceValue, Class<?> sourceClass, Class<?> targetClass) {
-            return !Types.isMulti(sourceClass) && Types.isCollection(targetClass);
+        public boolean support(Class<?> sourceClass, Class<?> targetClass) {
+            return !Types.isArray(sourceClass) && !Types.isCollection(sourceClass) && Types.isCollection(targetClass);
         }
 
         @Override
@@ -120,7 +120,12 @@ public class CollectionConverters implements NestedConverterLoader {
             Class<?> extractClass = Types.extractClass(targetFiledType, targetBeanType);
             Collection<Object> targetCValue = Beans.instanceCollection(extractClass);
             Type actualType = Types.getCollectionItemType(targetBeanType, targetFiledType);
-            targetCValue.add(NestedConverters.convert(sourceValue, targetBeanType, actualType));
+            Class<?> actualTypeClass = Types.extractClass(actualType);
+            if (Types.isBean(actualTypeClass) && Types.isBean(extractClass)) {
+                Beans.copyProperties(sourceValue, targetCValue);
+            }
+            targetCValue.add(NestedConverters.convert(sourceValue, targetBeanType,
+                    actualType == null || Types.isObjectType(actualType) ? sourceValue.getClass() : actualType));
             return targetCValue;
         }
     }

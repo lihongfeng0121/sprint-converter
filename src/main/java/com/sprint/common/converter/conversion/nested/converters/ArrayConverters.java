@@ -1,15 +1,14 @@
 package com.sprint.common.converter.conversion.nested.converters;
 
-import com.sprint.common.converter.util.Types;
 import com.sprint.common.converter.conversion.nested.NestedConverter;
 import com.sprint.common.converter.conversion.nested.NestedConverterLoader;
 import com.sprint.common.converter.conversion.nested.NestedConverters;
 import com.sprint.common.converter.exception.ConversionException;
+import com.sprint.common.converter.util.Types;
 
 import java.lang.reflect.Array;
 import java.lang.reflect.Type;
 import java.util.Collection;
-import java.util.Objects;
 
 /**
  * 数组转换器
@@ -30,7 +29,7 @@ public class ArrayConverters implements NestedConverterLoader {
         }
 
         @Override
-        public boolean support(Object sourceValue, Class<?> sourceClass, Class<?> targetClass) {
+        public boolean support(Class<?> sourceClass, Class<?> targetClass) {
             return Types.isArray(sourceClass) && Types.isArray(targetClass);
         }
 
@@ -47,7 +46,7 @@ public class ArrayConverters implements NestedConverterLoader {
                 Object item = Array.get(sourceValue, i);
                 if (item != null) {
                     item = NestedConverters.convert(Array.get(sourceValue, i), targetBeanType,
-                            Objects.equals(actualType, Object.class) ? item.getClass() : actualType);
+                            Types.isObjectType(actualType) ? item.getClass() : actualType);
                 }
                 Array.set(targetCValue, i, item);
             }
@@ -66,8 +65,8 @@ public class ArrayConverters implements NestedConverterLoader {
         }
 
         @Override
-        public boolean support(Object sourceValue, Class<?> sourceClass, Class<?> targetClass) {
-            return !Types.isMulti(sourceClass) && Types.isArray(targetClass);
+        public boolean support(Class<?> sourceClass, Class<?> targetClass) {
+            return !Types.isArray(sourceClass) && !Types.isCollection(sourceClass) && Types.isArray(targetClass);
         }
 
         @Override
@@ -94,7 +93,7 @@ public class ArrayConverters implements NestedConverterLoader {
         }
 
         @Override
-        public boolean support(Object sourceValue, Class<?> sourceClass, Class<?> targetClass) {
+        public boolean support(Class<?> sourceClass, Class<?> targetClass) {
             return Types.isCollection(sourceClass) && Types.isArray(targetClass);
         }
 
@@ -110,7 +109,7 @@ public class ArrayConverters implements NestedConverterLoader {
             int i = 0;
             for (Object item : cValue) {
                 Array.set(targetCValue, i++, NestedConverters.convert(item, targetBeanType,
-                        Objects.equals(actualType, Object.class) ? item.getClass() : actualType));
+                        Types.isObjectType(actualType) ? item.getClass() : actualType));
             }
             return targetCValue;
         }

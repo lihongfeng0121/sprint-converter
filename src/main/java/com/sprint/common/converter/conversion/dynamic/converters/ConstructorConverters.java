@@ -6,6 +6,7 @@ import com.sprint.common.converter.conversion.dynamic.DynamicConverterLoader;
 import com.sprint.common.converter.exception.ConversionException;
 
 import java.lang.reflect.Constructor;
+import java.lang.reflect.Type;
 
 /**
  * @author hongfeng.li
@@ -23,7 +24,7 @@ public class ConstructorConverters implements DynamicConverterLoader {
         @Override
         public boolean support(Class<?> sourceType, Class<?> targetType) {
             return Types.getConstructorIfAvailable(targetType, sourceType) != null
-                    || Types.getConstructorIfAvailable(targetType, Object.class) != null;
+                    || Types.getConstructorIfAvailable(targetType, Types.OBJECT_CLASS) != null;
         }
 
         @Override

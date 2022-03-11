@@ -25,33 +25,20 @@ public interface NestedConverter {
     /**
      * 是否支持
      *
-     * @param sourceValue sourceValue
-     * @param targetClass targetClass
-     * @param sourceClass sourceClass
-     * @return 是否支持
-     */
-    boolean support(Object sourceValue, Class<?> sourceClass, Class<?> targetClass);
-
-    /**
-     * 是否支持
-     *
      * @param sourceClass sourceClass
      * @param targetClass targetClass
      * @return 是否支持
      */
-    default boolean support(Class<?> sourceClass, Class<?> targetClass) {
-        return sourceClass != null && support(null, sourceClass, targetClass);
-    }
+    boolean support(Class<?> sourceClass, Class<?> targetClass);
+
 
     /**
-     * 是否支持
+     * 是否支持源对象
      *
-     * @param sourceValue sourceValue
-     * @param targetClass targetClass
-     * @return 是否支持
+     * @return 对象
      */
-    default boolean support(Object sourceValue, Class<?> targetClass) {
-        return sourceValue != null && support(sourceValue, sourceValue.getClass(), targetClass);
+    default boolean preCheckSourceVal(Object sourceValue) {
+        return true;
     }
 
     /**
