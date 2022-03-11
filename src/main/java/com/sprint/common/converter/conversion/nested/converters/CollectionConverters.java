@@ -108,7 +108,7 @@ public class CollectionConverters implements NestedConverterLoader {
 
         @Override
         public boolean support(Class<?> sourceClass, Class<?> targetClass) {
-            return !Types.isMulti(sourceClass) && Types.isCollection(targetClass);
+            return !(Types.isArray(sourceClass) || Types.isCollection(sourceClass)) && Types.isCollection(targetClass);
         }
 
         @Override
