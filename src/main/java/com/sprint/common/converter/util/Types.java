@@ -21,7 +21,7 @@ public class Types {
     private static final ConcurrentReferenceHashMap<ParameterizedType, Type[]> MAP_PARAMETER_TYPE_CACHE = new ConcurrentReferenceHashMap<>();
     private static final ConcurrentReferenceHashMap<ParameterizedType, Type> COLLECTION_PARAMETER_TYPE_CACHE = new ConcurrentReferenceHashMap<>();
 
-    private static final Class<?> OBJECT_CLASS = Object.class;
+    public static final Class<?> OBJECT_CLASS = Object.class;
     private static final Type[] OBJECT_K_V_TYPE = {OBJECT_CLASS, OBJECT_CLASS};
     private static final ClassLoader APP_CLASS_LOADER = ClassLoader.getSystemClassLoader();
 

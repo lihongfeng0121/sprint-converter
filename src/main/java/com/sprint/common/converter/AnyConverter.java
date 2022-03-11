@@ -32,8 +32,8 @@ public final class AnyConverter {
         Assert.isTrue(typePath.length > 0, "types should ge 1");
         Converter<?, ?> converter = Converter.identity();
         for (int i = 0, length = typePath.length; i < length - 1; i++) {
-            Converter<?, ?> c = NestedConverters.getConverter(Types.extractClass(typePath[i]), null, typePath[i + 1]);
-            converter = converter.andThen(c.enforce());
+            Converter<Object, Object> c = NestedConverters.getConverter(Types.extractClass(typePath[i]), null, typePath[i + 1]);
+            converter = converter.andThen(c);
         }
         return converter.enforce();
     }

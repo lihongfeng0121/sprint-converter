@@ -124,7 +124,7 @@ public class JsonConverters implements NestedConverterLoader {
             }
 
             try {
-                Collection<?> list = Jsons.toJavaObjects(jsonStr, Object.class, ArrayList.class);
+                Collection<?> list = Jsons.toJavaObjects(jsonStr, Types.OBJECT_CLASS, ArrayList.class);
                 return NestedConverters.convert(list, targetBeanType, targetFiledType);
             } catch (JsonException e) {
                 throw new ConversionException(e);
@@ -166,7 +166,7 @@ public class JsonConverters implements NestedConverterLoader {
             }
 
             try {
-                Collection<?> list = Jsons.toJavaObjects(jsonStr, Object.class, ArrayList.class);
+                Collection<?> list = Jsons.toJavaObjects(jsonStr, Types.OBJECT_CLASS, ArrayList.class);
                 return NestedConverters.convert(list, targetBeanType, targetFiledType);
             } catch (JsonException e) {
                 throw new ConversionException(e);

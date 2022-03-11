@@ -6,6 +6,7 @@ import com.sprint.common.converter.exception.ConversionException;
 import com.sprint.common.converter.exception.ConversionExceptionWrapper;
 import com.sprint.common.converter.exception.ConvertErrorException;
 import com.sprint.common.converter.exception.NotSupportConvertException;
+import com.sprint.common.converter.util.Types;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -33,14 +34,13 @@ public final class BaseConverters {
      * @return Converter
      */
     public static <S, T> Converter<S, T> getConverter(Class<S> sourceClass, Class<T> targetClass) {
-        if (Object.class == targetClass) {
+        if (Types.isObjectType(targetClass)) {
             return Converter.enforcer();
         }
         Converter<?, ?> converter = SpecificConverters.getConverter(sourceClass, targetClass);
         if (converter == null) {
             converter = DynamicConverters.getConverter(sourceClass, targetClass);
         }
-
         if (converter == null) {
             return null;
         }

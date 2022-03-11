@@ -100,7 +100,7 @@ public final class Beans {
                 if (type instanceof ParameterizedType) {
                     itemType = ((ParameterizedType) type).getActualTypeArguments()[0];
                 } else {
-                    itemType = Object.class;
+                    itemType = Types.OBJECT_CLASS;
                 }
                 return (Collection<T>) EnumSet.noneOf((Class<Enum>) itemType);
             } else {

@@ -31,7 +31,7 @@ public class Multi2SingleConverters implements NestedConverterLoader {
 
         @Override
         public boolean support(Class<?> sourceClass, Class<?> targetClass) {
-            return Types.isCollection(sourceClass) && !(Types.isArray(targetClass) || Types.isCollection(targetClass));
+            return Types.isCollection(sourceClass) && !Types.isArray(targetClass) && !Types.isCollection(targetClass);
         }
 
         @Override
@@ -62,7 +62,7 @@ public class Multi2SingleConverters implements NestedConverterLoader {
 
         @Override
         public boolean support(Class<?> sourceClass, Class<?> targetClass) {
-            return Types.isArray(sourceClass) && !(Types.isArray(targetClass) || Types.isCollection(targetClass));
+            return Types.isArray(sourceClass) && !Types.isArray(targetClass) && Types.isCollection(targetClass);
         }
 
         @Override

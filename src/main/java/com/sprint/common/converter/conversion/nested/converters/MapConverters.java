@@ -57,11 +57,11 @@ public class MapConverters implements NestedConverterLoader {
                     Object val = entry.getValue();
                     if (key != null) {
                         key = NestedConverters.convert(key, targetBeanType,
-                                (keyActualType == null || Types.isObjectType(keyActualType)) ? key.getClass() : keyActualType);
+                                Types.isObjectType(keyActualType) ? key.getClass() : keyActualType);
                     }
                     if (val != null) {
                         val = NestedConverters.convert(val, targetBeanType,
-                                (valActualType == null || Types.isObjectType(keyActualType)) ? val.getClass() : valActualType);
+                                Types.isObjectType(valActualType) ? val.getClass() : valActualType);
                     }
                     targetMValue.put(key, val);
                 }
