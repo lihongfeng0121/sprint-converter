@@ -672,4 +672,8 @@ public class Types {
         }
         return str.startsWith("[") && str.endsWith("]");
     }
+
+    public static boolean isObjectType(Type type) {
+        return OBJECT_CLASS.equals(type);
+    }
 }

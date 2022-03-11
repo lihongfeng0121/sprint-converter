@@ -97,21 +97,23 @@ public final class NestedConverters {
     }
 
     private static Converter<?, ?> getCacheConverter(Class<?> sourceClass, Type targetBeanType, Type targetType) {
+        Type finalTargetType = Types.isObjectType(targetType) ? sourceClass : targetType;
         Optional<Converter<?, ?>> converterOptional = SPECIFIC_NESTED_CONVERTER_CACHE.computeIfAbsent(getKey(sourceClass, targetBeanType, targetType), (k) -> {
-            Class<?> targetClass = Types.extractClass(targetType, targetBeanType);
+            Class<?> targetClass = Types.extractClass(finalTargetType, targetBeanType);
+            Class<?> finalTargetClass = Types.isObjectType(targetClass) ? sourceClass : targetClass;
             List<NestedConverter> nestedConverters = NESTED_CONVERTERS.stream()
-                    .filter(item -> item.support(sourceClass, targetClass)).collect(Collectors.toList());
-            Converter<Object, Object> defaultConverter = (source) -> DEFAULT_NESTED_CONVERTER.convert(source, targetBeanType, targetType);
+                    .filter(item -> item.support(sourceClass, finalTargetClass)).collect(Collectors.toList());
+            Converter<Object, Object> defaultConverter = (source) -> DEFAULT_NESTED_CONVERTER.convert(source, targetBeanType, finalTargetType);
             if (nestedConverters.size() == 0) {
                 return Optional.of(defaultConverter);
             }
             Converter<Object, Object> converter = (source) -> {
                 for (NestedConverter nestedConverter : nestedConverters) {
                     if (nestedConverter.preCheckSourceVal(source)) {
-                        return nestedConverter.convert(source, targetBeanType, targetType);
+                        return nestedConverter.convert(source, targetBeanType, finalTargetType);
                     }
                 }
-                return DEFAULT_NESTED_CONVERTER.convert(source, targetBeanType, targetType);
+                return DEFAULT_NESTED_CONVERTER.convert(source, targetBeanType, finalTargetType);
             };
             return Optional.of(converter);
         });

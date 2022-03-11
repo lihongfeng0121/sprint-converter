@@ -10,6 +10,7 @@ import com.sprint.common.converter.util.Assert;
 import com.sprint.common.converter.util.Types;
 import org.junit.Test;
 
+import java.beans.Transient;
 import java.lang.reflect.Type;
 import java.math.BigDecimal;
 import java.math.BigInteger;
@@ -209,5 +210,11 @@ public class TestConverter {
         Type type = new TypeReference<MMap<String>>(){}.getType();
         Type[] types = Types.getMapKVType(null, type);
         System.out.println(Arrays.toString(types));
+    }
+
+    @Test
+    public void test2Object(){
+        Object ob = AnyConverter.convert(Arrays.asList(Collections.singletonMap("a","10")), Object.class);
+        System.out.println(ob);
     }
 }
