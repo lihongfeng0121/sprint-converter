@@ -41,7 +41,7 @@ public class CollectionConverters implements NestedConverterLoader {
             for (int i = 0, length = Array.getLength(sourceValue); i < length; i++) {
                 Object item = Array.get(sourceValue, i);
                 if (item != null) {
-                    Type thisActualType = actualType == null ? item.getClass() : actualType;
+                    Type thisActualType = actualType == null || Types.isObjectType(actualType) ? item.getClass() : actualType;
                     targetCValue
                             .add(NestedConverters.convert(Array.get(sourceValue, i), targetBeanType, thisActualType));
                 } else {
@@ -88,7 +88,7 @@ public class CollectionConverters implements NestedConverterLoader {
                         targetCValue.add(null);
                     } else {
                         targetCValue.add(NestedConverters.convert(item, targetBeanType,
-                                actualType == null ? item.getClass() : actualType));
+                                actualType == null || Types.isObjectType(actualType) ? item.getClass() : actualType));
                     }
                 }
             }
@@ -124,7 +124,8 @@ public class CollectionConverters implements NestedConverterLoader {
             if (Types.isBean(actualTypeClass) && Types.isBean(extractClass)) {
                 Beans.copyProperties(sourceValue, targetCValue);
             }
-            targetCValue.add(NestedConverters.convert(sourceValue, targetBeanType, actualType));
+            targetCValue.add(NestedConverters.convert(sourceValue, targetBeanType,
+                    actualType == null || Types.isObjectType(actualType) ? sourceValue.getClass() : actualType));
             return targetCValue;
         }
     }
