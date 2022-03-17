@@ -15,3 +15,6 @@ com.sprint.common.converter.conversion.specific.converters.YearMonthConverters
 com.sprint.common.converter.conversion.specific.converters.LocalTimeConverters
 com.sprint.common.converter.conversion.specific.converters.LocalDateConverters
 com.sprint.common.converter.conversion.specific.converters.LocalDateTimeConverters
+com.sprint.common.converter.conversion.specific.converters.StringConverters
+com.sprint.common.converter.conversion.specific.converters.CharArrayConverters
+com.sprint.common.converter.conversion.specific.converters.ByteArrayConverters
