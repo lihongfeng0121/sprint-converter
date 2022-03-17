@@ -151,7 +151,12 @@ public interface Converter<S, T> {
         };
     }
 
-    default Function<S, T> toFunction() {
+    /**
+     * 转为function
+     *
+     * @return Function<S, T>
+     */
+    default Function<S, T> asfunc() {
         return (s) -> {
             try {
                 return convert(s);

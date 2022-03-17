@@ -218,7 +218,7 @@ public class TestConverter {
         Object ob = AnyConverter.convert(Collections.singletonMap("local", AnyConverter.convert("2021-01-01 10:10:10", LocalDateTime.class, Long.class)), String.class);
         System.out.println(ob);
 
-        double ss = Stream.of("2", "12.6").map(AnyConverter.getConverter(String.class, Double.TYPE).toFunction()).reduce(Double::sum).get();
+        double ss = Stream.of("2", "12.6").map(AnyConverter.getConverter(String.class, Double.TYPE).asfunc()).reduce(Double::sum).get();
 
         System.out.println(ss);
     }
