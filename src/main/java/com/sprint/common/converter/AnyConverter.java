@@ -23,7 +23,20 @@ public final class AnyConverter {
     /**
      * 获取转换器
      *
-     * @param typePath 类型ath
+     * @param sourceType 源类型
+     * @param targetType 目标类型
+     * @param <S>        源类范型
+     * @param <T>        目标类范型
+     * @return target
+     */
+    public static <S, T> Converter<S, T> getConverter(Class<S> sourceType, Class<T> targetType) {
+        return NestedConverters.getConverter(sourceType, targetType);
+    }
+
+    /**
+     * 获取转换器
+     *
+     * @param typePath 类型path
      * @param <S>      源类范型
      * @param <T>      目标类范型
      * @return target
@@ -32,7 +45,8 @@ public final class AnyConverter {
         Assert.isTrue(typePath.length > 0, "types should ge 1");
         Converter<?, ?> converter = Converter.identity();
         for (int i = 0, length = typePath.length; i < length - 1; i++) {
-            Converter<Object, Object> c = NestedConverters.getConverter(Types.extractClass(typePath[i]), null, typePath[i + 1]);
+            Class<?> sourceType = Types.extractClass(typePath[i]);
+            Converter<Object, Object> c = NestedConverters.getConverter(sourceType, null, typePath[i + 1]);
             converter = converter.andThen(c);
         }
         return converter.enforce();

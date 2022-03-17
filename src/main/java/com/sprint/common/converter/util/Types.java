@@ -640,8 +640,8 @@ public class Types {
     /**
      * 是否是json
      *
-     * @param str
-     * @return
+     * @param str str
+     * @return 是否是json
      */
     public static boolean isJson(String str) {
         return isJsonObject(str) || isJsonArray(str);
@@ -650,8 +650,8 @@ public class Types {
     /**
      * 是否是json对象
      *
-     * @param str
-     * @return
+     * @param str str
+     * @return 是否是json对象
      */
     public static boolean isJsonObject(String str) {
         if (str == null || str.isEmpty()) {
@@ -663,8 +663,8 @@ public class Types {
     /**
      * 是否是json数组
      *
-     * @param str
-     * @return
+     * @param str str
+     * @return 是否是json数组
      */
     public static boolean isJsonArray(String str) {
         if (str == null || str.isEmpty()) {

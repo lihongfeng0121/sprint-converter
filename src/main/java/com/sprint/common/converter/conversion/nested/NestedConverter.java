@@ -35,6 +35,7 @@ public interface NestedConverter {
     /**
      * 是否支持源对象
      *
+     * @param sourceValue 值
      * @return 对象
      */
     default boolean preCheckSourceVal(Object sourceValue) {

@@ -13,6 +13,7 @@ import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.LinkedHashMap;
+import java.util.Map;
 
 /**
  * @author hongfeng.li
@@ -61,8 +62,47 @@ public class JsonConverters implements NestedConverterLoader {
 
         @Override
         public boolean support(Class<?> sourceClass, Class<?> targetClass) {
-            return String.class.isAssignableFrom(sourceClass)
-                    && (Types.isBean(targetClass) || Types.isMap(targetClass));
+            return String.class.isAssignableFrom(sourceClass) && Types.isBean(targetClass);
+        }
+
+        @Override
+        public boolean preCheckSourceVal(Object sourceValue) {
+            return sourceValue != null && Types.isJsonObject((String) sourceValue);
+        }
+
+        @Override
+        public Object convert(Object sourceValue, Type targetBeanType, Type targetFiledType)
+                throws ConversionException {
+            if (sourceValue == null) {
+                return null;
+            }
+            String jsonStr = (String) sourceValue;
+
+            if (!Types.isJsonObject(jsonStr)) {
+                throw new NotSupportConvertException(sourceValue.getClass(), Types.extractClass(targetFiledType, targetBeanType));
+            }
+            try {
+                Object map = Jsons.toJavaObject(jsonStr, LinkedHashMap.class);
+                return NestedConverters.convert(map, targetBeanType, targetFiledType);
+            } catch (JsonException e) {
+                throw new ConversionException(e);
+            }
+        }
+    }
+
+    /**
+     * Json转bean
+     */
+    public static class JsonStr2Map implements NestedConverter {
+
+        @Override
+        public int sort() {
+            return 9;
+        }
+
+        @Override
+        public boolean support(Class<?> sourceClass, Class<?> targetClass) {
+            return String.class.isAssignableFrom(sourceClass) && Types.isMap(targetClass);
         }
 
         @Override

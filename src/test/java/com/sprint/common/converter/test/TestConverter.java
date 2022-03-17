@@ -1,6 +1,7 @@
 package com.sprint.common.converter.test;
 
 import com.sprint.common.converter.AnyConverter;
+import com.sprint.common.converter.BaseConverters;
 import com.sprint.common.converter.Converter;
 import com.sprint.common.converter.TypeReference;
 import com.sprint.common.converter.conversion.nested.bean.Beans;
@@ -10,7 +11,6 @@ import com.sprint.common.converter.util.Assert;
 import com.sprint.common.converter.util.Types;
 import org.junit.Test;
 
-import java.beans.Transient;
 import java.lang.reflect.Type;
 import java.math.BigDecimal;
 import java.math.BigInteger;
@@ -20,6 +20,7 @@ import java.time.LocalDateTime;
 import java.time.Year;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicReference;
+import java.util.stream.Stream;
 
 /**
  * @author hongfeng.li
@@ -207,14 +208,26 @@ public class TestConverter {
 
     @Test
     public void testMap() {
-        Type type = new TypeReference<MMap<String>>(){}.getType();
+        Type type = new TypeReference<MMap<String>>() {
+        }.getType();
         Type[] types = Types.getMapKVType(null, type);
         System.out.println(Arrays.toString(types));
     }
 
     @Test
-    public void test2Object(){
-        Object ob = AnyConverter.convert(Arrays.asList(Collections.singletonMap("a","10")), Object.class);
+    public void test2Object() {
+        Object ob = AnyConverter.convert(Collections.singletonMap("local", AnyConverter.convert("2021-01-01 10:10:10", LocalDateTime.class, Long.class)), String.class);
         System.out.println(ob);
+
+        double ss = Stream.of("2", "12.6").map(AnyConverter.getConverter(String.class, Double.TYPE).asfunc()).reduce(Double::sum).get();
+
+        System.out.println(ss);
+    }
+
+
+    @Test
+    public void testString() throws ConversionException {
+        String aa = "zhangsan";
+        System.out.println(Arrays.toString(AnyConverter.convert(aa, byte[].class)));
     }
 }

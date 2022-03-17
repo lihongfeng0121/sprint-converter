@@ -1,9 +1,11 @@
 package com.sprint.common.converter;
 
 import com.sprint.common.converter.exception.ConversionException;
+import com.sprint.common.converter.exception.ConversionExceptionWrapper;
 
 import java.util.Objects;
 import java.util.function.Consumer;
+import java.util.function.Function;
 import java.util.function.Supplier;
 
 /**
@@ -145,6 +147,21 @@ public interface Converter<S, T> {
                     return supplier.get();
                 }
                 return res;
+            }
+        };
+    }
+
+    /**
+     * 转为function
+     *
+     * @return func
+     */
+    default Function<S, T> asfunc() {
+        return (s) -> {
+            try {
+                return convert(s);
+            } catch (ConversionException e) {
+                throw ConversionExceptionWrapper.wrapper(e);
             }
         };
     }

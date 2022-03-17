@@ -16,7 +16,7 @@ A mapping framework is useful in a layered architecture where you are creating l
 changes to particular data objects vs. propagating these objects to other layers (i.e. external service data objects,
 domain objects, data transfer objects, internal service data objects).
 
-Mapping between data objects has traditionally been addressed by hand coding value object assemblers (or converters)
+1.Mapping between data objects has traditionally been addressed by hand coding value object assemblers (or converters)
 that copy data between the objects. Most programmers will develop some sort of custom mapping framework and spend
 countless hours and thousands of lines of code mapping to and from their different data object.
 
@@ -27,6 +27,8 @@ This type of code for such conversions is rather boring to write, so why not do 
 AnyConverter is a Java Bean/Type/Map/Json to Java Bean/Type/Map/Json converter. It supports the recursive transformation
 of a Bean/Map into another Bean and is a robust, versatile, flexible, reusable, and configurable open source mapping
 framework.
+
+You can also use it in Map Reduce for various types of conversion to speed up coding.
 
 ## Getting the Distribution
 
@@ -62,6 +64,8 @@ If you are using Maven, simply copy-paste this dependency to your project.
         TypeBean2<List<List<Integer>>> bean2 = AnyConverter.convert(bean1,
         new TypeReference<TypeBean2<List<List<Integer>>>>() {
         });
+
+        double ss = Stream.of("2", "12.6").map(AnyConverter.getConverter(String.class, Double.TYPE).asfunc()).reduce(Double::sum).get();
 ```
 
 © 2022 GitHub, Inc. Terms Privacy Security Status Docs Contact GitHub Pricing API Training Blog About

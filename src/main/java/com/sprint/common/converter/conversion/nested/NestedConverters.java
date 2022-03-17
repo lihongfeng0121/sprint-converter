@@ -2,6 +2,7 @@ package com.sprint.common.converter.conversion.nested;
 
 import com.sprint.common.converter.BaseConverters;
 import com.sprint.common.converter.Converter;
+import com.sprint.common.converter.ErrorHandler;
 import com.sprint.common.converter.conversion.nested.bean.Beans;
 import com.sprint.common.converter.exception.ConversionException;
 import com.sprint.common.converter.exception.NotSupportConvertException;
@@ -98,7 +99,11 @@ public final class NestedConverters {
         return (source) -> {
             for (NestedConverter nestedConverter : nestedConverters) {
                 if (nestedConverter.preCheckSourceVal(source)) {
-                    return nestedConverter.convert(source, targetBeanType, targetType);
+                    try {
+                        return nestedConverter.convert(source, targetBeanType, targetType);
+                    } catch (ConversionException e) {
+                        logger.warn("this converter not support, use next converter");
+                    }
                 }
             }
             return DEFAULT_NESTED_CONVERTER.convert(source, targetBeanType, targetType);
@@ -126,6 +131,30 @@ public final class NestedConverters {
             throw new NotSupportConvertException(sourceClass, Types.extractClass(targetType, targetBeanType));
         }
         return converter.convert(value);
+    }
+
+    /**
+     * 获取转换器
+     *
+     * @param value          value
+     * @param targetBeanType targetBeanType
+     * @param targetType     targetType
+     * @param errorHandler   errorHandler
+     * @param <S>            s
+     * @param <T>            t
+     * @return target
+     * @throws ConversionException e
+     */
+    public static <S, T> T convert(S value, Type targetBeanType, Type targetType, ErrorHandler<S, T> errorHandler) throws ConversionException {
+        if (value == null) {
+            return null;
+        }
+        Class<?> sourceClass = value.getClass();
+        Converter<S, T> converter = getConverter(sourceClass, targetBeanType, targetType);
+        if (converter == null) {
+            throw new NotSupportConvertException(sourceClass, Types.extractClass(targetType, targetBeanType));
+        }
+        return converter.onError(errorHandler).convert(value);
     }
 
     /**
