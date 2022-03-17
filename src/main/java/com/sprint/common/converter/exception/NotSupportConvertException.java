@@ -18,7 +18,7 @@ public class NotSupportConvertException extends ConversionException {
     private final Type targetType;
 
     public NotSupportConvertException(Class<?> sourceType, Class<?> targetType, Throwable cause) {
-        super(String.format(FORMAT, sourceType.getTypeName(), targetType.getTypeName()));
+        super(String.format(FORMAT, sourceType.getTypeName(), targetType.getTypeName()), cause);
         this.sourceType = sourceType;
         this.targetType = targetType;
     }

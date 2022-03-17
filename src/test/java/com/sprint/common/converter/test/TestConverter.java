@@ -214,7 +214,7 @@ public class TestConverter {
 
     @Test
     public void test2Object(){
-        Object ob = AnyConverter.convert(Arrays.asList(Collections.singletonMap("a","10")), Object.class);
+        Object ob = AnyConverter.convert(Collections.singletonMap("local", AnyConverter.convert("2021-01-01 10:10:10", LocalDateTime.class)), String.class);
         System.out.println(ob);
     }
 }
