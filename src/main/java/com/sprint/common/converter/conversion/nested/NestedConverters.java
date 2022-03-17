@@ -99,7 +99,11 @@ public final class NestedConverters {
         return (source) -> {
             for (NestedConverter nestedConverter : nestedConverters) {
                 if (nestedConverter.preCheckSourceVal(source)) {
-                    return nestedConverter.convert(source, targetBeanType, targetType);
+                    try {
+                        return nestedConverter.convert(source, targetBeanType, targetType);
+                    } catch (ConversionException e) {
+                        logger.warn("this converter not support, use next converter");
+                    }
                 }
             }
             return DEFAULT_NESTED_CONVERTER.convert(source, targetBeanType, targetType);

@@ -4,7 +4,6 @@ import com.sprint.common.converter.conversion.nested.NestedConverters;
 import com.sprint.common.converter.conversion.nested.bean.BeansException;
 import com.sprint.common.converter.exception.ConversionException;
 import com.sprint.common.converter.exception.ConversionExceptionWrapper;
-import com.sprint.common.converter.exception.NotSupportConvertException;
 import com.sprint.common.converter.util.Assert;
 import com.sprint.common.converter.util.Types;
 
@@ -31,8 +30,7 @@ public final class AnyConverter {
      * @return target
      */
     public static <S, T> Converter<S, T> getConverter(Class<S> sourceType, Class<T> targetType) {
-        Converter<S, T> converter = NestedConverters.getConverter(sourceType, targetType);
-        return converter.onError(BaseConverters.baseErrorHandler(sourceType, sourceType));
+        return NestedConverters.getConverter(sourceType, targetType);
     }
 
     /**
@@ -48,9 +46,8 @@ public final class AnyConverter {
         Converter<?, ?> converter = Converter.identity();
         for (int i = 0, length = typePath.length; i < length - 1; i++) {
             Class<?> sourceType = Types.extractClass(typePath[i]);
-            Class<?> targetType = Types.extractClass(typePath[i + 1]);
             Converter<Object, Object> c = NestedConverters.getConverter(sourceType, null, typePath[i + 1]);
-            converter = converter.andThen(c.onError(BaseConverters.baseErrorHandler(sourceType, targetType)));
+            converter = converter.andThen(c);
         }
         return converter.enforce();
     }
@@ -68,25 +65,9 @@ public final class AnyConverter {
      */
     public static <S, T> T doConvert(S source, Type first, Type... types) {
         try {
-            Object target = NestedConverters.convert(source, null, first, (ex, s) -> {
-                Class<?> sourceType = source.getClass();
-                Class<?> targetType = Types.extractClass(first);
-                if (BaseConverters.isSupport(sourceType, targetType)) {
-                    return BaseConverters.convert(s, targetType);
-                } else {
-                    throw new NotSupportConvertException(sourceType, targetType, ex);
-                }
-            });
+            Object target = NestedConverters.convert(source, null, first);
             for (Type type : types) {
-                Class<?> sourceType = target.getClass();
-                target = NestedConverters.convert(target, null, type, (ex, s) -> {
-                    Class<?> targetType = Types.extractClass(type);
-                    if (BaseConverters.isSupport(sourceType, targetType)) {
-                        return BaseConverters.convert(s, targetType);
-                    } else {
-                        throw new NotSupportConvertException(sourceType, targetType, ex);
-                    }
-                });
+                target = NestedConverters.convert(target, null, type);
             }
             return (T) target;
         } catch (ConversionException e) {
