@@ -1,6 +1,7 @@
 package com.sprint.common.converter.test;
 
 import com.sprint.common.converter.AnyConverter;
+import com.sprint.common.converter.BaseConverters;
 import com.sprint.common.converter.Converter;
 import com.sprint.common.converter.TypeReference;
 import com.sprint.common.converter.conversion.nested.bean.Beans;
@@ -221,5 +222,12 @@ public class TestConverter {
         double ss = Stream.of("2", "12.6").map(AnyConverter.getConverter(String.class, Double.TYPE).asfunc()).reduce(Double::sum).get();
 
         System.out.println(ss);
+    }
+
+
+    @Test
+    public void testString() throws ConversionException {
+        String aa = "zhangsan";
+        System.out.println(Arrays.toString(AnyConverter.convert(aa, byte[].class)));
     }
 }
