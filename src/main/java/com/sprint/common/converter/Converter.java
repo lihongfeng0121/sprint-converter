@@ -154,7 +154,7 @@ public interface Converter<S, T> {
     /**
      * 转为function
      *
-     * @return Function<S, T>
+     * @return func
      */
     default Function<S, T> asfunc() {
         return (s) -> {

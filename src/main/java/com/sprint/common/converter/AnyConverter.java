@@ -32,13 +32,7 @@ public final class AnyConverter {
      */
     public static <S, T> Converter<S, T> getConverter(Class<S> sourceType, Class<T> targetType) {
         Converter<S, T> converter = NestedConverters.getConverter(sourceType, targetType);
-        return converter.onError((ex, s) -> {
-            if (BaseConverters.isSupport(sourceType, targetType)) {
-                return BaseConverters.convert(s, targetType);
-            } else {
-                throw new NotSupportConvertException(sourceType, targetType, ex);
-            }
-        });
+        return converter.onError(BaseConverters.baseErrorHandler(sourceType, sourceType));
     }
 
     /**
@@ -56,13 +50,7 @@ public final class AnyConverter {
             Class<?> sourceType = Types.extractClass(typePath[i]);
             Class<?> targetType = Types.extractClass(typePath[i + 1]);
             Converter<Object, Object> c = NestedConverters.getConverter(sourceType, null, typePath[i + 1]);
-            converter = converter.andThen(c.onError((ex, s) -> {
-                if (BaseConverters.isSupport(sourceType, targetType)) {
-                    return BaseConverters.convert(s, targetType);
-                } else {
-                    throw new NotSupportConvertException(sourceType, targetType, ex);
-                }
-            }));
+            converter = converter.andThen(c.onError(BaseConverters.baseErrorHandler(sourceType, targetType)));
         }
         return converter.enforce();
     }

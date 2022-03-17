@@ -111,6 +111,23 @@ public final class BaseConverters {
     }
 
     /**
+     * 基础类型异常处理
+     *
+     * @param sourceType
+     * @param targetType
+     * @return
+     */
+    public static <S, T> ErrorHandler<S, T> baseErrorHandler(Class<?> sourceType, Class<?> targetType) {
+        return (ex, s) -> {
+            if (BaseConverters.isSupport(sourceType, targetType)) {
+                return (T) convert(s, targetType);
+            } else {
+                throw new NotSupportConvertException(sourceType, targetType, ex);
+            }
+        };
+    }
+
+    /**
      * 转换
      *
      * @param source       源
