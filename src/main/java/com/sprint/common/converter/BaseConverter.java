@@ -17,11 +17,11 @@ import org.slf4j.LoggerFactory;
  * @version 1.0
  * @since 2019年12月25日
  */
-public final class BaseConverters {
+public final class BaseConverter {
 
-    private static final Logger logger = LoggerFactory.getLogger(BaseConverters.class);
+    private static final Logger logger = LoggerFactory.getLogger(BaseConverter.class);
 
-    private BaseConverters() {
+    private BaseConverter() {
     }
 
     /**
@@ -119,7 +119,7 @@ public final class BaseConverters {
      */
     public static <S, T> ErrorHandler<S, T> baseErrorHandler(Class<?> sourceType, Class<?> targetType) {
         return (ex, s) -> {
-            if (BaseConverters.isSupport(sourceType, targetType)) {
+            if (BaseConverter.isSupport(sourceType, targetType)) {
                 return (T) convert(s, targetType);
             } else {
                 throw new NotSupportConvertException(sourceType, targetType, ex);

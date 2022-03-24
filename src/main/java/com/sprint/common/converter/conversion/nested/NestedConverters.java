@@ -1,6 +1,6 @@
 package com.sprint.common.converter.conversion.nested;
 
-import com.sprint.common.converter.BaseConverters;
+import com.sprint.common.converter.BaseConverter;
 import com.sprint.common.converter.Converter;
 import com.sprint.common.converter.ErrorHandler;
 import com.sprint.common.converter.conversion.nested.bean.Beans;
@@ -196,7 +196,7 @@ public final class NestedConverters {
             if (Types.isBean(sourceClassType) && Types.isBean(targetClassType)) {
                 return Beans.cast(sourceValue, targetType, true);
             } else {
-                return BaseConverters.convert(sourceValue, targetClassType);
+                return BaseConverter.convert(sourceValue, targetClassType);
             }
         }
     }

@@ -1,7 +1,6 @@
 package com.sprint.common.converter.test;
 
 import com.sprint.common.converter.AnyConverter;
-import com.sprint.common.converter.BaseConverters;
 import com.sprint.common.converter.Converter;
 import com.sprint.common.converter.TypeReference;
 import com.sprint.common.converter.conversion.nested.bean.Beans;

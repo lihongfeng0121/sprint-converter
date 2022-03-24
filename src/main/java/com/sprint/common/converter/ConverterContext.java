@@ -15,6 +15,7 @@ import java.util.Objects;
  * @since 2021年02月05日
  */
 public class ConverterContext {
+
     private static final ThreadLocal<Map<String, Object>> THREAD_LOCAL = ThreadLocal.withInitial(HashMap::new);
     private static final String SOURCE_BEAN_TYPE_KEY = "sourceBeanTypeKey";
     private static final String TARGET_BEAN_TYPE_KEY = "targetBeanTypeKey";
