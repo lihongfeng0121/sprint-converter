@@ -23,7 +23,7 @@ public class BooleanConverters implements SpecificConverterLoader {
         if (obj instanceof Boolean) {
             return (Boolean) obj;
         } else if (obj instanceof Number) {
-            return !Integer.valueOf(0).equals(obj);
+            return !Integer.valueOf(0).equals(((Number) obj).intValue());
         } else {
             String str = String.valueOf(obj).trim();
             if ("1".equals(str)) {
