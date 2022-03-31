@@ -102,20 +102,20 @@ public class BooleanConverters implements SpecificConverterLoader {
         }
     }
 
-    public static class ByteToBoolean implements SpecificConverter<Byte, Boolean> {
+    public static class NumberToBoolean implements SpecificConverter<Number, Boolean> {
 
         @Override
-        public Boolean convert(Byte source) throws ConversionException {
+        public Boolean convert(Number source) throws ConversionException {
             if (source == null) {
                 return null;
             } else {
-                return Byte.valueOf((byte) 1).equals(source);
+                return Integer.valueOf(1).equals(source.intValue());
             }
         }
 
         @Override
-        public Class<Byte> getSourceClass() {
-            return Byte.class;
+        public Class<Number> getSourceClass() {
+            return Number.class;
         }
 
         @Override
@@ -124,152 +124,20 @@ public class BooleanConverters implements SpecificConverterLoader {
         }
     }
 
-    public static class ByteToBaseBoolean implements SpecificConverter<Byte, Boolean> {
+    public static class NumberToBaseBoolean implements SpecificConverter<Number, Boolean> {
 
         @Override
-        public Boolean convert(Byte source) throws ConversionException {
+        public Boolean convert(Number source) throws ConversionException {
             if (source == null) {
                 return Boolean.FALSE;
             } else {
-                return Byte.valueOf((byte) 1).equals(source);
+                return Integer.valueOf(1).equals(source.intValue());
             }
         }
 
         @Override
-        public Class<Byte> getSourceClass() {
-            return Byte.class;
-        }
-
-        @Override
-        public Class<Boolean> getTargetClass() {
-            return Boolean.TYPE;
-        }
-    }
-
-    public static class ShortToBoolean implements SpecificConverter<Short, Boolean> {
-
-        @Override
-        public Boolean convert(Short source) throws ConversionException {
-            if (source == null) {
-                return null;
-            } else {
-                return Short.valueOf((short) 1).equals(source);
-            }
-        }
-
-        @Override
-        public Class<Short> getSourceClass() {
-            return Short.class;
-        }
-
-        @Override
-        public Class<Boolean> getTargetClass() {
-            return Boolean.class;
-        }
-    }
-
-    public static class ShortToBaseBoolean implements SpecificConverter<Short, Boolean> {
-
-        @Override
-        public Boolean convert(Short source) throws ConversionException {
-            if (source == null) {
-                return Boolean.FALSE;
-            } else {
-                return Short.valueOf((short) 1).equals(source);
-            }
-        }
-
-        @Override
-        public Class<Short> getSourceClass() {
-            return Short.class;
-        }
-
-        @Override
-        public Class<Boolean> getTargetClass() {
-            return Boolean.TYPE;
-        }
-    }
-
-    public static class IntegerToBoolean implements SpecificConverter<Integer, Boolean> {
-
-        @Override
-        public Boolean convert(Integer source) throws ConversionException {
-            if (source == null) {
-                return null;
-            } else {
-                return Integer.valueOf(1).equals(source);
-            }
-        }
-
-        @Override
-        public Class<Integer> getSourceClass() {
-            return Integer.class;
-        }
-
-        @Override
-        public Class<Boolean> getTargetClass() {
-            return Boolean.class;
-        }
-    }
-
-    public static class IntegerToBaseBoolean implements SpecificConverter<Integer, Boolean> {
-
-        @Override
-        public Boolean convert(Integer source) throws ConversionException {
-            if (source == null) {
-                return Boolean.FALSE;
-            } else {
-                return Integer.valueOf(1).equals(source);
-            }
-        }
-
-        @Override
-        public Class<Integer> getSourceClass() {
-            return Integer.class;
-        }
-
-        @Override
-        public Class<Boolean> getTargetClass() {
-            return Boolean.TYPE;
-        }
-    }
-
-    public static class LongToBoolean implements SpecificConverter<Long, Boolean> {
-
-        @Override
-        public Boolean convert(Long source) throws ConversionException {
-            if (source == null) {
-                return null;
-            } else {
-                return Long.valueOf(1).equals(source);
-            }
-        }
-
-        @Override
-        public Class<Long> getSourceClass() {
-            return Long.class;
-        }
-
-        @Override
-        public Class<Boolean> getTargetClass() {
-            return Boolean.class;
-        }
-    }
-
-    public static class LongToBaseBoolean implements SpecificConverter<Long, Boolean> {
-
-        @Override
-        public Boolean convert(Long source) throws ConversionException {
-            if (source == null) {
-                return Boolean.FALSE;
-            } else {
-                return Long.valueOf(1).equals(source);
-            }
-        }
-
-        @Override
-        public Class<Long> getSourceClass() {
-            return Long.class;
+        public Class<Number> getSourceClass() {
+            return Number.class;
         }
 
         @Override
