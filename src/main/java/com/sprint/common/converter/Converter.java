@@ -152,6 +152,25 @@ public interface Converter<S, T> {
     }
 
     /**
+     * 环绕处理
+     *
+     * @param handler 环绕处理器
+     * @return target
+     */
+    default Converter<S, T> around(AroundHandler<S, T> handler) {
+        return (s) -> {
+            S s1 = handler.before(s);
+            T t = null;
+            try {
+                t = convert(s1);
+            } finally {
+                t = handler.after(s1, t);
+            }
+            return t;
+        };
+    }
+
+    /**
      * 转为function
      *
      * @return func

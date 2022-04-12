@@ -3,9 +3,8 @@ package com.sprint.common.converter;
 import com.sprint.common.converter.util.Types;
 
 import java.lang.reflect.Type;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.Objects;
+import java.util.Optional;
 
 /**
  * 转换上下文
@@ -16,41 +15,38 @@ import java.util.Objects;
  */
 public class ConverterContext {
 
-    private static final ThreadLocal<Map<String, Object>> THREAD_LOCAL = ThreadLocal.withInitial(HashMap::new);
-    private static final String SOURCE_BEAN_TYPE_KEY = "sourceBeanTypeKey";
-    private static final String TARGET_BEAN_TYPE_KEY = "targetBeanTypeKey";
-    private static final String SOURCE_TYPE_KEY = "sourceTypeKey";
-    private static final String TARGET_TYPE_KEY = "targetTypeKey";
+    private static final ThreadLocal<Context<?, ?>> THREAD_LOCAL = new ThreadLocal<>();
+
+    public static Context<?, ?> getContext() {
+        return THREAD_LOCAL.get();
+    }
 
     public static Type getSourceBeanType() {
-        return (Type) THREAD_LOCAL.get().get(SOURCE_BEAN_TYPE_KEY);
+        return Optional.ofNullable(THREAD_LOCAL.get()).map(Context::getSourceBeanType).orElse(null);
     }
 
     public static Type getTargetBeanType() {
-        return (Type) THREAD_LOCAL.get().get(TARGET_BEAN_TYPE_KEY);
+        return Optional.ofNullable(THREAD_LOCAL.get()).map(Context::getTargetBeanType).orElse(null);
     }
 
     public static Class<?> getSourceClass() {
-        return Types.extractClass(getSourceType(), getSourceBeanType());
+        return Optional.ofNullable(THREAD_LOCAL.get()).map(context -> Types.extractClass(context.getSourceType(), context.getSourceBeanType())).orElse(null);
     }
 
     public static Class<?> getTargetClass() {
-        return Types.extractClass(getTargetType(), getTargetBeanType());
+        return Optional.ofNullable(THREAD_LOCAL.get()).map(context -> Types.extractClass(context.getTargetType(), context.getTargetBeanType())).orElse(null);
     }
 
     public static Type getSourceType() {
-        return (Type) THREAD_LOCAL.get().get(SOURCE_TYPE_KEY);
+        return Optional.ofNullable(THREAD_LOCAL.get()).map(Context::getSourceType).orElse(null);
     }
 
     public static Type getTargetType() {
-        return (Type) THREAD_LOCAL.get().get(TARGET_TYPE_KEY);
+        return Optional.ofNullable(THREAD_LOCAL.get()).map(Context::getTargetType).orElse(null);
     }
 
-    public static void initContext(Type sourceBeanType, Type sourceType, Type targetBeanType, Type targetType) {
-        THREAD_LOCAL.get().put(SOURCE_BEAN_TYPE_KEY, sourceBeanType);
-        THREAD_LOCAL.get().put(TARGET_BEAN_TYPE_KEY, targetBeanType);
-        THREAD_LOCAL.get().put(SOURCE_TYPE_KEY, sourceType);
-        THREAD_LOCAL.get().put(TARGET_TYPE_KEY, targetType);
+    public static void initContext(Context<?, ?> context) {
+        THREAD_LOCAL.set(context);
     }
 
     public static void clear() {
@@ -61,14 +57,7 @@ public class ConverterContext {
         Objects.requireNonNull(converter);
         Objects.requireNonNull(sourceType);
         Objects.requireNonNull(targetType);
-        return (source) -> {
-            try {
-                ConverterContext.initContext(null, sourceType, null, targetType);
-                return converter.convert(source);
-            } finally {
-                ConverterContext.clear();
-            }
-        };
+        return converter.around(new Context<>(sourceType, targetType));
     }
 
     public static <S, T> Converter<S, T> whitContext(Converter<S, T> converter, Type sourceBeanType, Type sourceType,
@@ -76,13 +65,53 @@ public class ConverterContext {
         Objects.requireNonNull(converter);
         Objects.requireNonNull(sourceType);
         Objects.requireNonNull(targetType);
-        return (source) -> {
-            try {
-                ConverterContext.initContext(sourceBeanType, sourceType, targetBeanType, targetType);
-                return converter.convert(source);
-            } finally {
-                ConverterContext.clear();
-            }
-        };
+        return converter.around(new Context<>(sourceBeanType, sourceType, targetBeanType, targetType));
+    }
+
+    public static class Context<S, T> implements AroundHandler<S, T> {
+
+        private final Type sourceBeanType;
+        private final Type sourceType;
+        private final Type targetBeanType;
+        private final Type targetType;
+
+        public Context(Type sourceBeanType, Type sourceType, Type targetBeanType, Type targetType) {
+            this.sourceBeanType = sourceBeanType;
+            this.sourceType = sourceType;
+            this.targetBeanType = targetBeanType;
+            this.targetType = targetType;
+        }
+
+        public Context(Type sourceType, Type targetType) {
+            this(null, sourceType, null, targetType);
+        }
+
+        public Type getSourceBeanType() {
+            return sourceBeanType;
+        }
+
+        public Type getSourceType() {
+            return sourceType;
+        }
+
+        public Type getTargetBeanType() {
+            return targetBeanType;
+        }
+
+        public Type getTargetType() {
+            return targetType;
+        }
+
+        @Override
+        public S before(S source) {
+            ConverterContext.initContext(this);
+            return AroundHandler.super.before(source);
+        }
+
+        @Override
+        public T after(S source, T target) {
+            ConverterContext.clear();
+            return AroundHandler.super.after(source, target);
+        }
     }
 }

@@ -1,6 +1,7 @@
 package com.sprint.common.converter.test;
 
 import com.sprint.common.converter.AnyConverter;
+import com.sprint.common.converter.BaseConverter;
 import com.sprint.common.converter.Converter;
 import com.sprint.common.converter.TypeReference;
 import com.sprint.common.converter.conversion.nested.bean.Beans;
@@ -112,6 +113,9 @@ public class TestConverter {
     public void testBaseConvert() {
         long tms = System.currentTimeMillis();
         System.out.println(AnyConverter.convert(1, Boolean.class));
+        System.out.println(AnyConverter.convert(1L, Boolean.class));
+        System.out.println(AnyConverter.convert(1D, Boolean.class));
+        System.out.println(AnyConverter.convert(1F, Boolean.class));
         System.out.println(AnyConverter.convert("TRUE", Boolean.class));
         System.out.println(AnyConverter.convert("是", Boolean.class));
         System.out.println(AnyConverter.convert("Y", Boolean.class));
@@ -217,9 +221,7 @@ public class TestConverter {
     public void test2Object() {
         Object ob = AnyConverter.convert(Collections.singletonMap("local", AnyConverter.convert("2021-01-01 10:10:10", LocalDateTime.class, Long.class)), String.class);
         System.out.println(ob);
-
-        double ss = Stream.of("2", "12.6").map(AnyConverter.getConverter(String.class, Double.TYPE).asfunc()).reduce(Double::sum).get();
-
+        double ss = Stream.of("2", "12.6").map(BaseConverter.getConverter(String.class, Double.TYPE).asfunc()).reduce(Double::sum).get();
         System.out.println(ss);
     }
 
@@ -227,6 +229,12 @@ public class TestConverter {
     @Test
     public void testString() throws ConversionException {
         String aa = "zhangsan";
+        long ts = System.currentTimeMillis();
         System.out.println(Arrays.toString(AnyConverter.convert(aa, byte[].class)));
+        System.out.println(System.currentTimeMillis() - ts);
+        System.out.println(Arrays.toString(AnyConverter.convert(aa, byte[].class)));
+        System.out.println(System.currentTimeMillis() - ts);
+        System.out.println(Arrays.toString(BaseConverter.convert(aa, byte[].class)));
+        System.out.println(System.currentTimeMillis() - ts);
     }
 }

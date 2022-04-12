@@ -11,7 +11,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * 转换器
+ * 基础数据类型转换器
  *
  * @author hongfeng-li
  * @version 1.0
