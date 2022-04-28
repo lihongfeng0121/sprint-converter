@@ -23,6 +23,10 @@ public class Types {
 
     public static final Class<?> OBJECT_CLASS = Object.class;
     private static final Type[] OBJECT_K_V_TYPE = {OBJECT_CLASS, OBJECT_CLASS};
+
+    public static final String[] COLLECTION_IGNORES = {"size", "empty"};
+
+    public static final String[] MAP_IGNORES = {"size", "empty"};
     private static final ClassLoader APP_CLASS_LOADER = ClassLoader.getSystemClassLoader();
 
     static {

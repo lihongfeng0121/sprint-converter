@@ -22,7 +22,7 @@ public class Properties {
     private static final Logger logger = LoggerFactory.getLogger(Properties.class);
 
     private static final Set<String> MAP_IGNORE_PROPERTY = Collections
-            .unmodifiableSet(new HashSet<>(Arrays.asList("empty")));
+            .unmodifiableSet(new HashSet<>(Arrays.asList("size","empty")));
 
     private static final String[] STRING_ARRAY = new String[0];
 

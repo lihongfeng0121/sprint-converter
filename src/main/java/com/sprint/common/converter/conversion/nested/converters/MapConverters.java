@@ -44,7 +44,7 @@ public class MapConverters implements NestedConverterLoader {
                     : Beans.instanceMap(extractClass);
 
             if (Types.isBean(targetMValue.getClass())) {
-                Beans.copyProperties(mValue, targetMValue, true, true, false);
+                Beans.copyProperties(mValue, targetMValue, true, true, false, Types.MAP_IGNORES);
             }
 
             if (!mValue.isEmpty()) {

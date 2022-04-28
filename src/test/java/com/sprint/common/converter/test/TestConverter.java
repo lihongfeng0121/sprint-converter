@@ -237,4 +237,13 @@ public class TestConverter {
         System.out.println(Arrays.toString(BaseConverter.convert(aa, byte[].class)));
         System.out.println(System.currentTimeMillis() - ts);
     }
+
+    @Test
+    public void test111(){
+        Student student = new Student();
+        student.setName("zhangsan");
+        student.setLevel("一年级");
+        Student2 student1 = AnyConverter.convert(student, Student2.class);
+        System.out.println(student1);
+    }
 }
