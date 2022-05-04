@@ -113,9 +113,11 @@ public final class BaseConverter {
     /**
      * 基础类型异常处理
      *
-     * @param sourceType
-     * @param targetType
-     * @return
+     * @param sourceType sourceType
+     * @param targetType targetType
+     * @param <S>        s
+     * @param <T>        t
+     * @return 异常处理
      */
     public static <S, T> ErrorHandler<S, T> baseErrorHandler(Class<?> sourceType, Class<?> targetType) {
         return (ex, s) -> {

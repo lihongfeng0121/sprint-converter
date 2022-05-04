@@ -37,7 +37,7 @@ If you are using Maven, simply copy-paste this dependency to your project.
 ```XML
 
 <dependency>
-    <groupId>com.sprint</groupId>
+    <groupId>io.github.lihongfeng0121</groupId>
     <artifactId>sprint-converter</artifactId>
     <version>1.0.0</version>
 </dependency>

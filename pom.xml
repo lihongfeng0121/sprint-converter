@@ -2,7 +2,7 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0"
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-    <groupId>com.sprint</groupId>
+    <groupId>io.github.lihongfeng0121</groupId>
     <modelVersion>4.0.0</modelVersion>
     <version>1.0.0</version>
     <artifactId>sprint-converter</artifactId>
@@ -35,7 +35,7 @@
 
     <developers>
         <developer>
-            <name>Li Hongfeng</name>
+            <name>lihongfeng</name>
             <email>lihongfeng0121@163.com</email>
         </developer>
     </developers>
@@ -128,11 +128,11 @@
             <distributionManagement>
                 <snapshotRepository>
                     <id>oss</id>
-                    <url>https://oss.sonatype.org/content/repositories/snapshots/</url>
+                    <url>https://s01.oss.sonatype.org/content/repositories/snapshots/</url>
                 </snapshotRepository>
                 <repository>
                     <id>oss</id>
-                    <url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
+                    <url>https://s01.oss.sonatype.org/service/local/staging/deploy/maven2/</url>
                 </repository>
             </distributionManagement>
         </profile>

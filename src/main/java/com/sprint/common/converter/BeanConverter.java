@@ -17,10 +17,11 @@ public class BeanConverter {
     /**
      * 获取转换器
      *
-     * @param sourceClass 源类型
-     * @param targetClass 目标类型
-     * @param <S>         s
-     * @param <T>         t
+     * @param sourceClass      源类型
+     * @param targetClass      目标类型
+     * @param ignoreProperties 忽略属性
+     * @param <S>              s
+     * @param <T>              t
      * @return Converter
      */
     public static <S, T> Converter<S, T> getShallowConverter(Class<S> sourceClass, Class<T> targetClass, String... ignoreProperties) {
@@ -30,10 +31,11 @@ public class BeanConverter {
     /**
      * 获取转换器
      *
-     * @param sourceClass 源类型
-     * @param targetClass 目标类型
-     * @param <S>         s
-     * @param <T>         t
+     * @param sourceClass      源类型
+     * @param targetClass      目标类型
+     * @param ignoreProperties 忽略属性
+     * @param <S>              s
+     * @param <T>              t
      * @return Converter
      */
     public static <S, T> Converter<S, T> getConverter(Class<S> sourceClass, Class<T> targetClass, String... ignoreProperties) {
@@ -44,11 +46,12 @@ public class BeanConverter {
     /**
      * 获取转换器
      *
-     * @param sourceClass 源类型
-     * @param targetClass 目标类型
-     * @param convert     是否进行属性转换
-     * @param <S>         s
-     * @param <T>         t
+     * @param sourceClass      源类型
+     * @param targetClass      目标类型
+     * @param convert          是否进行属性转换
+     * @param ignoreProperties 忽略属性
+     * @param <S>              s
+     * @param <T>              t
      * @return Converter
      */
     public static <S, T> Converter<S, T> getConverter(Class<S> sourceClass, Class<T> targetClass, boolean convert, String... ignoreProperties) {
