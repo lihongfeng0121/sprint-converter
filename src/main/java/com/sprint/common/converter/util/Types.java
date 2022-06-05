@@ -18,11 +18,7 @@ public class Types {
     private static final Map<String, Class<?>> primitiveTypeNameMap = new HashMap<>(32);
     private static final Map<String, Class<?>> commonClassCache = new HashMap<>(32);
 
-    private static final ConcurrentReferenceHashMap<ParameterizedType, Type[]> MAP_PARAMETER_TYPE_CACHE = new ConcurrentReferenceHashMap<>();
-    private static final ConcurrentReferenceHashMap<ParameterizedType, Type> COLLECTION_PARAMETER_TYPE_CACHE = new ConcurrentReferenceHashMap<>();
-
     public static final Class<?> OBJECT_CLASS = Object.class;
-    private static final Type[] OBJECT_K_V_TYPE = {OBJECT_CLASS, OBJECT_CLASS};
 
     public static final String[] COLLECTION_IGNORES = {"size", "empty"};
 
@@ -115,7 +111,7 @@ public class Types {
      * @return ClassSuperclassType
      */
     public static Type getClassSuperclassType(Class<?> clazz, int lc) {
-        return at(getClassSuperclassType(clazz), lc, null);
+        return MiscUtils.at(getClassSuperclassType(clazz), lc, null);
     }
 
     /**
@@ -128,8 +124,7 @@ public class Types {
         if (clazz.isInterface()) {
             throw new IllegalArgumentException("Specified class [" + clazz + "] is an interface");
         }
-
-        return toMap(clazz.getSuperclass().getTypeParameters(), getClassSuperclassType(clazz));
+        return MapUtils.toMap(clazz.getSuperclass().getTypeParameters(), getClassSuperclassType(clazz));
     }
 
     /**
@@ -141,7 +136,7 @@ public class Types {
      * @return InterfaceSuperclass
      */
     public static Class<?> getInterfaceSuperclass(Class<?> clazz, Class<?> intf, int lc) {
-        return at(getInterfaceSuperclass(clazz, intf), lc, null);
+        return MiscUtils.at(getInterfaceSuperclass(clazz, intf), lc, null);
     }
 
     /**
@@ -169,7 +164,7 @@ public class Types {
      * @param intf  目标接口
      * @return InterfaceSuperclassType
      */
-    public static Type[] getInterfaceSuperclassType(Class clazz, Class intf) {
+    public static Type[] getInterfaceSuperclassType(Class<?> clazz, Class<?> intf) {
         if (!intf.isInterface()) {
             throw new IllegalArgumentException("Specified class [" + clazz + "] is not an interface");
         }
@@ -210,23 +205,7 @@ public class Types {
             throw new IllegalArgumentException("Specified class [" + clazz + "] is an interface");
         }
 
-        return toMap(clazz.getTypeParameters(), getActualTypeArguments(type));
-    }
-
-    static <K, V> Map<K, V> toMap(Map<K, V> map, K[] keys, V[] vals) {
-        if (keys.length != vals.length) {
-            throw new IllegalArgumentException("keys/vals length not equal");
-        }
-
-        for (int i = 0; i < keys.length; i++) {
-            map.put(keys[i], vals[i]);
-        }
-
-        return map;
-    }
-
-    static <K, V> Map<K, V> toMap(K[] keys, V[] vals) {
-        return toMap(new LinkedHashMap<>(), keys, vals);
+        return MapUtils.toMap(clazz.getTypeParameters(), getActualTypeArguments(type));
     }
 
     /**
@@ -294,16 +273,6 @@ public class Types {
         return new Type[]{};
     }
 
-    static <T> T at(T[] ts, int i, T defaultValue) {
-        if (ts == null) {
-            return defaultValue;
-        }
-        if (i < 0) {
-            i += ts.length;
-        }
-        return ts.length > i ? ts[i] : defaultValue;
-    }
-
 
     /**
      * 获取数组中元素的Class对象
@@ -360,55 +329,7 @@ public class Types {
     }
 
     public static Type[] getMapKVType(Type beanType, Type fieldType) {
-        if (fieldType instanceof TypeVariable && beanType != null) {
-            return getMapKVType(getComponentType(beanType, fieldType));
-        } else if (fieldType instanceof ParameterizedType) {
-            ParameterizedType parameterizedType = (ParameterizedType) fieldType;
-            if (beanType != null) {
-                Map<TypeVariable<?>, Type> variableTypeMap = Types.getClassTypeMap(beanType);
-                return getMapKVTypeFromCache(makeParameterizedType(extractClass(fieldType),
-                        parameterizedType.getActualTypeArguments(), variableTypeMap));
-            } else {
-                return getMapKVTypeFromCache(parameterizedType);
-            }
-        } else if (fieldType instanceof Class<?>) {
-            return getMapKVType((Class<?>) fieldType);
-        }
-        return OBJECT_K_V_TYPE;
-    }
-
-    private static Type[] getMapKVType(Class<?> clazz) {
-        return clazz.getName().startsWith("java.") ? OBJECT_K_V_TYPE : getMapKVType(getSuperType(clazz, Map.class));
-    }
-
-    private static Type[] getMapKVTypeFromCache(ParameterizedType parameterizedType) {
-        Type[] types = MAP_PARAMETER_TYPE_CACHE.get(parameterizedType);
-        if (types != null) {
-            return types;
-        }
-        types = getMapKVType(parameterizedType);
-        MAP_PARAMETER_TYPE_CACHE.put(parameterizedType, types);
-        return types;
-    }
-
-    private static Type[] getMapKVType(ParameterizedType parameterizedType) {
-        Type rawType = parameterizedType.getRawType();
-        Type[] actualTypeArguments = parameterizedType.getActualTypeArguments();
-        if (rawType == Map.class) {
-            return new Type[]{getWildcardTypeUpperBounds(actualTypeArguments[0]),
-                    getWildcardTypeUpperBounds(actualTypeArguments[1])};
-        }
-        Class<?> rawClass = (Class<?>) rawType;
-        Map<TypeVariable<?>, Type> actualTypeMap = toMap(rawClass.getTypeParameters(), actualTypeArguments);
-        Type superType = getSuperType(rawClass, Map.class);
-        if (superType instanceof ParameterizedType) {
-            Class<?> superClass = extractClass(superType);
-            Type[] superClassTypeParameters = ((ParameterizedType) superType).getActualTypeArguments();
-            return superClassTypeParameters.length > 0
-                    ? getMapKVType(makeParameterizedType(superClass, superClassTypeParameters, actualTypeMap))
-                    : getMapKVType(superClass);
-        }
-        return getMapKVType(superType);
+        return GenericsResolver.of(Map.class).resolve(beanType, fieldType);
     }
 
     public static Type getCollectionItemType(Type fieldType) {
@@ -416,57 +337,11 @@ public class Types {
     }
 
     public static Type getCollectionItemType(Type beanType, Type fieldType) {
-        if (fieldType instanceof TypeVariable && beanType != null) {
-            return getCollectionItemType(getComponentType(beanType, fieldType));
-        } else if (fieldType instanceof ParameterizedType) {
-            ParameterizedType parameterizedType = (ParameterizedType) fieldType;
-            if (beanType != null) {
-                parameterizedType = makeParameterizedType(extractClass(fieldType),
-                        parameterizedType.getActualTypeArguments(), getClassTypeMap(beanType));
-            }
-            return getCollectionItemTypeFromCache(parameterizedType);
-        } else if (fieldType instanceof Class<?>) {
-            return getCollectionItemType((Class<?>) fieldType);
-        }
-        return OBJECT_CLASS;
+        return GenericsResolver.of(Collection.class).resolve(beanType, fieldType)[0];
     }
 
-    private static Type getCollectionItemType(Class<?> clazz) {
-        return clazz.getName().startsWith("java.") ? OBJECT_CLASS
-                : getCollectionItemType(getSuperType(clazz, Collection.class));
-    }
-
-    private static Type getCollectionItemTypeFromCache(ParameterizedType parameterizedType) {
-        Type type = COLLECTION_PARAMETER_TYPE_CACHE.get(parameterizedType);
-        if (type != null) {
-            return type;
-        }
-        type = getCollectionItemType(parameterizedType);
-        COLLECTION_PARAMETER_TYPE_CACHE.put(parameterizedType, type);
-        return type;
-    }
-
-    private static Type getCollectionItemType(ParameterizedType parameterizedType) {
-        Type rawType = parameterizedType.getRawType();
-        Type[] actualTypeArguments = parameterizedType.getActualTypeArguments();
-        if (rawType == Collection.class) {
-            return getWildcardTypeUpperBounds(actualTypeArguments[0]);
-        }
-        Class<?> rawClass = (Class<?>) rawType;
-        Map<TypeVariable<?>, Type> actualTypeMap = toMap(rawClass.getTypeParameters(), actualTypeArguments);
-        Type superType = getSuperType(rawClass, Collection.class);
-        if (superType instanceof ParameterizedType) {
-            Class<?> superClass = extractClass(superType);
-            Type[] superClassTypeParameters = ((ParameterizedType) superType).getActualTypeArguments();
-            return superClassTypeParameters.length > 0
-                    ? getCollectionItemType(makeParameterizedType(superClass, superClassTypeParameters, actualTypeMap))
-                    : getCollectionItemType(superClass);
-        }
-        return getCollectionItemType(superType);
-    }
-
-    private static ParameterizedType makeParameterizedType(Class<?> rawClass, Type[] typeParameters,
-                                                           Map<TypeVariable<?>, Type> actualTypeMap) {
+    public static ParameterizedType makeParameterizedType(Class<?> rawClass, Type[] typeParameters,
+                                                          Map<TypeVariable<?>, Type> actualTypeMap) {
         int length = typeParameters.length;
         Type[] actualTypeArguments = new Type[length];
         for (int i = 0; i < length; i++) {
@@ -488,32 +363,15 @@ public class Types {
         return typeParameter;
     }
 
-    private static Type getSuperType(Class<?> clazz, Class<?> interfacesOrSuperclass) {
-        Type assignable = null;
-        if (interfacesOrSuperclass.isInterface()) {
-            for (Type type : clazz.getGenericInterfaces()) {
-                Class<?> rawClass = extractClass(type);
-                if (rawClass == interfacesOrSuperclass) {
-                    return type;
-                }
-                if (interfacesOrSuperclass.isAssignableFrom(rawClass)) {
-                    assignable = type;
-                }
-            }
-        }
-        return assignable == null ? clazz.getGenericSuperclass() : assignable;
-    }
 
-    public static Type getWildcardTypeUpperBounds(Type type) {
-        if (type instanceof WildcardType) {
-            WildcardType wildcardType = (WildcardType) type;
-            Type[] upperBounds = wildcardType.getUpperBounds();
-            return upperBounds.length > 0 ? upperBounds[0] : OBJECT_CLASS;
-        }
-        return type;
-    }
-
-
+    /**
+     * 获取bean构造函数
+     *
+     * @param clazz      类型
+     * @param paramTypes 构造函数类型
+     * @param <T>        范型
+     * @return 构造函数
+     */
     public static <T> Constructor<T> getConstructorIfAvailable(Class<T> clazz, Class<?>... paramTypes) {
         try {
             return clazz.getConstructor(paramTypes);
@@ -550,6 +408,12 @@ public class Types {
         return false;
     }
 
+    /**
+     * 是否是基础类型
+     *
+     * @param clazz 类型
+     * @return 是否
+     */
     public static boolean isPrimitiveTypeClass(Class<?> clazz) {
         return primitiveTypeToWrapperMap.containsKey(clazz);
     }
@@ -597,10 +461,22 @@ public class Types {
                 && (clazz.getClassLoader() != null && Objects.equals(clazz.getClassLoader(), APP_CLASS_LOADER));
     }
 
+    /**
+     * 是否是多元素数据结构类型
+     *
+     * @param clazz 类型
+     * @return 是否
+     */
     public static boolean isMulti(Class<?> clazz) {
         return isArray(clazz) || isCollection(clazz) || isMap(clazz);
     }
 
+    /**
+     * 是否是数组类型
+     *
+     * @param type 类型
+     * @return 是否
+     */
     public static boolean isArray(Type type) {
         if (type instanceof Class) {
             return ((Class<?>) type).isArray();
@@ -677,6 +553,12 @@ public class Types {
         return str.startsWith("[") && str.endsWith("]");
     }
 
+    /**
+     * 是否是OBJECT类型
+     *
+     * @param type 类型
+     * @return 是否
+     */
     public static boolean isObjectType(Type type) {
         return OBJECT_CLASS.equals(type);
     }

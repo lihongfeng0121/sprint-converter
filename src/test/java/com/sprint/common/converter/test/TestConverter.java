@@ -8,6 +8,7 @@ import com.sprint.common.converter.conversion.nested.bean.Beans;
 import com.sprint.common.converter.exception.ConversionException;
 import com.sprint.common.converter.test.bean.*;
 import com.sprint.common.converter.util.Assert;
+import com.sprint.common.converter.util.GenericsResolver;
 import com.sprint.common.converter.util.Types;
 import org.junit.Test;
 
@@ -28,20 +29,56 @@ import java.util.stream.Stream;
  */
 public class TestConverter {
 
+    public static class MMap<V> extends HashMap<V, List<V>> {
+
+    }
+
+    /**
+     * 测试范型解析
+     */
+    @Test
+    public void testGenericsResolver() {
+        Type type = new TypeReference<MMap<String>>() {
+        }.getType();
+        Type[] types = Types.getMapKVType(null, type);
+        System.out.println(Arrays.toString(types));
+        GenericsResolver resolver = GenericsResolver.of(Map.class);
+        System.out.println(Arrays.toString(resolver.resolve(type)));
+    }
+
+    @Test
+    public void testReferCustomMapConvert() {
+        TestBean<Map<String, String>> bean = new TestBean<>();
+        bean.setObj(Collections.singletonMap("12121", "23123145"));
+        TestBean<MMap<String>> res = AnyConverter.convert(bean, new TypeReference<TestBean<MMap<String>>>() {
+        });
+        System.out.println(res);
+    }
+
+    /**
+     * 测试自定义Map转换
+     */
     @Test
     public void testCustomMapConvert() {
-        CustomMap<String, Long> map2 = new CustomMap<>();
-        map2.setAddress("beijing");
-        map2.setAge("29");
-        map2.setName("zhangsan");
-        map2.put("hahaha", System.currentTimeMillis());
-        CustomMap2<String, Date> map3 = AnyConverter.convert(map2, new TypeReference<CustomMap2<String, Date>>() {
-        });
-        Assert.isTrue(Objects.equals(map3.size(), map2.size()), "map 条数发生变化，failed!");
-        Assert.isTrue(Objects.equals(map3.get("hahaha").getTime(), map2.get("hahaha")), "map value long->date，failed!");
-        Map<String, Date> map4 = AnyConverter.convert(map2, new TypeReference<Map<String, Date>>() {
-        });
-        Assert.isTrue(Objects.equals(Beans.toMap(map4).size(), 4), "to map 条数错误，failed!");
+        CustomMap<String, Long> customMap = new CustomMap<>();
+        customMap.setAddress("beijing");
+        customMap.setAge("29");
+        customMap.setName("zhangsan");
+        customMap.put("hahaha", System.currentTimeMillis());
+
+        {//测试自定义map转自定义map
+            CustomMap2<String, Date> map = AnyConverter.convert(customMap, new TypeReference<CustomMap2<String, Date>>() {
+            });
+            Assert.isTrue(Objects.equals(map.size(), customMap.size()), "map 条数发生变化，failed!");
+            Assert.isTrue(Objects.equals(map.get("hahaha").getTime(), customMap.get("hahaha")), "map value long->date，failed!");
+        }
+
+        {//测试自定义map转Map
+            Map<String, Date> map4 = AnyConverter.convert(customMap, new TypeReference<Map<String, Date>>() {
+            });
+
+            Assert.isTrue(Objects.equals(Beans.toMap(map4).size(), 4), "to map 条数错误，failed!");
+        }
         System.out.println("test1:CustomMapConvert success");
     }
 
@@ -96,10 +133,15 @@ public class TestConverter {
         System.out.println(bean1);
 
         System.out.println("test bean convert total cost:" + (System.currentTimeMillis() - tms));
+
+        System.out.println("----------------test json to bean---------------------");
+
+        Map<String, Object> res = AnyConverter.convert("{\"name\":\"zhangsan\"}", Map.class);
+        System.out.println(res);
     }
 
     @Test
-    public void testBeanConvert1() {
+    public void testSetBeanProperty() {
         HashMap<String, Object> obj = new HashMap<>();
         Beans.setProperty(new TypeReference<HashMap<String, Object>>() {
         }.getType(), obj, "test.inner.test", "hahahah", true, false);
@@ -162,14 +204,17 @@ public class TestConverter {
                 new TypeReference<TypeBean<List<TestBean<String>>>>() {
                 });
         System.out.println(bean2);
-
     }
 
     @Test
     public void testPathConverter() throws ConversionException {
+        Object ob = AnyConverter.convert(Collections.singletonMap("local", AnyConverter.convert("2021-01-01 10:10:10", LocalDateTime.class, Long.class)), String.class);
+        System.out.println(ob);
+
         Converter<String, Timestamp> converter = AnyConverter.getConverter(String.class, Long.class, Timestamp.class);
         Converter<Long, Timestamp> converter2 = AnyConverter.getConverter(Long.class, String.class, Long.class,
                 Timestamp.class);
+
         Long ts = System.currentTimeMillis();
         String tsStr = String.valueOf(ts);
         Timestamp timestamp = converter.convert(tsStr);
@@ -188,43 +233,15 @@ public class TestConverter {
     }
 
     @Test
-    public void test() {
+    public void testConverterFunction() throws ConversionException {
         Converter<Number, String> nc = String::valueOf;
         Converter<String, String> nc2 = nc.compose((Converter<CharSequence, Number>) CharSequence::length);
         Converter<Number, BigDecimal> nc3 = nc.andThen(BigDecimal::new);
-        Map<String, Object> res = AnyConverter.convert("{\"name\":\"zhangsan\"}", Map.class);
-        System.out.println(res);
-    }
-
-    public static class MMap<V> extends HashMap<V, List<V>> {
-
-    }
-
-    @Test
-    public void test2() {
-        TestBean<Map<String, String>> bean = new TestBean<>();
-        bean.setStr(Collections.singletonMap("12121", "23123145"));
-        TestBean<MMap<String>> res = AnyConverter.convert(bean, new TypeReference<TestBean<MMap<String>>>() {
-        });
-        System.out.println(res);
-    }
-
-    @Test
-    public void testMap() {
-        Type type = new TypeReference<MMap<String>>() {
-        }.getType();
-        Type[] types = Types.getMapKVType(null, type);
-        System.out.println(Arrays.toString(types));
-    }
-
-    @Test
-    public void test2Object() {
-        Object ob = AnyConverter.convert(Collections.singletonMap("local", AnyConverter.convert("2021-01-01 10:10:10", LocalDateTime.class, Long.class)), String.class);
-        System.out.println(ob);
+        System.out.println(nc3.convert(10));
+        System.out.println(nc2.convert("我是五个字"));
         double ss = Stream.of("2", "12.6").map(BaseConverter.getConverter(String.class, Double.TYPE).asfunc()).reduce(Double::sum).get();
         System.out.println(ss);
     }
-
 
     @Test
     public void testString() throws ConversionException {
@@ -239,7 +256,7 @@ public class TestConverter {
     }
 
     @Test
-    public void test111(){
+    public void testSimpleBean2Bean() {
         Student student = new Student();
         student.setName("zhangsan");
         student.setLevel("一年级");

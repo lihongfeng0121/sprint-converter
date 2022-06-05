@@ -11,12 +11,12 @@ import java.util.Objects;
 public class GenericArrayTypeImpl implements GenericArrayType {
     private final Type genericComponentType;
 
-    private GenericArrayTypeImpl(Type var1) {
-        this.genericComponentType = var1;
+    private GenericArrayTypeImpl(Type genericComponentType) {
+        this.genericComponentType = genericComponentType;
     }
 
-    public static GenericArrayTypeImpl make(Type var0) {
-        return new GenericArrayTypeImpl(var0);
+    public static GenericArrayTypeImpl make(Type genericComponentType) {
+        return new GenericArrayTypeImpl(genericComponentType);
     }
 
     public Type getGenericComponentType() {
@@ -24,21 +24,20 @@ public class GenericArrayTypeImpl implements GenericArrayType {
     }
 
     public String toString() {
-        Type var1 = this.getGenericComponentType();
-        StringBuilder var2 = new StringBuilder();
-        if (var1 instanceof Class) {
-            var2.append(((Class) var1).getName());
+        Type type = this.getGenericComponentType();
+        StringBuilder builder = new StringBuilder();
+        if (type instanceof Class) {
+            builder.append(((Class<?>) type).getName());
         } else {
-            var2.append(var1.toString());
+            builder.append(type.toString());
         }
-
-        var2.append("[]");
-        return var2.toString();
+        builder.append("[]");
+        return builder.toString();
     }
 
-    public boolean equals(Object var1) {
-        if (var1 instanceof GenericArrayType) {
-            GenericArrayType var2 = (GenericArrayType) var1;
+    public boolean equals(Object type2) {
+        if (type2 instanceof GenericArrayType) {
+            GenericArrayType var2 = (GenericArrayType) type2;
             return Objects.equals(this.genericComponentType, var2.getGenericComponentType());
         } else {
             return false;

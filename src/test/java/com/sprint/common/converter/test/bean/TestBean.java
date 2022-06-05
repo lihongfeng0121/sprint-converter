@@ -5,25 +5,25 @@ package com.sprint.common.converter.test.bean;
  * @since 2021/2/11
  */
 public class TestBean<T> {
-    private T str;
+    private T obj;
 
     public TestBean() {
     }
 
-    public TestBean(T str) {
-        this.str = str;
+    public TestBean(T obj) {
+        this.obj = obj;
     }
 
-    public void setStr(T str) {
-        this.str = str;
+    public void setObj(T obj) {
+        this.obj = obj;
     }
 
-    public T getStr() {
-        return str;
+    public T getObj() {
+        return obj;
     }
 
     @Override
     public String toString() {
-        return "TestBean{" + "str=" + str + '}';
+        return "TestBean{" + "obj=" + obj + '}';
     }
 }
