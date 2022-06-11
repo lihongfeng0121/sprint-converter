@@ -70,7 +70,7 @@ public class BeanOptional<T> {
     /**
      * 获取bean
      *
-     * @return
+     * @return value
      */
     public Object getNullable() {
         return value;
@@ -141,22 +141,6 @@ public class BeanOptional<T> {
      * function to the value of this {@code BeanOptional}, if a value is present,
      * otherwise an empty {@code BeanOptional}
      * @throws NullPointerException if the mapping function is null
-     * @apiNote This method supports post-processing on optional values, without
-     * the need to explicitly check for a return status.  For example, the
-     * following code traverses a stream of file names, selects one that has
-     * not yet been processed, and then opens that file, returning an
-     * {@code Optional<FileInputStream>}:
-     *
-     * <pre>{@code
-     *     Optional<FileInputStream> fis =
-     *         names.stream().filter(name -> !isProcessedYet(name))
-     *                       .findFirst()
-     *                       .map(name -> new FileInputStream(name));
-     * }</pre>
-     * <p>
-     * Here, {@code findFirst} returns an {@code BeanOptional<String>}, and then
-     * {@code map} returns an {@code BeanOptional<FileInputStream>} for the desired
-     * file if one exists.
      */
     public <U> BeanOptional<U> map(Function<? super T, ? extends U> mapper) {
         Objects.requireNonNull(mapper);
@@ -204,8 +188,9 @@ public class BeanOptional<T> {
     /**
      * If a value is present, apply the provided type cast to it,
      *
-     * @param type target type
-     * @param <U>  The type of the result of the mapping function
+     * @param type             target type
+     * @param <U>              The type of the result of the mapping function
+     * @param ignoreProperties ignore properties
      * @return an {@code BeanOptional} describing the result of applying a mapping
      * function to the value of this {@code BeanOptional}, if a value is present,
      * otherwise an empty {@code BeanOptional}
@@ -217,8 +202,9 @@ public class BeanOptional<T> {
     /**
      * If a value is present, apply the provided type cast to it,
      *
-     * @param type target type
-     * @param <U>  The type of the result of the mapping function
+     * @param type             target type
+     * @param <U>              The type of the result of the mapping function
+     * @param ignoreProperties ignore properties
      * @return an {@code BeanOptional} describing the result of applying a mapping
      * function to the value of this {@code BeanOptional}, if a value is present,
      * otherwise an empty {@code BeanOptional}
@@ -230,8 +216,9 @@ public class BeanOptional<T> {
     /**
      * If a value is present, apply the provided type cast to it,
      *
-     * @param type target type
-     * @param <U>  The type of the result of the mapping function
+     * @param type             target type
+     * @param <U>              The type of the result of the mapping function
+     * @param ignoreProperties ignore properties
      * @return an {@code BeanOptional} describing the result of applying a mapping
      * function to the value of this {@code BeanOptional}, if a value is present,
      * otherwise an empty {@code BeanOptional}
@@ -305,9 +292,6 @@ public class BeanOptional<T> {
      * @throws X                    if there is no value present
      * @throws NullPointerException if no value is present and
      *                              {@code exceptionSupplier} is null
-     * @apiNote A method reference to the exception constructor with an empty
-     * argument list can be used as the supplier. For example,
-     * {@code IllegalStateException::new}
      */
     public <X extends Throwable> T orElseThrow(Supplier<? extends X> exceptionSupplier) throws X {
         if (value != null) {
@@ -330,8 +314,8 @@ public class BeanOptional<T> {
     /**
      * 获取bean 属性
      *
-     * @param key
-     * @return
+     * @param key key
+     * @return p
      */
     public Object get(String key) {
         assertNull();
@@ -636,9 +620,6 @@ public class BeanOptional<T> {
      * between implementations and versions.
      *
      * @return the string representation of this instance
-     * @implSpec If a value is present the result must include its string
-     * representation in the result. Empty and present Optionals must be
-     * unambiguously differentiable.
      */
     @Override
     public String toString() {

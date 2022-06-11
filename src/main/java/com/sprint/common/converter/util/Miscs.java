@@ -56,9 +56,9 @@ public class Miscs {
     /**
      * 类型转化
      *
-     * @param object
-     * @param <T>
-     * @return
+     * @param object source
+     * @param <T>    target type
+     * @return T
      */
     public static <T> T cast(Object object) {
         return (T) object;
