@@ -77,10 +77,14 @@ public class BeanOptional<T> {
     }
 
     public T get() {
+        assertNull();
+        return value;
+    }
+
+    private void assertNull() {
         if (value == null) {
             throw new NoSuchElementException("No value present");
         }
-        return value;
     }
 
     /**
@@ -161,6 +165,40 @@ public class BeanOptional<T> {
         else {
             return BeanOptional.ofNullable(mapper.apply(value));
         }
+    }
+
+    public Optional<Object> mapGet(String key) {
+        Objects.requireNonNull(key);
+        if (!isPresent())
+            return Optional.empty();
+        else {
+            return Optional.ofNullable(Beans.getProperty(value, key));
+        }
+    }
+
+    public <U> Optional<U> mapGet(String key, Class<U> type) {
+        Objects.requireNonNull(type);
+        return mapGet(key).map(item -> AnyConverter.convert(item, type));
+    }
+
+    public Optional<Object> mapGet(String key, Type type) {
+        Objects.requireNonNull(type);
+        return mapGet(key).map(item -> AnyConverter.convert(item, type));
+    }
+
+    public <U> Optional<U> mapGet(String key, TypeReference<U> type) {
+        Objects.requireNonNull(type);
+        return mapGet(key).map(item -> AnyConverter.convert(item, type));
+    }
+
+    public <U> BeanOptional<U> mapGetBean(String key, Class<U> type) {
+        Objects.requireNonNull(type);
+        return mapGet(key).map(item -> AnyConverter.convert(item, type)).map(BeanOptional::ofNullable).orElse(empty());
+    }
+
+    public <U> BeanOptional<U> mapGetBean(String key, TypeReference<U> type) {
+        Objects.requireNonNull(type);
+        return mapGet(key).map(item -> AnyConverter.convert(item, type)).map(BeanOptional::ofNullable).orElse(empty());
     }
 
     /**
@@ -288,6 +326,7 @@ public class BeanOptional<T> {
         return Optional.ofNullable(value);
     }
 
+
     /**
      * 获取bean 属性
      *
@@ -295,28 +334,8 @@ public class BeanOptional<T> {
      * @return
      */
     public Object get(String key) {
-        return Beans.getProperty(get(), key);
-    }
-
-
-    /**
-     * 获取bean 属性
-     *
-     * @param key
-     * @return
-     */
-    public Optional<Object> getOptional(String key) {
-        return Optional.of(get()).map(item -> Beans.getProperty(value, key));
-    }
-
-    /**
-     * 获取bean 属性
-     *
-     * @param key
-     * @return
-     */
-    public Optional<Object> safeGetOptional(String key) {
-        return Optional.ofNullable(getNullable()).map(item -> Beans.getProperty(value, key));
+        assertNull();
+        return mapGet(key).orElse(null);
     }
 
     /**
@@ -326,15 +345,16 @@ public class BeanOptional<T> {
      * @return 属性值
      */
     public Object safeGet(String key) {
-        return value == null ? null : Beans.getProperty(value, key);
+        return mapGet(key).orElse(null);
     }
 
     private Object doGet(String key, Type type, Supplier<Object> defaultSupplier) {
-        return Optional.ofNullable(get(key)).map(val -> AnyConverter.convert(val, type)).orElseGet(defaultSupplier);
+        assertNull();
+        return mapGet(key, type).orElseGet(defaultSupplier);
     }
 
     private Object doSafeGet(String key, Type type, Supplier<Object> defaultSupplier) {
-        return Optional.ofNullable(safeGet(key)).map(val -> AnyConverter.convert(val, type)).orElseGet(defaultSupplier);
+        return mapGet(key, type).orElseGet(defaultSupplier);
     }
 
     public <P> List<P> getList(String key, Class<P> clazz) {
