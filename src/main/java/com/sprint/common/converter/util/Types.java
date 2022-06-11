@@ -111,7 +111,7 @@ public class Types {
      * @return ClassSuperclassType
      */
     public static Type getClassSuperclassType(Class<?> clazz, int lc) {
-        return MiscUtils.at(getClassSuperclassType(clazz), lc, null);
+        return Miscs.at(getClassSuperclassType(clazz), lc, null);
     }
 
     /**
@@ -124,7 +124,7 @@ public class Types {
         if (clazz.isInterface()) {
             throw new IllegalArgumentException("Specified class [" + clazz + "] is an interface");
         }
-        return MapUtils.toMap(clazz.getSuperclass().getTypeParameters(), getClassSuperclassType(clazz));
+        return Miscs.toMap(clazz.getSuperclass().getTypeParameters(), getClassSuperclassType(clazz));
     }
 
     /**
@@ -136,7 +136,7 @@ public class Types {
      * @return InterfaceSuperclass
      */
     public static Class<?> getInterfaceSuperclass(Class<?> clazz, Class<?> intf, int lc) {
-        return MiscUtils.at(getInterfaceSuperclass(clazz, intf), lc, null);
+        return Miscs.at(getInterfaceSuperclass(clazz, intf), lc, null);
     }
 
     /**
@@ -205,7 +205,7 @@ public class Types {
             throw new IllegalArgumentException("Specified class [" + clazz + "] is an interface");
         }
 
-        return MapUtils.toMap(clazz.getTypeParameters(), getActualTypeArguments(type));
+        return Miscs.toMap(clazz.getTypeParameters(), getActualTypeArguments(type));
     }
 
     /**

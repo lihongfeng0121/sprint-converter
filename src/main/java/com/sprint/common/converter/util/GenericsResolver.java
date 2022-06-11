@@ -1,5 +1,6 @@
 package com.sprint.common.converter.util;
 
+import com.sprint.common.converter.TypeReference;
 import com.sun.istack.internal.NotNull;
 import com.sun.istack.internal.Nullable;
 
@@ -88,6 +89,16 @@ public class GenericsResolver {
     /**
      * 解析范型真实类型
      *
+     * @param reference 类
+     * @return 范型
+     */
+    public Type[] resolve(@NotNull TypeReference<?> reference) {
+        return resolve(reference.getType());
+    }
+
+    /**
+     * 解析范型真实类型
+     *
      * @param clazz 类
      * @return 范型
      */
@@ -122,7 +133,7 @@ public class GenericsResolver {
             return Arrays.stream(actualTypeArguments).map(this::getWildcardTypeUpperBounds).toArray(Type[]::new);
         }
         Class<?> rawClass = (Class<?>) rawType;
-        Map<TypeVariable<?>, Type> actualTypeMap = MapUtils.toMap(rawClass.getTypeParameters(), actualTypeArguments);
+        Map<TypeVariable<?>, Type> actualTypeMap = Miscs.toMap(rawClass.getTypeParameters(), actualTypeArguments);
         Type superType = getSuperType(rawClass, Map.class);
         if (superType instanceof ParameterizedType) {
             Class<?> superClass = Types.extractClass(superType);

@@ -29,8 +29,22 @@ import java.util.stream.Stream;
  */
 public class TestConverter {
 
-    public static class MMap<V> extends HashMap<V, List<V>> {
 
+    public static class ClazzTypeImpl extends ClazzType<Student, Student2> {
+    }
+
+    public static class ClazzTypeImpl2 extends ClazzTypeImpl {
+    }
+
+    @Test
+    public void testTypes() {
+        System.out.println(Arrays.toString(Types.getClassSuperclassType(ClazzTypeImpl.class)));
+        System.out.println(Arrays.toString(Types.getClassSuperclassType(ClazzTypeImpl2.class)));
+        System.out.println(Arrays.toString(GenericsResolver.of(ClazzType.class).resolve(ClazzTypeImpl.class)));
+        System.out.println(Arrays.toString(GenericsResolver.of(ClazzType.class).resolve(ClazzTypeImpl2.class)));
+        System.out.println(Arrays.toString(Types.getClassSuperclassType(MMap.class)));
+        System.out.println(Arrays.toString(GenericsResolver.of(Map.class).resolve(new TypeReference<MMap<String>>() {
+        })));
     }
 
     /**

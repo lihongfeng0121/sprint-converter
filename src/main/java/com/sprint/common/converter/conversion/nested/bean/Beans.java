@@ -6,6 +6,7 @@ import com.sprint.common.converter.conversion.nested.bean.introspection.CachedIn
 import com.sprint.common.converter.conversion.nested.bean.introspection.PropertyAccess;
 import com.sprint.common.converter.exception.ConversionException;
 import com.sprint.common.converter.util.Assert;
+import com.sprint.common.converter.util.Miscs;
 import com.sprint.common.converter.util.Types;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -312,7 +313,7 @@ public final class Beans {
             String property = propertyCascade[0];
             Object back;
             if (obj instanceof Map) {
-                Map map = ((Map) obj);
+                Map<?, ?> map = Miscs.cast(obj);
                 Object res = map.get(propertyName);
                 if (res != null) {
                     return res;
