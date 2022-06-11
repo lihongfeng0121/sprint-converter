@@ -32,6 +32,8 @@ public class BooleanConverters implements SpecificConverterLoader {
                 return true;
             } else if ("是".equals(str)) {
                 return true;
+            } else if ("ok".equalsIgnoreCase(str)) {
+                return true;
             } else if ("yes".equalsIgnoreCase(str)) {
                 return true;
             } else {
