@@ -21,8 +21,8 @@ public class ParameterizedTypeImpl implements ParameterizedType {
         this.ownerType = ownerType != null ? ownerType : rawType.getDeclaringClass();
     }
 
-    public static ParameterizedTypeImpl make(Class<?> var0, Type[] var1, Type var2) {
-        return new ParameterizedTypeImpl(var0, var1, var2);
+    public static ParameterizedTypeImpl make(Class<?> rawType, Type[] actualTypeArguments, Type ownerType) {
+        return new ParameterizedTypeImpl(rawType, actualTypeArguments, ownerType);
     }
 
     public Type[] getActualTypeArguments() {
