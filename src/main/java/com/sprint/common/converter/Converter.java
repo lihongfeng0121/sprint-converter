@@ -203,6 +203,16 @@ public interface Converter<S, T> {
      * @return 自身转换器
      */
     static <S, T> Converter<S, T> enforcer() {
-        return s -> (T) s;
+        return Converter::doEnforce;
+    }
+
+    /**
+     * 强制转换
+     *
+     * @param s s
+     * @return t
+     */
+    static <S, T> T doEnforce(S s) {
+        return (T) s;
     }
 }

@@ -7,7 +7,7 @@ import java.util.Map;
  * @author hongfeng.li
  * @since 2022/6/5
  */
-public class Miscs {
+class Miscs {
 
     /**
      * 获取数据元素
@@ -51,16 +51,5 @@ public class Miscs {
         }
 
         return map;
-    }
-
-    /**
-     * 类型转化
-     *
-     * @param object source
-     * @param <T>    target type
-     * @return T
-     */
-    public static <T> T cast(Object object) {
-        return (T) object;
     }
 }

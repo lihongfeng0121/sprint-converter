@@ -1,12 +1,12 @@
 package com.sprint.common.converter.conversion.nested.bean;
 
+import com.sprint.common.converter.Converter;
 import com.sprint.common.converter.TypeReference;
 import com.sprint.common.converter.conversion.nested.NestedConverters;
 import com.sprint.common.converter.conversion.nested.bean.introspection.CachedIntrospectionResults;
 import com.sprint.common.converter.conversion.nested.bean.introspection.PropertyAccess;
 import com.sprint.common.converter.exception.ConversionException;
 import com.sprint.common.converter.util.Assert;
-import com.sprint.common.converter.util.Miscs;
 import com.sprint.common.converter.util.Types;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -313,7 +313,7 @@ public final class Beans {
             String property = propertyCascade[0];
             Object back;
             if (obj instanceof Map) {
-                Map<?, ?> map = Miscs.cast(obj);
+                Map<?, ?> map = Converter.doEnforce(obj);
                 Object res = map.get(propertyName);
                 if (res != null) {
                     return res;
