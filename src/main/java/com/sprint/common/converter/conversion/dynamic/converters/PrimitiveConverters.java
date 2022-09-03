@@ -83,7 +83,7 @@ public class PrimitiveConverters implements DynamicConverterLoader {
 
         @Override
         public boolean support(Class<?> sourceType, Class<?> targetType) {
-            return getPrimitiveType(sourceType) != null && sourceType.isAssignableFrom(sourceType);
+            return getPrimitiveType(sourceType) != null && targetType.isAssignableFrom(sourceType);
         }
 
         @Override

@@ -263,10 +263,14 @@ public class TestConverter {
         long ts = System.currentTimeMillis();
         System.out.println(Arrays.toString(AnyConverter.convert(aa, byte[].class)));
         System.out.println(System.currentTimeMillis() - ts);
-        System.out.println(Arrays.toString(AnyConverter.convert(aa, byte[].class)));
+        System.out.println(Arrays.toString(AnyConverter.convert(aa, char[].class)));
         System.out.println(System.currentTimeMillis() - ts);
-        System.out.println(Arrays.toString(BaseConverter.convert(aa, byte[].class)));
+        byte[] bytes = BaseConverter.convert(aa, byte[].class);
+        System.out.println(Arrays.toString(bytes));
         System.out.println(System.currentTimeMillis() - ts);
+        System.out.println(BaseConverter.convert(bytes, String.class));
+        System.out.println(System.currentTimeMillis() - ts);
+        System.out.println(Arrays.toString(AnyConverter.convert(bytes, char[].class)));
     }
 
     @Test
