@@ -2,8 +2,7 @@ package com.sprint.common.converter.util;
 
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
-import java.util.Arrays;
-import java.util.Objects;
+import java.util.*;
 
 /**
  * @author hongfeng.li
@@ -23,6 +22,18 @@ public class ParameterizedTypeImpl implements ParameterizedType {
 
     public static ParameterizedTypeImpl make(Class<?> rawType, Type[] actualTypeArguments, Type ownerType) {
         return new ParameterizedTypeImpl(rawType, actualTypeArguments, ownerType);
+    }
+
+    public static <K, V> ParameterizedTypeImpl makeMap(Class<K> keyType, Class<V> valueType) {
+        return new ParameterizedTypeImpl(Map.class, new Type[]{keyType, valueType}, null);
+    }
+
+    public static <E> ParameterizedTypeImpl makeList(Class<E> elementType) {
+        return new ParameterizedTypeImpl(List.class, new Type[]{elementType}, null);
+    }
+
+    public static <E> ParameterizedTypeImpl makeSet(Class<E> elementType) {
+        return new ParameterizedTypeImpl(Set.class, new Type[]{elementType}, null);
     }
 
     public Type[] getActualTypeArguments() {
