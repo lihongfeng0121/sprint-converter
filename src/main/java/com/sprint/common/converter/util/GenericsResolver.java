@@ -1,8 +1,6 @@
 package com.sprint.common.converter.util;
 
 import com.sprint.common.converter.TypeReference;
-import com.sun.istack.internal.NotNull;
-import com.sun.istack.internal.Nullable;
 
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
@@ -63,7 +61,7 @@ public class GenericsResolver {
      * @param fieldType 类型
      * @return 范型
      */
-    public Type[] resolve(@Nullable Type beanType, @NotNull Type fieldType) {
+    public Type[] resolve(Type beanType, Type fieldType) {
         if (fieldType instanceof TypeVariable && beanType != null) {
             return resolve(Types.getComponentType(beanType, fieldType));
         } else if (fieldType instanceof ParameterizedType) {
@@ -82,7 +80,7 @@ public class GenericsResolver {
      * @param fieldType 类型
      * @return 范型
      */
-    public Type[] resolve(@NotNull Type fieldType) {
+    public Type[] resolve(Type fieldType) {
         return resolve(null, fieldType);
     }
 
@@ -92,7 +90,7 @@ public class GenericsResolver {
      * @param reference 类
      * @return 范型
      */
-    public Type[] resolve(@NotNull TypeReference<?> reference) {
+    public Type[] resolve(TypeReference<?> reference) {
         return resolve(reference.getType());
     }
 
@@ -102,7 +100,7 @@ public class GenericsResolver {
      * @param clazz 类
      * @return 范型
      */
-    public Type[] resolve(@NotNull Class<?> clazz) {
+    public Type[] resolve(Class<?> clazz) {
         return clazz.getName().startsWith(JAVA_INNER) ? getNoneTypeParameters() : resolve(getSuperType(clazz, classType));
     }
 
