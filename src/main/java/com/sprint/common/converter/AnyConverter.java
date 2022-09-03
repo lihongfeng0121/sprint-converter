@@ -63,7 +63,7 @@ public final class AnyConverter {
      * @return 返回目标类对象
      * @throws BeansException bean exception
      */
-    public static <S, T> T doConvert(S source, Type first, Type... types) {
+    private static <S, T> T doConvert(S source, Type first, Type... types) {
         try {
             Object target = NestedConverters.convert(source, null, first);
             for (Type type : types) {
