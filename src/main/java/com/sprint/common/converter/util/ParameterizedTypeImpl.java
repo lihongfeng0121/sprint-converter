@@ -70,7 +70,7 @@ public class ParameterizedTypeImpl implements ParameterizedType {
         StringBuilder builder = new StringBuilder();
         if (this.ownerType != null) {
             if (this.ownerType instanceof Class) {
-                builder.append(((Class) this.ownerType).getName());
+                builder.append(((Class<?>) this.ownerType).getName());
             } else {
                 builder.append(this.ownerType);
             }

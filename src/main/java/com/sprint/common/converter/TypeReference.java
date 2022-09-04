@@ -24,6 +24,18 @@ public abstract class TypeReference<T> implements Comparable<TypeReference<T>> {
     };
 
     /*
+     * Map<String, List<Object>>引用的类型
+     */
+    public static final TypeReference<Map<String, List<Object>>> STR__LIST_OBJ_MAP = new TypeReference<Map<String, List<Object>>>() {
+    };
+
+    /*
+     * Map<String, List<String>>引用的类型
+     */
+    public static final TypeReference<Map<String, List<String>>> STR__LIST_STR_MAP = new TypeReference<Map<String, List<String>>>() {
+    };
+
+    /*
      * List<Map<String, Object>>引用的类型
      */
     public static final TypeReference<List<Map<String, Object>>> STR_OBJ_MAP_LIST = new TypeReference<List<Map<String, Object>>>() {

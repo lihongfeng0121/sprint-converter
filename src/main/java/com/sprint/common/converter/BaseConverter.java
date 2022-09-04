@@ -122,7 +122,7 @@ public final class BaseConverter {
     public static <S, T> ErrorHandler<S, T> baseErrorHandler(Class<?> sourceType, Class<?> targetType) {
         return (ex, s) -> {
             if (BaseConverter.isSupport(sourceType, targetType)) {
-                return (T) convert(s, targetType);
+                return Converter.doEnforce(convert(s, targetType));
             } else {
                 throw new NotSupportConvertException(sourceType, targetType, ex);
             }

@@ -46,7 +46,7 @@ public final class SpecificConverters {
                 try {
                     Object value = clz.getConstructor().newInstance();
                     if (value instanceof SpecificConverter) {
-                        registerSpecificConverter((SpecificConverter) value);
+                        registerSpecificConverter(Converter.doEnforce(value));
                     }
                 } catch (Exception e) {
                     logger.error("Error load converter ", e);
@@ -101,7 +101,7 @@ public final class SpecificConverters {
         if (specificConverter == null) {
             return null;
         }
-        SpecificConverter<S, T> finalSpecificConverter = (SpecificConverter<S, T>) specificConverter;
+        SpecificConverter<S, T> finalSpecificConverter = Converter.doEnforce(specificConverter);
 
         return finalSpecificConverter::convert;
     }

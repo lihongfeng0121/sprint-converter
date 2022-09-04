@@ -69,7 +69,7 @@ public final class AnyConverter {
             for (Type type : types) {
                 target = NestedConverters.convert(target, null, type);
             }
-            return (T) target;
+            return Converter.doEnforce(target);
         } catch (ConversionException e) {
             throw ConversionExceptionWrapper.wrapper(e);
         }

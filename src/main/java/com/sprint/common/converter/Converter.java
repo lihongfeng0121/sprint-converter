@@ -59,7 +59,7 @@ public interface Converter<S, T> {
      * @return 转换后转换器
      */
     default <S1, V1> Converter<S1, V1> enforce() {
-        return (s1) -> (V1) convert((S) s1);
+        return (s1) -> doEnforce(convert(doEnforce(s1)));
     }
 
     /**

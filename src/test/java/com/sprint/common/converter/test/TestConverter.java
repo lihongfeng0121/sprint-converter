@@ -270,7 +270,7 @@ public class TestConverter {
         System.out.println(System.currentTimeMillis() - ts);
         System.out.println(BaseConverter.convert(bytes, String.class));
         System.out.println(System.currentTimeMillis() - ts);
-        //System.out.println(Arrays.toString(AnyConverter.convert(bytes, char[].class)));
+        System.out.println(Arrays.toString(AnyConverter.convert(bytes, char[].class)));
     }
 
     @Test

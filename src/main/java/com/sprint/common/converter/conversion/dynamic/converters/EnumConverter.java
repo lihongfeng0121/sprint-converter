@@ -1,5 +1,6 @@
 package com.sprint.common.converter.conversion.dynamic.converters;
 
+import com.sprint.common.converter.Converter;
 import com.sprint.common.converter.conversion.dynamic.DynamicConverter;
 import com.sprint.common.converter.conversion.dynamic.DynamicConverterLoader;
 import com.sprint.common.converter.exception.ConversionException;
@@ -13,7 +14,7 @@ import com.sprint.common.converter.exception.ConversionException;
  */
 public class EnumConverter implements DynamicConverterLoader {
 
-    public static class StringToEnum implements DynamicConverter<Enum> {
+    public static class StringToEnum implements DynamicConverter<Enum<?>> {
 
         @Override
         public int sort() {
@@ -27,12 +28,12 @@ public class EnumConverter implements DynamicConverterLoader {
         }
 
         @Override
-        public Enum<?> convert(Object source, Class<Enum> targetType) throws ConversionException {
+        public Enum<?> convert(Object source, Class<Enum<?>> targetType) throws ConversionException {
             if (source == null) {
                 return null;
             }
             if (targetType != null) {
-                return Enum.valueOf(targetType, String.valueOf(source));
+                return Enum.valueOf(Converter.doEnforce(targetType), String.valueOf(source));
             }
             return null;
         }

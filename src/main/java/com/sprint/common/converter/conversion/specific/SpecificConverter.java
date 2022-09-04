@@ -1,5 +1,6 @@
 package com.sprint.common.converter.conversion.specific;
 
+import com.sprint.common.converter.Converter;
 import com.sprint.common.converter.exception.ConversionException;
 import com.sprint.common.converter.util.Types;
 
@@ -29,7 +30,7 @@ public interface SpecificConverter<S, T> {
      * @return sourceClass
      */
     default Class<S> getSourceClass() {
-        return (Class<S>) Types.getInterfaceSuperclass(getClass(), SpecificConverter.class, 0);
+        return Converter.doEnforce(Types.getInterfaceSuperclass(getClass(), SpecificConverter.class, 0));
     }
 
     /**
@@ -38,7 +39,7 @@ public interface SpecificConverter<S, T> {
      * @return targetClass
      */
     default Class<T> getTargetClass() {
-        return (Class<T>) Types.getInterfaceSuperclass(getClass(), SpecificConverter.class, 1);
+        return Converter.doEnforce(Types.getInterfaceSuperclass(getClass(), SpecificConverter.class, 1));
     }
 
     /**
