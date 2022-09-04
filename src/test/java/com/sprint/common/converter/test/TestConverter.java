@@ -206,25 +206,25 @@ public class TestConverter {
     }
 
     @Test
-    public void testConstructor() {
+    public void testConstructor() throws JsonException {
         //测试构造函数转换
-        //System.out.println(AnyConverter.convert(1, AtomicReference.class));
+        System.out.println(AnyConverter.convert(1, AtomicReference.class));
         //测试构造函数转换
-        //System.out.println(AnyConverter.convert("ceshi", TestBean.class));
+        System.out.println(AnyConverter.convert("ceshi", TestBean.class));
 
         TypeBean<List<TestBean<String>>> bean = new TypeBean<>();
         bean.setData(Collections.singletonList(new TestBean<>("12131231")));
 
-        System.out.println("bean ->" + bean);
+        System.out.println("bean ->" + Jsons.toJsonString(bean));
 
-        //TypeBean<TestBean<Integer[]>> bean1 = AnyConverter.convert(bean,
-        //        new TypeReference<TypeBean<TestBean<Integer[]>>>() {
-        //        });
-        //System.out.println("bean1 ->" + bean1);
+        TypeBean<TestBean<Integer[]>> bean1 = AnyConverter.convert(bean,
+                new TypeReference<TypeBean<TestBean<Integer[]>>>() {
+                });
+        System.out.println("bean1 ->" + Jsons.toJsonString(bean1));
         TypeBean<List<TestBean<String>>> bean2 = AnyConverter.convert(bean,
                 new TypeReference<TypeBean<List<TestBean<String>>>>() {
                 });
-        System.out.println("bean2 ->" + bean2);
+        System.out.println("bean2 ->" + Jsons.toJsonString(bean2));
     }
 
     @Test
