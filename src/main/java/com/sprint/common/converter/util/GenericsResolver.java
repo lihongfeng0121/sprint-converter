@@ -132,7 +132,7 @@ public class GenericsResolver {
         }
         Class<?> rawClass = (Class<?>) rawType;
         Map<TypeVariable<?>, Type> actualTypeMap = Miscs.toMap(rawClass.getTypeParameters(), actualTypeArguments);
-        Type superType = getSuperType(rawClass, Map.class);
+        Type superType = getSuperType(rawClass, this.classType);
         if (superType instanceof ParameterizedType) {
             Class<?> superClass = Types.extractClass(superType);
             Type[] superClassTypeParameters = ((ParameterizedType) superType).getActualTypeArguments();

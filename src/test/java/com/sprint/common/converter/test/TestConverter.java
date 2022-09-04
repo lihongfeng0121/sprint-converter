@@ -5,6 +5,8 @@ import com.sprint.common.converter.BaseConverter;
 import com.sprint.common.converter.Converter;
 import com.sprint.common.converter.TypeReference;
 import com.sprint.common.converter.conversion.nested.bean.Beans;
+import com.sprint.common.converter.conversion.nested.json.JsonException;
+import com.sprint.common.converter.conversion.nested.json.Jsons;
 import com.sprint.common.converter.exception.ConversionException;
 import com.sprint.common.converter.test.bean.*;
 import com.sprint.common.converter.util.Assert;
@@ -205,19 +207,24 @@ public class TestConverter {
 
     @Test
     public void testConstructor() {
-        System.out.println(AnyConverter.convert(1, AtomicReference.class));
-        System.out.println(AnyConverter.convert("ceshi", TestBean.class));
+        //测试构造函数转换
+        //System.out.println(AnyConverter.convert(1, AtomicReference.class));
+        //测试构造函数转换
+        //System.out.println(AnyConverter.convert("ceshi", TestBean.class));
 
         TypeBean<List<TestBean<String>>> bean = new TypeBean<>();
         bean.setData(Collections.singletonList(new TestBean<>("12131231")));
-        TypeBean<TestBean<Integer[]>> bean1 = AnyConverter.convert(bean,
-                new TypeReference<TypeBean<TestBean<Integer[]>>>() {
-                });
-        System.out.println(bean1);
-        TypeBean<List<TestBean<String>>> bean2 = AnyConverter.convert(bean1,
+
+        System.out.println("bean ->" + bean);
+
+        //TypeBean<TestBean<Integer[]>> bean1 = AnyConverter.convert(bean,
+        //        new TypeReference<TypeBean<TestBean<Integer[]>>>() {
+        //        });
+        //System.out.println("bean1 ->" + bean1);
+        TypeBean<List<TestBean<String>>> bean2 = AnyConverter.convert(bean,
                 new TypeReference<TypeBean<List<TestBean<String>>>>() {
                 });
-        System.out.println(bean2);
+        System.out.println("bean2 ->" + bean2);
     }
 
     @Test
@@ -253,7 +260,7 @@ public class TestConverter {
         Converter<Number, BigDecimal> nc3 = nc.andThen(BigDecimal::new);
         System.out.println(nc3.convert(10));
         System.out.println(nc2.convert("我是五个字"));
-        double ss = Stream.of("2", "12.6").map(BaseConverter.getConverter(String.class, Double.TYPE).asfunc()).reduce(Double::sum).get();
+        double ss = Stream.of("2", "12.6").map(Objects.requireNonNull(BaseConverter.getConverter(String.class, Double.TYPE)).asfunc()).reduce(Double::sum).get();
         System.out.println(ss);
     }
 
@@ -270,15 +277,16 @@ public class TestConverter {
         System.out.println(System.currentTimeMillis() - ts);
         System.out.println(BaseConverter.convert(bytes, String.class));
         System.out.println(System.currentTimeMillis() - ts);
-        System.out.println(Arrays.toString(AnyConverter.convert(bytes, char[].class)));
+        //System.out.println(Arrays.toString(AnyConverter.convert(bytes, char[].class)));
     }
 
     @Test
-    public void testSimpleBean2Bean() {
+    public void testSimpleBean2Bean() throws JsonException {
         Student student = new Student();
         student.setName("zhangsan");
         student.setLevel("一年级");
-        Student2 student1 = AnyConverter.convert(student, Student2.class);
-        System.out.println(student1);
+        Student2 student2 = AnyConverter.convert(student, Student2.class);
+        System.out.println("student1 ->" + Jsons.toJsonString(student));
+        System.out.println("student2 ->" + Jsons.toJsonString(student2));
     }
 }
