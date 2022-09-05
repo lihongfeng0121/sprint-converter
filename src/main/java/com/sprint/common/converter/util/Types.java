@@ -24,6 +24,8 @@ public class Types {
 
     public static final String[] MAP_IGNORES = {"size", "empty"};
     private static final ClassLoader APP_CLASS_LOADER = ClassLoader.getSystemClassLoader();
+    public static final GenericsResolver COLLECTION_GENERICS_RESOLVER = GenericsResolver.of(Collection.class);
+    public static final GenericsResolver MAP_GENERICS_RESOLVER = GenericsResolver.of(Map.class);
 
     static {
         // 包装类->基本类
@@ -329,7 +331,7 @@ public class Types {
     }
 
     public static Type[] getMapKVType(Type beanType, Type fieldType) {
-        return GenericsResolver.of(Map.class).resolve(beanType, fieldType);
+        return MAP_GENERICS_RESOLVER.resolve(beanType, fieldType);
     }
 
     public static Type getCollectionItemType(Type fieldType) {
@@ -337,11 +339,11 @@ public class Types {
     }
 
     public static Type getCollectionItemType(Type beanType, Type fieldType) {
-        return GenericsResolver.of(Collection.class).resolve(beanType, fieldType)[0];
+        return COLLECTION_GENERICS_RESOLVER.resolve(beanType, fieldType)[0];
     }
 
-    public static ParameterizedType makeParameterizedType(Class<?> rawClass, Type[] typeParameters,
-                                                          Map<TypeVariable<?>, Type> actualTypeMap) {
+    static ParameterizedType makeParameterizedType(Class<?> rawClass, Type[] typeParameters,
+                                                   Map<TypeVariable<?>, Type> actualTypeMap) {
         int length = typeParameters.length;
         Type[] actualTypeArguments = new Type[length];
         for (int i = 0; i < length; i++) {
