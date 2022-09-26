@@ -62,7 +62,13 @@ public final class Beans {
             throw new BeansException("Class must not be null");
         }
         if (clazz.isInterface()) {
-            throw new BeansException("Specified class [" + clazz + "] is an interface");
+            if (Collection.class.isAssignableFrom(clazz)) {
+                return (T) instanceCollection(clazz);
+            } else if (Map.class.isAssignableFrom(clazz)) {
+                return (T) instanceMap(clazz);
+            } else {
+                throw new BeansException("Specified class [" + clazz + "] is an interface");
+            }
         }
         try {
             return clazz.newInstance();
@@ -126,7 +132,9 @@ public final class Beans {
      */
     public static <K, V> Map<K, V> instanceMap(Class<?> mapClass) {
         Map<K, V> newMap;
-        if (Types.getConstructorIfAvailable(mapClass) != null) {
+        if (mapClass.isInterface()) {
+            newMap = new LinkedHashMap<>();
+        } else if (Types.getConstructorIfAvailable(mapClass) != null) {
             newMap = (Map<K, V>) instance(mapClass);
         } else if (HashMap.class.isAssignableFrom(mapClass)) {
             newMap = new HashMap<>();

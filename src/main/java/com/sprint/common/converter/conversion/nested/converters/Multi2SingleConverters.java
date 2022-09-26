@@ -11,6 +11,7 @@ import com.sprint.common.converter.util.Types;
 import java.lang.reflect.Array;
 import java.lang.reflect.Type;
 import java.util.Collection;
+import java.util.Map;
 
 /**
  * 多个转一个转换器
