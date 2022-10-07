@@ -581,7 +581,7 @@ public class Types {
         return new ParameterizedTypeImpl(Set.class, new Type[]{elementType}, null);
     }
 
-    public static GenericArrayTypeImpl makeArrayType(Type genericComponentType) {
+    public static GenericArrayType makeArrayType(Type genericComponentType) {
         return new GenericArrayTypeImpl(genericComponentType);
     }
 
