@@ -95,11 +95,10 @@ public class Types {
             throw new IllegalArgumentException("Specified class [" + clazz + "] is an interface");
         }
         Type type = clazz.getGenericSuperclass();
-
         if (type instanceof Class) {
             return new Type[]{};
         } else if (type instanceof ParameterizedType) {
-            return ((ParameterizedType) clazz.getGenericSuperclass()).getActualTypeArguments();
+            return ((ParameterizedType) type).getActualTypeArguments();
         } else {
             return new Type[]{};
         }
@@ -114,19 +113,6 @@ public class Types {
      */
     public static Type getClassSuperclassType(Class<?> clazz, int lc) {
         return Miscs.at(getClassSuperclassType(clazz), lc, null);
-    }
-
-    /**
-     * 获取类的范型
-     *
-     * @param clazz 类
-     * @return ClassSuperclassTypeMap
-     */
-    public static Map<TypeVariable<?>, Type> getClassSuperclassTypeMap(Class<?> clazz) {
-        if (clazz.isInterface()) {
-            throw new IllegalArgumentException("Specified class [" + clazz + "] is an interface");
-        }
-        return Miscs.toMap(clazz.getSuperclass().getTypeParameters(), getClassSuperclassType(clazz));
     }
 
     /**
@@ -189,7 +175,7 @@ public class Types {
      */
     public static Type getComponentType(Type beanType, Type fieldType) {
         if (fieldType instanceof TypeVariable) {
-            return getClassTypeMap(beanType).get(fieldType);
+            return resolveVariableTypeMap(beanType).get(fieldType);
         } else {
             return fieldType;
         }
@@ -201,13 +187,27 @@ public class Types {
      * @param type 类
      * @return ClassTypeMap
      */
-    public static Map<TypeVariable<?>, Type> getClassTypeMap(Type type) {
+    public static Map<TypeVariable<?>, Type> resolveVariableTypeMap(Type type) {
         Class<?> clazz = extractClass(type);
         if (clazz.isInterface()) {
             throw new IllegalArgumentException("Specified class [" + clazz + "] is an interface");
         }
-
         return Miscs.toMap(clazz.getTypeParameters(), getActualTypeArguments(type));
+    }
+
+
+    /**
+     * 获取类的范型
+     *
+     * @param clazz 类
+     * @return ClassSuperclassTypeMap
+     */
+    public static Map<TypeVariable<?>, Type> resolveSuperclassVariableTypeMap(Class<?> clazz) {
+        if (clazz.isInterface()) {
+            throw new IllegalArgumentException("Specified class [" + clazz + "] is an interface");
+        }
+        Class<?> superclass = clazz.getSuperclass();
+        return Miscs.toMap(superclass.getTypeParameters(), getClassSuperclassType(clazz));
     }
 
     /**
@@ -247,9 +247,9 @@ public class Types {
                 }
             } else if (type instanceof TypeVariable && clazzType != null) {
                 if (clazzType instanceof Class) {
-                    return extractClass(getClassSuperclassTypeMap((Class<?>) clazzType).get(type), clazzType);
+                    return extractClass(resolveSuperclassVariableTypeMap((Class<?>) clazzType).get(type), clazzType);
                 } else if (clazzType instanceof ParameterizedType) {
-                    return extractClass(getClassTypeMap(clazzType).get(type), clazzType);
+                    return extractClass(resolveVariableTypeMap(clazzType).get(type), clazzType);
                 } else {
                     return OBJECT_CLASS;
                 }
@@ -315,9 +315,9 @@ public class Types {
                     .getClass();
         } else if (componentType instanceof TypeVariable) {
             if (clazzType instanceof Class) {
-                return getClassSuperclassTypeMap((Class<?>) clazzType).get(componentType);
+                return resolveSuperclassVariableTypeMap((Class<?>) clazzType).get(componentType);
             } else if (clazzType instanceof ParameterizedType) {
-                return getClassTypeMap(clazzType).get(componentType);
+                return resolveVariableTypeMap(clazzType).get(componentType);
             } else {
                 return OBJECT_CLASS;
             }
@@ -326,18 +326,44 @@ public class Types {
         }
     }
 
+    /**
+     * 获取Map key/value 类型
+     *
+     * @param fieldType fieldType
+     * @return key/value 类型
+     */
     public static Type[] getMapKVType(Type fieldType) {
         return getMapKVType(null, fieldType);
     }
 
+    /**
+     * 获取Map key/value 类型
+     *
+     * @param beanType  beanType
+     * @param fieldType fieldType
+     * @return key/value 类型
+     */
     public static Type[] getMapKVType(Type beanType, Type fieldType) {
         return MAP_GENERICS_RESOLVER.resolve(beanType, fieldType);
     }
 
+    /**
+     * 获取集合元素类型
+     *
+     * @param fieldType fieldType
+     * @return 集合元素类型
+     */
     public static Type getCollectionItemType(Type fieldType) {
         return getCollectionItemType(null, fieldType);
     }
 
+    /**
+     * 获取集合元素类型
+     *
+     * @param beanType  beanType
+     * @param fieldType fieldType
+     * @return 集合元素类型
+     */
     public static Type getCollectionItemType(Type beanType, Type fieldType) {
         return COLLECTION_GENERICS_RESOLVER.resolve(beanType, fieldType)[0];
     }
@@ -581,8 +607,8 @@ public class Types {
     /**
      * make set type
      *
-     * @param elementType  elementType
-     * @param <E> E
+     * @param elementType elementType
+     * @param <E>         E
      * @return ParameterizedType
      */
     public static <E> ParameterizedType makeSetType(Class<E> elementType) {
@@ -592,7 +618,7 @@ public class Types {
     /**
      * make array type
      *
-     * @param genericComponentType  genericComponentType
+     * @param genericComponentType genericComponentType
      * @return GenericArrayType
      */
     public static GenericArrayType makeArrayType(Type genericComponentType) {

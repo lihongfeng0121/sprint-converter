@@ -104,7 +104,7 @@ public class GenericsResolver {
     private ParameterizedType getParameterizedType(Type beanType, Type fieldType) {
         ParameterizedType parameterizedType = (ParameterizedType) fieldType;
         if (beanType != null) {
-            Map<TypeVariable<?>, Type> variableTypeMap = Types.getClassTypeMap(beanType);
+            Map<TypeVariable<?>, Type> variableTypeMap = Types.resolveVariableTypeMap(beanType);
             parameterizedType = makeParameterizedType(Types.extractClass(fieldType),
                     parameterizedType.getActualTypeArguments(), variableTypeMap);
         }
