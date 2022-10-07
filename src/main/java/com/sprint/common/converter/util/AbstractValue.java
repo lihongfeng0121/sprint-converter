@@ -17,7 +17,7 @@ public abstract class AbstractValue {
 
     public abstract Object getValue();
 
-    private boolean isNullOrEmpty() {
+    public boolean isNullOrEmpty() {
         if (getValue() instanceof String) {
             return ((String) getValue()).isEmpty();
         } else {
