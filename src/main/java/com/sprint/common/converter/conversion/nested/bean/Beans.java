@@ -195,6 +195,19 @@ public final class Beans {
         setProperty(null, obj, propertyName, value, convert, ignored);
     }
 
+
+    /**
+     * 设置对象属性
+     *
+     * @param obj   对象
+     * @param props 属性
+     */
+    public static void setProperties(Object obj, Map<String, Object> props) {
+        for (Map.Entry<String, Object> entry : props.entrySet()) {
+            setProperty(obj, entry.getKey(), entry.getValue());
+        }
+    }
+
     /**
      * 设置对象属性
      *
@@ -368,18 +381,6 @@ public final class Beans {
         }
 
         return val;
-    }
-
-    /**
-     * 设置对象属性
-     *
-     * @param obj   对象
-     * @param props 属性
-     */
-    public static void setProperties(Object obj, Map<String, Object> props) {
-        for (Map.Entry<String, Object> entry : props.entrySet()) {
-            setProperty(obj, entry.getKey(), entry.getValue());
-        }
     }
 
     /**
@@ -769,9 +770,7 @@ public final class Beans {
 
     static <T> boolean contained(String[] ts, String t) {
         if (ts != null && t != null) {
-            int length = ts.length;
-            for (int i = 0; i < length; ++i) {
-                String obj = ts[i];
+            for (String obj : ts) {
                 if (obj != null && obj.equals(t)) {
                     return true;
                 }
