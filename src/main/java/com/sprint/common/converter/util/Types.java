@@ -342,29 +342,6 @@ public class Types {
         return COLLECTION_GENERICS_RESOLVER.resolve(beanType, fieldType)[0];
     }
 
-    static ParameterizedType makeParameterizedType(Class<?> rawClass, Type[] typeParameters,
-                                                   Map<TypeVariable<?>, Type> actualTypeMap) {
-        int length = typeParameters.length;
-        Type[] actualTypeArguments = new Type[length];
-        for (int i = 0; i < length; i++) {
-            actualTypeArguments[i] = getActualType(typeParameters[i], actualTypeMap);
-        }
-        return makeType(rawClass, actualTypeArguments, null);
-    }
-
-    private static Type getActualType(Type typeParameter, Map<TypeVariable<?>, Type> actualTypeMap) {
-        if (typeParameter instanceof TypeVariable) {
-            return actualTypeMap.get(typeParameter);
-        } else if (typeParameter instanceof ParameterizedType) {
-            return makeParameterizedType(extractClass(typeParameter),
-                    ((ParameterizedType) typeParameter).getActualTypeArguments(), actualTypeMap);
-        } else if (typeParameter instanceof GenericArrayType) {
-            return makeArrayType(getActualType(((GenericArrayType) typeParameter).getGenericComponentType(), actualTypeMap));
-        }
-        return typeParameter;
-    }
-
-
     /**
      * 获取bean构造函数
      *
@@ -565,24 +542,60 @@ public class Types {
     }
 
 
+    /**
+     * make type
+     *
+     * @param rawType             rawType
+     * @param actualTypeArguments actualTypeArguments
+     * @param ownerType           ownerType
+     * @return ParameterizedType
+     */
     public static ParameterizedType makeType(Class<?> rawType, Type[] actualTypeArguments, Type ownerType) {
         return new ParameterizedTypeImpl(rawType, actualTypeArguments, ownerType);
     }
 
+    /**
+     * make map type
+     *
+     * @param keyType   keyType
+     * @param valueType valueType
+     * @param <K>       K
+     * @param <V>       V
+     * @return ParameterizedType
+     */
     public static <K, V> ParameterizedType makeMapType(Class<K> keyType, Class<V> valueType) {
         return new ParameterizedTypeImpl(Map.class, new Type[]{keyType, valueType}, null);
     }
 
+    /**
+     * make list type
+     *
+     * @param elementType elementType
+     * @param <E>         E
+     * @return ParameterizedType
+     */
     public static <E> ParameterizedType makeListType(Class<E> elementType) {
         return new ParameterizedTypeImpl(List.class, new Type[]{elementType}, null);
     }
 
+    /**
+     * make set type
+     *
+     * @param elementType  elementType
+     * @param <E> E
+     * @return ParameterizedType
+     */
     public static <E> ParameterizedType makeSetType(Class<E> elementType) {
         return new ParameterizedTypeImpl(Set.class, new Type[]{elementType}, null);
     }
 
+    /**
+     * make array type
+     *
+     * @param genericComponentType  genericComponentType
+     * @return GenericArrayType
+     */
     public static GenericArrayType makeArrayType(Type genericComponentType) {
         return new GenericArrayTypeImpl(genericComponentType);
     }
-
 }

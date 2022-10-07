@@ -2,10 +2,7 @@ package com.sprint.common.converter.util;
 
 import com.sprint.common.converter.TypeReference;
 
-import java.lang.reflect.ParameterizedType;
-import java.lang.reflect.Type;
-import java.lang.reflect.TypeVariable;
-import java.lang.reflect.WildcardType;
+import java.lang.reflect.*;
 import java.util.Arrays;
 import java.util.Map;
 
@@ -108,7 +105,7 @@ public class GenericsResolver {
         ParameterizedType parameterizedType = (ParameterizedType) fieldType;
         if (beanType != null) {
             Map<TypeVariable<?>, Type> variableTypeMap = Types.getClassTypeMap(beanType);
-            parameterizedType = Types.makeParameterizedType(Types.extractClass(fieldType),
+            parameterizedType = makeParameterizedType(Types.extractClass(fieldType),
                     parameterizedType.getActualTypeArguments(), variableTypeMap);
         }
         return parameterizedType;
@@ -137,7 +134,7 @@ public class GenericsResolver {
             Class<?> superClass = Types.extractClass(superType);
             Type[] superClassTypeParameters = ((ParameterizedType) superType).getActualTypeArguments();
             return superClassTypeParameters.length > 0
-                    ? resolve(Types.makeParameterizedType(superClass, superClassTypeParameters, actualTypeMap))
+                    ? resolve(makeParameterizedType(superClass, superClassTypeParameters, actualTypeMap))
                     : resolve(superClass);
         }
         return resolve(superType);
@@ -174,5 +171,27 @@ public class GenericsResolver {
             return upperBounds.length > 0 ? upperBounds[0] : Types.OBJECT_CLASS;
         }
         return type;
+    }
+
+    private static ParameterizedType makeParameterizedType(Class<?> rawClass, Type[] typeParameters,
+                                                           Map<TypeVariable<?>, Type> actualTypeMap) {
+        int length = typeParameters.length;
+        Type[] actualTypeArguments = new Type[length];
+        for (int i = 0; i < length; i++) {
+            actualTypeArguments[i] = getActualType(typeParameters[i], actualTypeMap);
+        }
+        return Types.makeType(rawClass, actualTypeArguments, null);
+    }
+
+    private static Type getActualType(Type typeParameter, Map<TypeVariable<?>, Type> actualTypeMap) {
+        if (typeParameter instanceof TypeVariable) {
+            return actualTypeMap.get(typeParameter);
+        } else if (typeParameter instanceof ParameterizedType) {
+            return makeParameterizedType(Types.extractClass(typeParameter),
+                    ((ParameterizedType) typeParameter).getActualTypeArguments(), actualTypeMap);
+        } else if (typeParameter instanceof GenericArrayType) {
+            return Types.makeArrayType(getActualType(((GenericArrayType) typeParameter).getGenericComponentType(), actualTypeMap));
+        }
+        return typeParameter;
     }
 }
