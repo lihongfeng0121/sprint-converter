@@ -90,7 +90,7 @@ public abstract class AbstractValue {
     }
 
     public <K, V> Map<K, V> getMap(Class<K> keyType, Class<V> valueType) {
-        return getValue(ParameterizedTypeImpl.makeMap(keyType, valueType));
+        return getValue(Types.makeMapType(keyType, valueType));
     }
 
     public List<Map<String, Object>> getListMap() {

@@ -8,15 +8,11 @@ import java.util.Objects;
  * @author hongfeng.li
  * @since 2021/3/5
  */
-public class GenericArrayTypeImpl implements GenericArrayType {
+class GenericArrayTypeImpl implements GenericArrayType {
     private final Type genericComponentType;
 
-    private GenericArrayTypeImpl(Type genericComponentType) {
+    GenericArrayTypeImpl(Type genericComponentType) {
         this.genericComponentType = genericComponentType;
-    }
-
-    public static GenericArrayTypeImpl make(Type genericComponentType) {
-        return new GenericArrayTypeImpl(genericComponentType);
     }
 
     public Type getGenericComponentType() {

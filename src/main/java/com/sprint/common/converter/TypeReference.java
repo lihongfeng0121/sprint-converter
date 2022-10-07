@@ -1,6 +1,5 @@
 package com.sprint.common.converter;
 
-import com.sprint.common.converter.util.ParameterizedTypeImpl;
 import com.sprint.common.converter.util.Types;
 
 import java.lang.reflect.Type;
@@ -92,7 +91,7 @@ public abstract class TypeReference<T> implements Comparable<TypeReference<T>> {
         return new TypeReference<Map<K, V>>() {
             @Override
             public Type getType() {
-                return ParameterizedTypeImpl.make(Map.class, new Type[]{keyType, valueType}, null);
+                return Types.makeType(Map.class, new Type[]{keyType, valueType}, null);
             }
         };
     }
@@ -106,7 +105,7 @@ public abstract class TypeReference<T> implements Comparable<TypeReference<T>> {
         return new TypeReference<List<V>>() {
             @Override
             public Type getType() {
-                return ParameterizedTypeImpl.make(List.class, new Type[]{valueType}, null);
+                return Types.makeType(List.class, new Type[]{valueType}, null);
             }
         };
     }
@@ -120,7 +119,7 @@ public abstract class TypeReference<T> implements Comparable<TypeReference<T>> {
         return new TypeReference<Set<V>>() {
             @Override
             public Type getType() {
-                return ParameterizedTypeImpl.make(Set.class, new Type[]{valueType}, null);
+                return Types.makeType(Set.class, new Type[]{valueType}, null);
             }
         };
     }

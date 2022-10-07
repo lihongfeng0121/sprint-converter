@@ -349,7 +349,7 @@ public class Types {
         for (int i = 0; i < length; i++) {
             actualTypeArguments[i] = getActualType(typeParameters[i], actualTypeMap);
         }
-        return ParameterizedTypeImpl.make(rawClass, actualTypeArguments, null);
+        return makeType(rawClass, actualTypeArguments, null);
     }
 
     private static Type getActualType(Type typeParameter, Map<TypeVariable<?>, Type> actualTypeMap) {
@@ -359,8 +359,7 @@ public class Types {
             return makeParameterizedType(extractClass(typeParameter),
                     ((ParameterizedType) typeParameter).getActualTypeArguments(), actualTypeMap);
         } else if (typeParameter instanceof GenericArrayType) {
-            return GenericArrayTypeImpl
-                    .make(getActualType(((GenericArrayType) typeParameter).getGenericComponentType(), actualTypeMap));
+            return makeArrayType(getActualType(((GenericArrayType) typeParameter).getGenericComponentType(), actualTypeMap));
         }
         return typeParameter;
     }
@@ -564,4 +563,26 @@ public class Types {
     public static boolean isObjectType(Type type) {
         return OBJECT_CLASS.equals(type);
     }
+
+
+    public static ParameterizedType makeType(Class<?> rawType, Type[] actualTypeArguments, Type ownerType) {
+        return new ParameterizedTypeImpl(rawType, actualTypeArguments, ownerType);
+    }
+
+    public static <K, V> ParameterizedType makeMapType(Class<K> keyType, Class<V> valueType) {
+        return new ParameterizedTypeImpl(Map.class, new Type[]{keyType, valueType}, null);
+    }
+
+    public static <E> ParameterizedType makeListType(Class<E> elementType) {
+        return new ParameterizedTypeImpl(List.class, new Type[]{elementType}, null);
+    }
+
+    public static <E> ParameterizedType makeSetType(Class<E> elementType) {
+        return new ParameterizedTypeImpl(Set.class, new Type[]{elementType}, null);
+    }
+
+    public static GenericArrayTypeImpl makeArrayType(Type genericComponentType) {
+        return new GenericArrayTypeImpl(genericComponentType);
+    }
+
 }
