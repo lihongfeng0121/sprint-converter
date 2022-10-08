@@ -109,10 +109,11 @@ public class Types {
      * @param name        类名
      * @param classLoader 类加载器
      * @return 类
+     * @throws ClassNotFoundException 异常
+     * @throws LinkageError           异常
      */
     public static Class<?> forName(String name, ClassLoader classLoader) throws ClassNotFoundException, LinkageError {
         Assert.notNull(name, "Name must not be null");
-
         Class<?> clazz = resolvePrimitiveClassName(name);
         if (clazz == null) {
             clazz = commonClassCache.get(name);
@@ -120,7 +121,6 @@ public class Types {
         if (clazz != null) {
             return clazz;
         }
-
         // "java.lang.String[]" style arrays
         if (name.endsWith(ARRAY_SUFFIX)) {
             String elementClassName = name.substring(0, name.length() - ARRAY_SUFFIX.length());
@@ -192,7 +192,7 @@ public class Types {
      *
      * @param clazz  对象类
      * @param filter 过滤
-     * @return
+     * @return map
      */
     public static Map<String, Field> getFields(Class<?> clazz, BiPredicate<String, Field> filter) {
         Map<String, Field> fieldMap = new HashMap<>();

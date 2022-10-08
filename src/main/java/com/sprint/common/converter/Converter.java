@@ -209,7 +209,9 @@ public interface Converter<S, T> {
     /**
      * 强制转换
      *
-     * @param s s
+     * @param s   s
+     * @param <S> S
+     * @param <T> T
      * @return t
      */
     static <S, T> T doEnforce(S s) {
