@@ -109,8 +109,6 @@ public class Types {
      * @param name        类名
      * @param classLoader 类加载器
      * @return 类
-     * @throws ClassNotFoundException
-     * @throws LinkageError
      */
     public static Class<?> forName(String name, ClassLoader classLoader) throws ClassNotFoundException, LinkageError {
         Assert.notNull(name, "Name must not be null");
