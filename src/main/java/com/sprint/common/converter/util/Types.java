@@ -3,6 +3,7 @@ package com.sprint.common.converter.util;
 import java.lang.reflect.*;
 import java.time.temporal.Temporal;
 import java.util.*;
+import java.util.function.BiPredicate;
 
 /**
  * 类操作工具
@@ -12,6 +13,20 @@ import java.util.*;
  * @since 2019年12月11日
  */
 public class Types {
+
+    private static final char PACKAGE_SEPARATOR = '.';
+
+    public static final String ARRAY_SUFFIX = "[]";
+    private static final String INTERNAL_ARRAY_PREFIX = "[";
+
+    private static final String INTERNAL_ARRAY_SUFFIX = "]";
+
+    public static final String JSON_OBJECT_PREFIX = "{";
+    public static final String JSON_OBJECT_SUFFIX = "}";
+
+    private static final String NON_PRIMITIVE_ARRAY_PREFIX = "[L";
+
+    private static final char INNER_CLASS_SEPARATOR = '$';
 
     private static final Map<Class<?>, Class<?>> primitiveWrapperTypeMap = new IdentityHashMap<>(8);
     private static final Map<Class<?>, Class<?>> primitiveTypeToWrapperMap = new IdentityHashMap<>(8);
@@ -26,6 +41,7 @@ public class Types {
     private static final ClassLoader APP_CLASS_LOADER = ClassLoader.getSystemClassLoader();
     public static final GenericsResolver COLLECTION_GENERICS_RESOLVER = GenericsResolver.of(Collection.class);
     public static final GenericsResolver MAP_GENERICS_RESOLVER = GenericsResolver.of(Map.class);
+
 
     static {
         // 包装类->基本类
@@ -70,6 +86,131 @@ public class Types {
         }
     }
 
+
+    /**
+     * 获取包装类的基本类型
+     *
+     * @param name 类名字
+     * @return 包装类的基本类型
+     */
+    public static Class<?> resolvePrimitiveClassName(String name) {
+        // Most class names will be quite long, considering that they
+        // SHOULD sit in a package, so a length check is worthwhile.
+        if (name != null && name.length() <= 8) {
+            // Could be a primitive - likely.
+            return primitiveTypeNameMap.get(name);
+        }
+        return null;
+    }
+
+    /**
+     * 获取类
+     *
+     * @param name        类名
+     * @param classLoader 类加载器
+     * @return 类
+     * @throws ClassNotFoundException
+     * @throws LinkageError
+     */
+    public static Class<?> forName(String name, ClassLoader classLoader) throws ClassNotFoundException, LinkageError {
+        Assert.notNull(name, "Name must not be null");
+
+        Class<?> clazz = resolvePrimitiveClassName(name);
+        if (clazz == null) {
+            clazz = commonClassCache.get(name);
+        }
+        if (clazz != null) {
+            return clazz;
+        }
+
+        // "java.lang.String[]" style arrays
+        if (name.endsWith(ARRAY_SUFFIX)) {
+            String elementClassName = name.substring(0, name.length() - ARRAY_SUFFIX.length());
+            Class<?> elementClass = forName(elementClassName, classLoader);
+            return Array.newInstance(elementClass, 0).getClass();
+        }
+
+        // "[Ljava.lang.String;" style arrays
+        if (name.startsWith(NON_PRIMITIVE_ARRAY_PREFIX) && name.endsWith(";")) {
+            String elementName = name.substring(NON_PRIMITIVE_ARRAY_PREFIX.length(), name.length() - 1);
+            Class<?> elementClass = forName(elementName, classLoader);
+            return Array.newInstance(elementClass, 0).getClass();
+        }
+
+        // "[[I" or "[[Ljava.lang.String;" style arrays
+        if (name.startsWith(INTERNAL_ARRAY_PREFIX)) {
+            String elementName = name.substring(INTERNAL_ARRAY_PREFIX.length());
+            Class<?> elementClass = forName(elementName, classLoader);
+            return Array.newInstance(elementClass, 0).getClass();
+        }
+
+        ClassLoader clToUse = classLoader;
+        if (clToUse == null) {
+            clToUse = getDefaultClassLoader();
+        }
+        try {
+            return (clToUse != null ? clToUse.loadClass(name) : Class.forName(name));
+        } catch (ClassNotFoundException ex) {
+            int lastDotIndex = name.lastIndexOf(PACKAGE_SEPARATOR);
+            if (lastDotIndex != -1) {
+                String innerClassName =
+                        name.substring(0, lastDotIndex) + INNER_CLASS_SEPARATOR + name.substring(lastDotIndex + 1);
+                try {
+                    return (clToUse != null ? clToUse.loadClass(innerClassName) : Class.forName(innerClassName));
+                } catch (ClassNotFoundException ignored) {
+                }
+            }
+            throw ex;
+        }
+    }
+
+
+    /**
+     * 获取默认类加载器
+     *
+     * @return 默认类加载器
+     */
+    public static ClassLoader getDefaultClassLoader() {
+        ClassLoader cl = null;
+        try {
+            cl = Thread.currentThread().getContextClassLoader();
+        } catch (Throwable ignored) {
+        }
+        if (cl == null) {
+            cl = Types.class.getClassLoader();
+            if (cl == null) {
+                try {
+                    cl = ClassLoader.getSystemClassLoader();
+                } catch (Throwable ignored) {
+                }
+            }
+        }
+        return cl;
+    }
+
+
+    /**
+     * 获取所有成员变量
+     *
+     * @param clazz  对象类
+     * @param filter 过滤
+     * @return
+     */
+    public static Map<String, Field> getFields(Class<?> clazz, BiPredicate<String, Field> filter) {
+        Map<String, Field> fieldMap = new HashMap<>();
+        Field[] fields = clazz.getFields();
+        for (Field field : fields) {
+            field.setAccessible(true);
+            if (Modifier.isStatic(field.getModifiers())) {
+                continue;
+            }
+            String propertyName = field.getName();
+            if (filter == null || filter.test(propertyName, field))
+                fieldMap.put(propertyName, field);
+        }
+        return fieldMap;
+    }
+
     public static Field getDeclaredField(Class<?> clazz, String fieldName) throws NoSuchFieldException {
         Assert.notNull(clazz, "clazz can't be null");
         NoSuchFieldException ex = null;
@@ -83,6 +224,45 @@ public class Types {
         }
         throw ex;
     }
+
+
+    /**
+     * 获取所有含注解可访问的成员变量
+     *
+     * @param clazz  对象类
+     * @param filter 过滤
+     * @return 可访问的成员变量
+     */
+    public static List<Field> getDeclaredFields(Class<?> clazz, BiPredicate<String, Field> filter) {
+        return new ArrayList<>(getDeclaredFieldMap(clazz, filter).values());
+    }
+
+    /**
+     * 获取所有可访问的成员变量
+     *
+     * @param clazz  对象类
+     * @param filter 过滤
+     * @return 可访问的成员变量
+     */
+    public static Map<String, Field> getDeclaredFieldMap(Class<?> clazz, BiPredicate<String, Field> filter) {
+        Map<String, Field> fieldMap = new LinkedHashMap<>();
+        while (null != clazz) {
+            Field[] fields = clazz.getDeclaredFields();
+            for (Field field : fields) {
+                field.setAccessible(true);
+                if (Modifier.isStatic(field.getModifiers())) {
+                    continue;
+                }
+                String propertyName = field.getName();
+                if (filter == null || filter.test(propertyName, field)) {
+                    fieldMap.put(propertyName, field);
+                }
+            }
+            clazz = clazz.getSuperclass();
+        }
+        return fieldMap;
+    }
+
 
     /**
      * 获取类的范型
@@ -541,7 +721,7 @@ public class Types {
         if (str == null || str.isEmpty()) {
             return false;
         }
-        return str.startsWith("{") && str.endsWith("}");
+        return str.startsWith(JSON_OBJECT_PREFIX) && str.endsWith(JSON_OBJECT_SUFFIX);
     }
 
     /**
@@ -554,7 +734,7 @@ public class Types {
         if (str == null || str.isEmpty()) {
             return false;
         }
-        return str.startsWith("[") && str.endsWith("]");
+        return str.startsWith(INTERNAL_ARRAY_PREFIX) && str.endsWith(INTERNAL_ARRAY_SUFFIX);
     }
 
     /**
