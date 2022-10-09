@@ -33,7 +33,7 @@ public final class BaseConverter {
      * @param <T>         t
      * @return Converter
      */
-    public static <S, T> Converter<S, T> getConverter(Class<S> sourceClass, Class<T> targetClass) {
+    public static <S, T> Converter<S, T> converter(Class<S> sourceClass, Class<T> targetClass) {
         if (Types.isObjectType(targetClass)) {
             return Converter.enforcer();
         }
@@ -55,7 +55,7 @@ public final class BaseConverter {
      * @return 是否支持
      */
     public static boolean isSupport(Class<?> sourceClass, Class<?> targetClass) {
-        return getConverter(sourceClass, targetClass) != null;
+        return converter(sourceClass, targetClass) != null;
     }
 
     /**
@@ -149,7 +149,7 @@ public final class BaseConverter {
         }
 
         Class<?> sourceClass = source.getClass();
-        Converter<?, T> converter = getConverter(sourceClass, targetClass);
+        Converter<?, T> converter = converter(sourceClass, targetClass);
 
         if (converter == null) {
             NotSupportConvertException ex = new NotSupportConvertException(sourceClass, targetClass);

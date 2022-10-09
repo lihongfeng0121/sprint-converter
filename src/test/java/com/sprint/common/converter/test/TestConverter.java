@@ -232,8 +232,8 @@ public class TestConverter {
         Object ob = AnyConverter.convert(Collections.singletonMap("local", AnyConverter.convert("2021-01-01 10:10:10", LocalDateTime.class, Long.class)), String.class);
         System.out.println(ob);
 
-        Converter<String, Timestamp> converter = AnyConverter.getConverter(String.class, Long.class, Timestamp.class);
-        Converter<Long, Timestamp> converter2 = AnyConverter.getConverter(Long.class, String.class, Long.class,
+        Converter<String, Timestamp> converter = AnyConverter.converter(String.class, Long.class, Timestamp.class);
+        Converter<Long, Timestamp> converter2 = AnyConverter.converter(Long.class, String.class, Long.class,
                 Timestamp.class);
 
         Long ts = System.currentTimeMillis();
@@ -260,7 +260,7 @@ public class TestConverter {
         Converter<Number, BigDecimal> nc3 = nc.andThen(BigDecimal::new);
         System.out.println(nc3.convert(10));
         System.out.println(nc2.convert("我是五个字"));
-        double ss = Stream.of("2", "12.6").map(Objects.requireNonNull(BaseConverter.getConverter(String.class, Double.TYPE)).asfunc()).reduce(Double::sum).get();
+        double ss = Stream.of("2", "12.6").map(Objects.requireNonNull(BaseConverter.converter(String.class, Double.TYPE)).asfunc()).reduce(Double::sum).get();
         System.out.println(ss);
     }
 

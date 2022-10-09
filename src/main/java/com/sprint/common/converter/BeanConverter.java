@@ -24,8 +24,8 @@ public class BeanConverter {
      * @param <T>              t
      * @return Converter
      */
-    public static <S, T> Converter<S, T> getShallowConverter(Class<S> sourceClass, Class<T> targetClass, String... ignoreProperties) {
-        return getConverter(sourceClass, targetClass, false, ignoreProperties);
+    public static <S, T> Converter<S, T> shallowConverter(Class<S> sourceClass, Class<T> targetClass, String... ignoreProperties) {
+        return converter(sourceClass, targetClass, false, ignoreProperties);
     }
 
     /**
@@ -38,8 +38,8 @@ public class BeanConverter {
      * @param <T>              t
      * @return Converter
      */
-    public static <S, T> Converter<S, T> getConverter(Class<S> sourceClass, Class<T> targetClass, String... ignoreProperties) {
-        return getConverter(sourceClass, targetClass, true, ignoreProperties);
+    public static <S, T> Converter<S, T> converter(Class<S> sourceClass, Class<T> targetClass, String... ignoreProperties) {
+        return converter(sourceClass, targetClass, true, ignoreProperties);
     }
 
 
@@ -54,7 +54,7 @@ public class BeanConverter {
      * @param <T>              t
      * @return Converter
      */
-    public static <S, T> Converter<S, T> getConverter(Class<S> sourceClass, Class<T> targetClass, boolean convert, String... ignoreProperties) {
+    public static <S, T> Converter<S, T> converter(Class<S> sourceClass, Class<T> targetClass, boolean convert, String... ignoreProperties) {
         return (source) -> {
             if (source == null) {
                 return null;
@@ -90,5 +90,27 @@ public class BeanConverter {
             throw ConversionExceptionWrapper.wrapper(new NotSupportConvertException(sourceType, targetClass));
         }
         return Converter.doEnforce(Beans.cast(source, finalTargetClass, ignoreProperties));
+    }
+
+
+    /**
+     * 转换
+     *
+     * @param source           源
+     * @param targetClass      目标类型
+     * @param ignoreProperties 忽略属性
+     * @param <T>              目标范型
+     * @return target
+     */
+    public static <T> T shallowConvert(Object source, Class<T> targetClass, String... ignoreProperties) {
+        if (source == null) {
+            return null;
+        }
+        Class<?> sourceType = source.getClass();
+        Class<?> finalTargetClass = Types.isObjectType(targetClass) ? sourceType : targetClass;
+        if (!Types.isMap(sourceType) || !Types.isBean(sourceType) || !Types.isMap(finalTargetClass) || !Types.isBean(finalTargetClass)) {
+            throw ConversionExceptionWrapper.wrapper(new NotSupportConvertException(sourceType, targetClass));
+        }
+        return Converter.doEnforce(Beans.cast(source, finalTargetClass, false, ignoreProperties));
     }
 }

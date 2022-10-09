@@ -65,7 +65,7 @@ If you are using Maven, simply copy-paste this dependency to your project.
         new TypeReference<TypeBean2<List<List<Integer>>>>() {
         });
 
-        double ss = Stream.of("2", "12.6").map(AnyConverter.getConverter(String.class, Double.TYPE).asfunc()).reduce(Double::sum).get();
+        double ss = Stream.of("2", "12.6").map(AnyConverter.converter(String.class, Double.TYPE).asfunc()).reduce(Double::sum).get();
 ```
 
 © 2022 GitHub, Inc. Terms Privacy Security Status Docs Contact GitHub Pricing API Training Blog About
