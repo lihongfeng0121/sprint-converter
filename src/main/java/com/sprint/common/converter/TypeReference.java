@@ -25,13 +25,13 @@ public abstract class TypeReference<T> implements Comparable<TypeReference<T>> {
     /*
      * Map<String, List<Object>>引用的类型
      */
-    public static final TypeReference<Map<String, List<Object>>> STR__LIST_OBJ_MAP = new TypeReference<Map<String, List<Object>>>() {
+    public static final TypeReference<Map<String, List<Object>>> STR_LIST_OBJ_MAP = new TypeReference<Map<String, List<Object>>>() {
     };
 
     /*
      * Map<String, List<String>>引用的类型
      */
-    public static final TypeReference<Map<String, List<String>>> STR__LIST_STR_MAP = new TypeReference<Map<String, List<String>>>() {
+    public static final TypeReference<Map<String, List<String>>> STR_LIST_STR_MAP = new TypeReference<Map<String, List<String>>>() {
     };
 
     /*
@@ -79,6 +79,21 @@ public abstract class TypeReference<T> implements Comparable<TypeReference<T>> {
      */
     public static final TypeReference<Set<Object>> OBJ_SET = new TypeReference<Set<Object>>() {
     };
+
+
+    /**
+     * @param type 参数类型
+     * @param <T>  参数类型
+     * @return Map 引用的类型
+     */
+    public static <T> TypeReference<T> of(Class<T> type) {
+        return new TypeReference<T>() {
+            @Override
+            public Type getType() {
+                return type;
+            }
+        };
+    }
 
     /**
      * @param keyType   参数类型
