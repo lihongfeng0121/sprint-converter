@@ -52,6 +52,21 @@ public final class AnyConverter {
         return converter.enforce();
     }
 
+
+    /**
+     * 获取转换器
+     *
+     * @param sourceType 源类型
+     * @param targetType 目标类型
+     * @param <S>        源类范型
+     * @param <T>        目标类范型
+     * @return target
+     */
+    public static <S, T> Converter<S, T> converter(TypeReference<S> sourceType, TypeReference<T> targetType) {
+        Class<?> sourceClass = Types.extractClass(sourceType.getType());
+        return NestedConverters.getConverter(sourceClass, null, targetType.getType());
+    }
+
     /**
      * 对象转换
      *
