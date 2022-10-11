@@ -11,7 +11,6 @@ import com.sprint.common.converter.util.Types;
 import java.lang.reflect.Array;
 import java.lang.reflect.Type;
 import java.util.Collection;
-import java.util.Map;
 
 /**
  * 多个转一个转换器
@@ -51,9 +50,13 @@ public class Multi2SingleConverters implements NestedConverterLoader {
 
             if (collection.isEmpty()) {
                 Class<?> extractClass = Types.extractClass(targetFiledType, targetBeanType);
-                Object target = Beans.instance(extractClass);
-                Beans.copyProperties(collection, target, true, true, false, Types.COLLECTION_IGNORES);
-                return target;
+                if (Types.isBean(extractClass)) {
+                    Object target = Beans.instance(extractClass);
+                    Beans.copyProperties(collection, target, true, true, false, Types.COLLECTION_IGNORES);
+                    return target;
+                } else {
+                    return null;
+                }
             }
 
             return NestedConverters.convert(collection.stream().findFirst().get(), targetBeanType, targetFiledType);

@@ -1,6 +1,7 @@
 package com.sprint.common.converter.conversion.nested.json;
 
 import com.sprint.common.converter.conversion.nested.bean.Beans;
+import com.sprint.common.converter.util.Types;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -38,7 +39,7 @@ public class Jsons {
             try {
                 Class.forName("com.fasterxml.jackson.databind.ObjectMapper");
                 Jsons.jsonConverter = (JsonConverter) Beans.instance(
-                        Class.forName("com.sprint.common.converter.conversion.nested.json.JacksonConverter"));
+                        Types.forName("com.sprint.common.converter.conversion.nested.json.JacksonConverter", Types.getDefaultClassLoader()));
                 log.warn("Jsons use jackson as JsonConverter.");
             } catch (Throwable ignored) {
             }
