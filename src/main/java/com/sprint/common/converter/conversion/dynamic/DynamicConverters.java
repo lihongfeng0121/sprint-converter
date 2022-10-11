@@ -36,7 +36,7 @@ public final class DynamicConverters {
     public static void loadContainedConverters(Class<?> containerClass) {
         Class<?>[] classes = containerClass.getClasses();
         for (Class<?> clz : classes) {
-            if ((clz.getModifiers() & Modifier.ABSTRACT) == 0) {
+            if (!Modifier.isAbstract(clz.getModifiers())) {
                 try {
                     Object value = clz.getConstructor().newInstance();
                     if (value instanceof DynamicConverter) {
