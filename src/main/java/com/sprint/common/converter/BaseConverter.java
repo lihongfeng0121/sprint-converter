@@ -104,10 +104,7 @@ public final class BaseConverter {
      * @throws ConversionException ex
      */
     public static <T> T convert(Object source, Class<T> targetClass) throws ConversionException {
-        return convert(source, targetClass, (ex, var1) -> {
-            throw new ConversionException(
-                    String.format("not support [%s][%s] -> %s", source.getClass(), source, targetClass.getName()), ex);
-        });
+        return convert(source, targetClass, null);
     }
 
     /**
@@ -155,11 +152,12 @@ public final class BaseConverter {
             NotSupportConvertException ex = new NotSupportConvertException(sourceClass, targetClass);
             if (errorHandler == null) {
                 logger.error(
-                        String.format("not support [%s][%s] -> %s", source.getClass(), source, targetClass.getName()));
+                        String.format("not support %s -> %s, source val:%s", source.getClass().getName(),
+                                targetClass.getName(), source));
                 throw ex;
             } else {
-                logger.warn(String.format("not support [%s][%s] -> %s, use error handler.", source.getClass(), source,
-                        targetClass.getName()));
+                logger.warn(String.format("not support %s -> %s, source val:%s, use error handler.", source.getClass().getName(),
+                        targetClass.getName(), source));
                 return errorHandler.handle(ex, source);
             }
         } else {
@@ -175,12 +173,12 @@ public final class BaseConverter {
                 }
 
                 if (errorHandler == null) {
-                    logger.error(String.format("not support [%s][%s] -> %s", source.getClass(), source,
-                            targetClass.getName()), ex);
+                    logger.error(String.format("convert %s -> %s error, source val:%s", source.getClass().getName(),
+                            targetClass.getName(), source), ex);
                     throw ex;
                 } else {
-                    logger.warn(String.format("not support [%s][%s] -> %s, use error handler.", source.getClass(),
-                            source, targetClass.getName()), ex);
+                    logger.warn(String.format("convert %s -> %s error, source val:%s, use error handler.", source.getClass().getName(),
+                            targetClass.getName(), source), ex);
                     return errorHandler.handle(ex, source);
                 }
             }
