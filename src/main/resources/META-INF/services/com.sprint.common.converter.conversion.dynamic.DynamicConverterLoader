@@ -1,5 +1,5 @@
 com.sprint.common.converter.conversion.dynamic.converters.PrimitiveConverters
 com.sprint.common.converter.conversion.dynamic.converters.StringConverters
 com.sprint.common.converter.conversion.dynamic.converters.AssignableConverters
-com.sprint.common.converter.conversion.dynamic.converters.EnumConverter
+com.sprint.common.converter.conversion.dynamic.converters.EnumConverters
 com.sprint.common.converter.conversion.dynamic.converters.ConstructorConverters

@@ -12,7 +12,7 @@ import com.sprint.common.converter.exception.ConversionException;
  * @version 1.0
  * @since 2021年02月05日
  */
-public class EnumConverter implements DynamicConverterLoader {
+public class EnumConverters implements DynamicConverterLoader {
 
     public static class StringToEnum implements DynamicConverter<Enum<?>> {
 
