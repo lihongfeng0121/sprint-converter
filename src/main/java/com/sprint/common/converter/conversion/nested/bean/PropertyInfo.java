@@ -85,6 +85,6 @@ public class PropertyInfo {
 
     @Override
     public String toString() {
-        return "PropertyInfoHolder{" + "name='" + name + '\'' + ", index=" + index + ", access=" + access + '}';
+        return "PropertyInfo{" + "name='" + name + '\'' + ", index=" + index + ", access=" + access + '}';
     }
 }

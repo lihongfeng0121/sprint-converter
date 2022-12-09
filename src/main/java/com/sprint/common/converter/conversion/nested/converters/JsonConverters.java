@@ -3,7 +3,6 @@ package com.sprint.common.converter.conversion.nested.converters;
 import com.sprint.common.converter.conversion.nested.NestedConverter;
 import com.sprint.common.converter.conversion.nested.NestedConverterLoader;
 import com.sprint.common.converter.conversion.nested.NestedConverters;
-import com.sprint.common.converter.exception.JsonException;
 import com.sprint.common.converter.conversion.nested.json.Jsons;
 import com.sprint.common.converter.exception.ConversionException;
 import com.sprint.common.converter.exception.NotSupportConvertException;
@@ -41,11 +40,7 @@ public class JsonConverters implements NestedConverterLoader {
             if (sourceValue == null) {
                 return null;
             }
-            try {
-                return Jsons.toJsonString(sourceValue);
-            } catch (JsonException e) {
-                throw new ConversionException(e);
-            }
+            return Jsons.toJsonString(sourceValue);
         }
     }
 
@@ -80,12 +75,8 @@ public class JsonConverters implements NestedConverterLoader {
             if (!Types.isJsonObject(jsonStr)) {
                 throw new NotSupportConvertException(sourceValue.getClass(), Types.extractClass(targetFiledType, targetBeanType));
             }
-            try {
-                Object map = Jsons.toJavaObject(jsonStr, LinkedHashMap.class);
-                return NestedConverters.convert(map, targetBeanType, targetFiledType);
-            } catch (JsonException e) {
-                throw new ConversionException(e);
-            }
+            Object map = Jsons.toJavaObject(jsonStr, LinkedHashMap.class);
+            return NestedConverters.convert(map, targetBeanType, targetFiledType);
         }
     }
 
@@ -120,12 +111,8 @@ public class JsonConverters implements NestedConverterLoader {
             if (!Types.isJsonObject(jsonStr)) {
                 throw new NotSupportConvertException(sourceValue.getClass(), Types.extractClass(targetFiledType, targetBeanType));
             }
-            try {
-                Object map = Jsons.toJavaObject(jsonStr, LinkedHashMap.class);
-                return NestedConverters.convert(map, targetBeanType, targetFiledType);
-            } catch (JsonException e) {
-                throw new ConversionException(e);
-            }
+            Object map = Jsons.toJavaObject(jsonStr, LinkedHashMap.class);
+            return NestedConverters.convert(map, targetBeanType, targetFiledType);
         }
     }
 
@@ -162,12 +149,8 @@ public class JsonConverters implements NestedConverterLoader {
                 throw new NotSupportConvertException(sourceValue.getClass(), Types.extractClass(targetFiledType, targetBeanType));
             }
 
-            try {
-                Collection<?> list = Jsons.toJavaObjects(jsonStr, Types.OBJECT_CLASS, ArrayList.class);
-                return NestedConverters.convert(list, targetBeanType, targetFiledType);
-            } catch (JsonException e) {
-                throw new ConversionException(e);
-            }
+            Collection<?> list = Jsons.toJavaObjects(jsonStr, Types.OBJECT_CLASS, ArrayList.class);
+            return NestedConverters.convert(list, targetBeanType, targetFiledType);
         }
     }
 
@@ -204,12 +187,8 @@ public class JsonConverters implements NestedConverterLoader {
                 throw new NotSupportConvertException(sourceValue.getClass(), Types.extractClass(targetFiledType, targetBeanType));
             }
 
-            try {
-                Collection<?> list = Jsons.toJavaObjects(jsonStr, Types.OBJECT_CLASS, ArrayList.class);
-                return NestedConverters.convert(list, targetBeanType, targetFiledType);
-            } catch (JsonException e) {
-                throw new ConversionException(e);
-            }
+            Collection<?> list = Jsons.toJavaObjects(jsonStr, Types.OBJECT_CLASS, ArrayList.class);
+            return NestedConverters.convert(list, targetBeanType, targetFiledType);
         }
     }
 }

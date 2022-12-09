@@ -3,9 +3,9 @@ package com.sprint.common.converter.conversion.nested;
 import com.sprint.common.converter.BaseConverter;
 import com.sprint.common.converter.Converter;
 import com.sprint.common.converter.ErrorHandler;
-import com.sprint.common.converter.util.Beans;
 import com.sprint.common.converter.exception.ConversionException;
 import com.sprint.common.converter.exception.NotSupportConvertException;
+import com.sprint.common.converter.util.Beans;
 import com.sprint.common.converter.util.Types;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -102,7 +102,7 @@ public final class NestedConverters {
                     try {
                         return nestedConverter.convert(source, targetBeanType, targetType);
                     } catch (ConversionException e) {
-                        logger.warn("this converter not support, use next converter");
+                        logger.warn("this converter not support, use next converter, convert msg :{}", e.getMessage());
                     }
                 }
             }
