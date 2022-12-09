@@ -203,8 +203,9 @@ public class Types {
                 continue;
             }
             String propertyName = field.getName();
-            if (filter == null || filter.test(propertyName, field))
+            if (filter == null || filter.test(propertyName, field)) {
                 fieldMap.put(propertyName, field);
+            }
         }
         return fieldMap;
     }

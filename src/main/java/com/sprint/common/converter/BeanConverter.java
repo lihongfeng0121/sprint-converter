@@ -1,9 +1,8 @@
 package com.sprint.common.converter;
 
-import com.sprint.common.converter.conversion.nested.bean.Beans;
 import com.sprint.common.converter.exception.ConversionException;
-import com.sprint.common.converter.exception.ConversionExceptionWrapper;
 import com.sprint.common.converter.exception.NotSupportConvertException;
+import com.sprint.common.converter.util.Beans;
 import com.sprint.common.converter.util.Types;
 
 /**
@@ -87,7 +86,7 @@ public class BeanConverter {
         Class<?> sourceType = source.getClass();
         Class<?> finalTargetClass = Types.isObjectType(targetClass) ? sourceType : targetClass;
         if (!Types.isMap(sourceType) || !Types.isBean(sourceType) || !Types.isMap(finalTargetClass) || !Types.isBean(finalTargetClass)) {
-            throw ConversionExceptionWrapper.wrapper(new NotSupportConvertException(sourceType, targetClass));
+            throw new NotSupportConvertException(sourceType, targetClass);
         }
         return Converter.doEnforce(Beans.cast(source, finalTargetClass, ignoreProperties));
     }
@@ -109,7 +108,7 @@ public class BeanConverter {
         Class<?> sourceType = source.getClass();
         Class<?> finalTargetClass = Types.isObjectType(targetClass) ? sourceType : targetClass;
         if (!Types.isMap(sourceType) || !Types.isBean(sourceType) || !Types.isMap(finalTargetClass) || !Types.isBean(finalTargetClass)) {
-            throw ConversionExceptionWrapper.wrapper(new NotSupportConvertException(sourceType, targetClass));
+            throw new NotSupportConvertException(sourceType, targetClass);
         }
         return Converter.doEnforce(Beans.cast(source, finalTargetClass, false, ignoreProperties));
     }

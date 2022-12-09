@@ -1,6 +1,6 @@
 package com.sprint.common.converter.conversion.nested.bean.introspection;
 
-import com.sprint.common.converter.conversion.nested.bean.BeansException;
+import com.sprint.common.converter.exception.BeansException;
 import com.sprint.common.converter.util.ConcurrentReferenceHashMap;
 
 import java.beans.BeanInfo;

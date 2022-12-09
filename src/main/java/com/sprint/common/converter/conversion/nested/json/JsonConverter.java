@@ -1,5 +1,7 @@
 package com.sprint.common.converter.conversion.nested.json;
 
+import com.sprint.common.converter.exception.JsonException;
+
 import java.lang.reflect.Type;
 import java.util.Collection;
 

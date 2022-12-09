@@ -3,7 +3,7 @@ package com.sprint.common.converter.conversion.nested;
 import com.sprint.common.converter.BaseConverter;
 import com.sprint.common.converter.Converter;
 import com.sprint.common.converter.ErrorHandler;
-import com.sprint.common.converter.conversion.nested.bean.Beans;
+import com.sprint.common.converter.util.Beans;
 import com.sprint.common.converter.exception.ConversionException;
 import com.sprint.common.converter.exception.NotSupportConvertException;
 import com.sprint.common.converter.util.Types;

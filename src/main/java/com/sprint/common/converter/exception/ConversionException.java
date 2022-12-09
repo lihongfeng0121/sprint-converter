@@ -7,7 +7,7 @@ package com.sprint.common.converter.exception;
  * @version 1.0
  * @since 2019年12月25日
  */
-public class ConversionException extends Exception {
+public class ConversionException extends RuntimeException {
 
     private static final long serialVersionUID = -6242450642491108243L;
 

@@ -1,9 +1,11 @@
-package com.sprint.common.converter.conversion.nested.bean;
+package com.sprint.common.converter.util;
 
-import com.sprint.common.converter.conversion.nested.bean.annotation.DefaultPropertyInfoAnnotationParser;
+import com.sprint.common.converter.conversion.nested.bean.Access;
+import com.sprint.common.converter.conversion.nested.bean.PropertyAnnotationParser;
+import com.sprint.common.converter.conversion.nested.bean.PropertyInfo;
+import com.sprint.common.converter.conversion.nested.bean.annotation.DefaultPropertyAnnotationParser;
 import com.sprint.common.converter.conversion.nested.bean.introspection.CachedIntrospectionResults;
 import com.sprint.common.converter.conversion.nested.bean.introspection.PropertyAccess;
-import com.sprint.common.converter.util.Types;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -87,18 +89,18 @@ public class Properties {
         return propertyNames;
     }
 
-    private static final List<PropertyInfoAnnotationParser<?>> EXT_ANNOTATION_PARSER_LIST = new ArrayList<>();
+    private static final List<PropertyAnnotationParser<?>> EXT_ANNOTATION_PARSER_LIST = new ArrayList<>();
 
-    private static final PropertyInfoAnnotationParser<?> DEFAULT_ANNOTATION_PARSER = new DefaultPropertyInfoAnnotationParser();
+    private static final PropertyAnnotationParser<?> DEFAULT_ANNOTATION_PARSER = new DefaultPropertyAnnotationParser();
 
     static {// 通过ServiceLoader 加载service， 可自定义属性解析器 META-INF
         // 增加com.sprint.common.converter.bean.PropertyInfoAnnotationParser 文件
         // 将PropertyInfoAnnotationParser实现类全路径复制到文件内
         try {
             ClassLoader loader = Thread.currentThread().getContextClassLoader();
-            for (PropertyInfoAnnotationParser<?> propertyInfoAnnotationParser : ServiceLoader
-                    .load(PropertyInfoAnnotationParser.class, loader)) {
-                EXT_ANNOTATION_PARSER_LIST.add(propertyInfoAnnotationParser);
+            for (PropertyAnnotationParser<?> propertyAnnotationParser : ServiceLoader
+                    .load(PropertyAnnotationParser.class, loader)) {
+                EXT_ANNOTATION_PARSER_LIST.add(propertyAnnotationParser);
             }
         } catch (Exception ex) {
 
@@ -112,42 +114,42 @@ public class Properties {
      * @param propertyAccess propertyAccess
      * @return PropertyInfoHolder
      */
-    public static PropertyInfoHolder parsePropertyInfo(
+    public static PropertyInfo parsePropertyInfo(
             PropertyAccess propertyAccess) {
-        PropertyInfoHolder propertyInfoHolder = new PropertyInfoHolder();
-        propertyInfoHolder.setPropertyAccess(propertyAccess);
-        propertyInfoHolder.setAccess(Access.AUTO);
-        propertyInfoHolder.setIndex(-1);
-        propertyInfoHolder.setName(propertyAccess.getName());
+        PropertyInfo propertyInfo = new PropertyInfo();
+        propertyInfo.setPropertyAccess(propertyAccess);
+        propertyInfo.setAccess(Access.AUTO);
+        propertyInfo.setIndex(-1);
+        propertyInfo.setName(propertyAccess.getName());
         if (DEFAULT_ANNOTATION_PARSER.support(propertyAccess)) {
-            PropertyInfoHolder parsePropertyInfoHolder = DEFAULT_ANNOTATION_PARSER
+            PropertyInfo parsePropertyInfo = DEFAULT_ANNOTATION_PARSER
                     .parse(propertyAccess.getAnnotation(DEFAULT_ANNOTATION_PARSER.annotationType()));
-            if (parsePropertyInfoHolder.getName() != null && !parsePropertyInfoHolder.getName().isEmpty()) {
-                propertyInfoHolder.setName(parsePropertyInfoHolder.getName());
+            if (parsePropertyInfo.getName() != null && !parsePropertyInfo.getName().isEmpty()) {
+                propertyInfo.setName(parsePropertyInfo.getName());
             }
-            if (!Objects.equals(propertyInfoHolder.getAccess(), Access.AUTO)) {
-                propertyInfoHolder.setAccess(parsePropertyInfoHolder.getAccess());
+            if (!Objects.equals(propertyInfo.getAccess(), Access.AUTO)) {
+                propertyInfo.setAccess(parsePropertyInfo.getAccess());
             }
-            if (parsePropertyInfoHolder.getIndex() > -1) {
-                propertyInfoHolder.setIndex(parsePropertyInfoHolder.getIndex());
+            if (parsePropertyInfo.getIndex() > -1) {
+                propertyInfo.setIndex(parsePropertyInfo.getIndex());
             }
         }
         if (!EXT_ANNOTATION_PARSER_LIST.isEmpty()) {
             EXT_ANNOTATION_PARSER_LIST.stream().filter(item -> item.support(propertyAccess)).forEach(item -> {
-                PropertyInfoHolder parsePropertyInfoHolder = item
+                PropertyInfo parsePropertyInfo = item
                         .parse(propertyAccess.getAnnotation(item.annotationType()));
-                if (parsePropertyInfoHolder.getName() != null && !parsePropertyInfoHolder.getName().isEmpty()) {
-                    propertyInfoHolder.setName(parsePropertyInfoHolder.getName());
+                if (parsePropertyInfo.getName() != null && !parsePropertyInfo.getName().isEmpty()) {
+                    propertyInfo.setName(parsePropertyInfo.getName());
                 }
-                if (!Objects.equals(propertyInfoHolder.getAccess(), Access.AUTO)) {
-                    propertyInfoHolder.setAccess(parsePropertyInfoHolder.getAccess());
+                if (!Objects.equals(propertyInfo.getAccess(), Access.AUTO)) {
+                    propertyInfo.setAccess(parsePropertyInfo.getAccess());
                 }
-                if (parsePropertyInfoHolder.getIndex() > -1) {
-                    propertyInfoHolder.setIndex(parsePropertyInfoHolder.getIndex());
+                if (parsePropertyInfo.getIndex() > -1) {
+                    propertyInfo.setIndex(parsePropertyInfo.getIndex());
                 }
             });
         }
-        return propertyInfoHolder;
+        return propertyInfo;
     }
 
     /**
@@ -303,14 +305,14 @@ public class Properties {
         return getReadPropertyAccess(source).stream().map(Properties::parsePropertyInfo)
                 .filter(item -> !ignore.contains(item.getName()))
                 .filter(item -> !Objects.equals(item.getAccess(), Access.WRITE_ONLY))
-                .collect(Collectors.toMap(PropertyInfoHolder::getName, PropertyInfoHolder::getPropertyAccess));
+                .collect(Collectors.toMap(PropertyInfo::getName, PropertyInfo::getPropertyAccess));
     }
 
     private static Map<String, PropertyAccess> getWriteAblePropertyAccessMap(Object target, Set<String> ignore) {
         return getWritePropertyAccess(target).stream().map(Properties::parsePropertyInfo)
                 .filter(item -> !ignore.contains(item.getName()))
                 .filter(item -> !Objects.equals(item.getAccess(), Access.READ_ONLY))
-                .collect(Collectors.toMap(PropertyInfoHolder::getName, PropertyInfoHolder::getPropertyAccess));
+                .collect(Collectors.toMap(PropertyInfo::getName, PropertyInfo::getPropertyAccess));
     }
 
     // 获取map 属性映射

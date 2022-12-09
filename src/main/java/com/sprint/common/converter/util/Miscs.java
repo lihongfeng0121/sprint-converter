@@ -41,7 +41,8 @@ class Miscs {
         return toMap(new LinkedHashMap<>(), keys, vals);
     }
 
-    static <K, V> Map<K, V> toMap(Map<K, V> map, K[] keys, V[] vals) {
+
+    private static <K, V> Map<K, V> toMap(Map<K, V> map, K[] keys, V[] vals) {
         if (keys.length != vals.length) {
             throw new IllegalArgumentException("keys/vals length not equal");
         }

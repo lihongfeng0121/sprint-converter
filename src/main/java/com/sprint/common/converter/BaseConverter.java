@@ -3,7 +3,6 @@ package com.sprint.common.converter;
 import com.sprint.common.converter.conversion.dynamic.DynamicConverters;
 import com.sprint.common.converter.conversion.specific.SpecificConverters;
 import com.sprint.common.converter.exception.ConversionException;
-import com.sprint.common.converter.exception.ConversionExceptionWrapper;
 import com.sprint.common.converter.exception.ConvertErrorException;
 import com.sprint.common.converter.exception.NotSupportConvertException;
 import com.sprint.common.converter.util.Types;
@@ -73,24 +72,6 @@ public final class BaseConverter {
             logger.warn(String.format("not support [%s][%s] -> %s", source.getClass(), source, targetClass.getName()),
                     e);
             return null;
-        }
-    }
-
-    /**
-     * 忽略 运行时异常
-     *
-     * @param source      源
-     * @param targetClass 目标类型
-     * @param <T>         t
-     * @return target
-     */
-    public static <T> T convertRuntime(Object source, Class<T> targetClass) {
-        try {
-            return convert(source, targetClass, (ex, var1) -> null);
-        } catch (ConversionException e) {
-            logger.error(String.format("not support [%s][%s] -> %s", source.getClass(), source, targetClass.getName()),
-                    e);
-            throw ConversionExceptionWrapper.wrapper(e);
         }
     }
 

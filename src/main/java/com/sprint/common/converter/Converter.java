@@ -1,7 +1,6 @@
 package com.sprint.common.converter;
 
 import com.sprint.common.converter.exception.ConversionException;
-import com.sprint.common.converter.exception.ConversionExceptionWrapper;
 
 import java.util.Objects;
 import java.util.function.Consumer;
@@ -124,7 +123,7 @@ public interface Converter<S, T> {
         return (s) -> {
             try {
                 return convert(s);
-            } catch (Throwable ex) {
+            } catch (Throwable ignored) {
             }
             return null;
         };
@@ -176,13 +175,7 @@ public interface Converter<S, T> {
      * @return func
      */
     default Function<S, T> asfunc() {
-        return (s) -> {
-            try {
-                return convert(s);
-            } catch (ConversionException e) {
-                throw ConversionExceptionWrapper.wrapper(e);
-            }
-        };
+        return this::convert;
     }
 
     /**

@@ -1,13 +1,13 @@
-package com.sprint.common.converter.conversion.nested.bean;
+package com.sprint.common.converter.util;
 
 import com.sprint.common.converter.Converter;
 import com.sprint.common.converter.TypeReference;
 import com.sprint.common.converter.conversion.nested.NestedConverters;
+import com.sprint.common.converter.exception.BeansException;
+import com.sprint.common.converter.conversion.nested.bean.FilterCallback;
 import com.sprint.common.converter.conversion.nested.bean.introspection.CachedIntrospectionResults;
 import com.sprint.common.converter.conversion.nested.bean.introspection.PropertyAccess;
 import com.sprint.common.converter.exception.ConversionException;
-import com.sprint.common.converter.util.Assert;
-import com.sprint.common.converter.util.Types;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -38,9 +38,9 @@ public final class Beans {
 
     private static final Pattern POINT_PATTERN = Pattern.compile("\\.(\\w)");
 
-    private static final Function<String, String[]> splitter = (str) -> str == null ? new String[]{}
+    private static final Function<String, String[]> SPLITTER = (str) -> str == null ? new String[]{}
             : str.split("\\.");
-    private static final Function<String[], String> joiner = (array) -> array == null ? null
+    private static final Function<String[], String> JOINER = (array) -> array == null ? null
             : Stream.of(array).filter(Objects::nonNull).collect(Collectors.joining("."));
 
     private Beans() {
@@ -222,7 +222,7 @@ public final class Beans {
     public static void setProperty(Type objType, Object obj, String propertyName, Object value, boolean convert,
                                    boolean ignored) throws BeansException {
         try {
-            String[] propertyCascade = splitter.apply(propertyName);
+            String[] propertyCascade = SPLITTER.apply(propertyName);
             // 仅一级属性
             if (propertyCascade.length == 1) {
                 PropertyAccess desc = CachedIntrospectionResults.forClass(obj.getClass())
@@ -259,7 +259,7 @@ public final class Beans {
                     setProperty(objType, obj, property, back, false, ignored);
                 }
                 setProperty(propertyBeanType, back,
-                        joiner.apply(Arrays.copyOfRange(propertyCascade, 1, propertyCascade.length)), value, convert,
+                        JOINER.apply(Arrays.copyOfRange(propertyCascade, 1, propertyCascade.length)), value, convert,
                         ignored);
             }
         } catch (Exception ex) {
@@ -318,7 +318,7 @@ public final class Beans {
      * @return property
      */
     public static Object getProperty(Object obj, String propertyName) {
-        String[] propertyCascade = splitter.apply(propertyName);
+        String[] propertyCascade = SPLITTER.apply(propertyName);
         if (propertyCascade.length == 1) {
             if (obj instanceof Map) {
                 Map<?, ?> map = (Map<?, ?>) obj;
@@ -350,7 +350,7 @@ public final class Beans {
             if (back == null) {
                 return null;
             }
-            return getProperty(back, joiner.apply(Arrays.copyOfRange(propertyCascade, 1, propertyCascade.length)));
+            return getProperty(back, JOINER.apply(Arrays.copyOfRange(propertyCascade, 1, propertyCascade.length)));
         }
     }
 
@@ -395,7 +395,7 @@ public final class Beans {
         Assert.notNull(propertyName, "propertyName can't be null");
         try {
             CachedIntrospectionResults introspectionResults = CachedIntrospectionResults.forClass(clazz);
-            String[] propertyCascade = splitter.apply(propertyName);
+            String[] propertyCascade = SPLITTER.apply(propertyName);
             Class<?> type;
             if (propertyCascade.length == 1) {
                 PropertyAccess desc = introspectionResults.getPropertyAccess(propertyName);
@@ -404,7 +404,7 @@ public final class Beans {
                 String property = propertyCascade[0];
                 PropertyAccess desc = introspectionResults.getPropertyAccess(property);
                 type = getPropertyType(desc.extractClass(),
-                        joiner.apply(Arrays.copyOfRange(propertyCascade, 1, propertyCascade.length)));
+                        JOINER.apply(Arrays.copyOfRange(propertyCascade, 1, propertyCascade.length)));
             }
 
             return type;
@@ -768,17 +768,15 @@ public final class Beans {
         return map;
     }
 
-    static <T> boolean contained(String[] ts, String t) {
+    static boolean contained(String[] ts, String t) {
         if (ts != null && t != null) {
             for (String obj : ts) {
                 if (obj != null && obj.equals(t)) {
                     return true;
                 }
             }
-            return false;
-        } else {
-            return false;
         }
+        return false;
     }
 
     static String pointToCamel(String source) {
@@ -819,21 +817,17 @@ public final class Beans {
                 if (index <= 0) {
                     value = getProperty(source, sourceProp);
                 }
-
                 if (filterCallback != null) {
                     value = filterCallback.filter(sourceProp, value);
                 }
-
                 if (value != null) {
                     String prop = sourceProp;
                     if (alias != null && alias.length > i) {
                         prop = alias[i];
                     }
-
                     result.put(prop, value);
                 }
             }
-
             return result;
         } else {
             throw new BeansException("sourceProps  is null");
@@ -899,7 +893,6 @@ public final class Beans {
     public static List<Map<String, Object>> toMap(Collection<?> source, String[] sourceProps, String[] alias,
                                                   Map<String, Object> other, FilterCallback filterCallback) {
         List<Map<String, Object>> list = new LinkedList<>();
-
         for (Object object : source) {
             Map<String, Object> map = toMapWithFilter(object, sourceProps, alias, filterCallback);
             if (other != null) {
@@ -907,7 +900,6 @@ public final class Beans {
             }
             list.add(map);
         }
-
         return list;
     }
 
@@ -961,11 +953,9 @@ public final class Beans {
      */
     public static List<Map<String, Object>> toMap(Collection<?> source, String[] sourceProps) {
         List<Map<String, Object>> list = new LinkedList<>();
-
         for (Object object : source) {
             list.add(toMap(object, sourceProps, null));
         }
-
         return list;
     }
 
@@ -987,7 +977,6 @@ public final class Beans {
             Object value = getProperty(object, prop);
             list.add(value);
         }
-
         return list;
     }
 

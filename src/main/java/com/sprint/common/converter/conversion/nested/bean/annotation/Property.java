@@ -14,7 +14,7 @@ import java.lang.annotation.*;
 @Target({ElementType.METHOD, ElementType.FIELD})
 @Retention(RetentionPolicy.RUNTIME)
 @Documented
-public @interface PropertyInfo {
+public @interface Property {
 
     String USE_DEFAULT_NAME = "";
     int INDEX_UNKNOWN = -1;

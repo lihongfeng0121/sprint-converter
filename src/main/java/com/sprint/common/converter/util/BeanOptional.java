@@ -3,7 +3,6 @@ package com.sprint.common.converter.util;
 import com.sprint.common.converter.AnyConverter;
 import com.sprint.common.converter.Converter;
 import com.sprint.common.converter.TypeReference;
-import com.sprint.common.converter.conversion.nested.bean.Beans;
 
 import java.lang.reflect.Type;
 import java.sql.Timestamp;
@@ -106,8 +105,9 @@ public class BeanOptional<T> {
      *                              null
      */
     public void ifPresent(Consumer<? super T> consumer) {
-        if (value != null)
+        if (value != null) {
             consumer.accept(value);
+        }
     }
 
     /**
@@ -145,18 +145,18 @@ public class BeanOptional<T> {
      */
     public <U> BeanOptional<U> map(Function<? super T, ? extends U> mapper) {
         Objects.requireNonNull(mapper);
-        if (!isPresent())
+        if (!isPresent()) {
             return empty();
-        else {
+        } else {
             return BeanOptional.ofNullable(mapper.apply(value));
         }
     }
 
     public Optional<Object> mapGet(String key) {
         Objects.requireNonNull(key);
-        if (!isPresent())
+        if (!isPresent()) {
             return Optional.empty();
-        else {
+        } else {
             return Optional.ofNullable(Beans.getProperty(value, key));
         }
     }
@@ -174,6 +174,10 @@ public class BeanOptional<T> {
     public <U> Optional<U> mapGet(String key, TypeReference<U> type) {
         Objects.requireNonNull(type);
         return mapGet(key).map(item -> AnyConverter.convert(item, type));
+    }
+
+    public BeanOptional<Object> mapGetBean(String key) {
+        return mapGet(key).map(BeanOptional::ofNullable).orElse(empty());
     }
 
     public <U> BeanOptional<U> mapGetBean(String key, Class<U> type) {
@@ -247,9 +251,9 @@ public class BeanOptional<T> {
      */
     public <U> BeanOptional<U> flatMap(Function<? super T, BeanOptional<U>> mapper) {
         Objects.requireNonNull(mapper);
-        if (!isPresent())
+        if (!isPresent()) {
             return empty();
-        else {
+        } else {
             return Objects.requireNonNull(mapper.apply(value));
         }
     }

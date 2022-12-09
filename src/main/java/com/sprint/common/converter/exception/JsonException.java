@@ -1,4 +1,4 @@
-package com.sprint.common.converter.conversion.nested.json;
+package com.sprint.common.converter.exception;
 
 /**
  * Json异常
@@ -7,12 +7,9 @@ package com.sprint.common.converter.conversion.nested.json;
  * @version 1.0
  * @since 2021年02月05日
  */
-public class JsonException extends Exception {
+public class JsonException extends ConversionException {
 
     private static final long serialVersionUID = -4053019964196284727L;
-
-    public JsonException() {
-    }
 
     public JsonException(String message) {
         super(message);
@@ -26,7 +23,4 @@ public class JsonException extends Exception {
         super(cause);
     }
 
-    public JsonException(String message, Throwable cause, boolean enableSuppression, boolean writableStackTrace) {
-        super(message, cause, enableSuppression, writableStackTrace);
-    }
 }

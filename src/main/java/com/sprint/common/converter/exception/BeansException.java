@@ -1,4 +1,4 @@
-package com.sprint.common.converter.conversion.nested.bean;
+package com.sprint.common.converter.exception;
 
 /**
  * Beans 转换异常
@@ -7,7 +7,7 @@ package com.sprint.common.converter.conversion.nested.bean;
  * @version 1.0
  * @since 2021年02月05日
  */
-public class BeansException extends RuntimeException {
+public class BeansException extends ConversionException {
 
     private static final long serialVersionUID = 3415606102477064509L;
 

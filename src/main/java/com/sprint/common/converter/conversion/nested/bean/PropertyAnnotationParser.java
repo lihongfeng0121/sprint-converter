@@ -12,7 +12,7 @@ import java.lang.annotation.Annotation;
  * @version 1.0
  * @since 2021年02月05日
  */
-public interface PropertyInfoAnnotationParser<T extends Annotation> {
+public interface PropertyAnnotationParser<T extends Annotation> {
 
     /**
      * 注解类型
@@ -20,7 +20,7 @@ public interface PropertyInfoAnnotationParser<T extends Annotation> {
      * @return 注解类型
      */
     default Class<T> annotationType() {
-        return (Class<T>) Types.getInterfaceSuperclass(this.getClass(), PropertyInfoAnnotationParser.class, 0);
+        return (Class<T>) Types.getInterfaceSuperclass(this.getClass(), PropertyAnnotationParser.class, 0);
     }
 
     /**
@@ -39,5 +39,5 @@ public interface PropertyInfoAnnotationParser<T extends Annotation> {
      * @param annotation annotation
      * @return PropertyInfoHolder
      */
-    PropertyInfoHolder parse(T annotation);
+    PropertyInfo parse(T annotation);
 }

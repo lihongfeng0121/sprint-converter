@@ -1,9 +1,7 @@
 package com.sprint.common.converter;
 
 import com.sprint.common.converter.conversion.nested.NestedConverters;
-import com.sprint.common.converter.conversion.nested.bean.BeansException;
-import com.sprint.common.converter.exception.ConversionException;
-import com.sprint.common.converter.exception.ConversionExceptionWrapper;
+import com.sprint.common.converter.exception.BeansException;
 import com.sprint.common.converter.util.Assert;
 import com.sprint.common.converter.util.Types;
 
@@ -79,15 +77,11 @@ public final class AnyConverter {
      * @throws BeansException bean exception
      */
     private static <S, T> T doConvert(S source, Type first, Type... types) {
-        try {
-            Object target = NestedConverters.convert(source, null, first);
-            for (Type type : types) {
-                target = NestedConverters.convert(target, null, type);
-            }
-            return Converter.doEnforce(target);
-        } catch (ConversionException e) {
-            throw ConversionExceptionWrapper.wrapper(e);
+        Object target = NestedConverters.convert(source, null, first);
+        for (Type type : types) {
+            target = NestedConverters.convert(target, null, type);
         }
+        return Converter.doEnforce(target);
     }
 
     /**

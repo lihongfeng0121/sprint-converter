@@ -11,8 +11,11 @@ import java.util.Objects;
  * @version 1.0
  * @since 2021年02月05日
  */
-public class PropertyInfoHolder {
+public class PropertyInfo {
 
+    /**
+     * 属性信息
+     */
     private PropertyAccess propertyAccess;
     /**
      * 属性名字
@@ -63,11 +66,15 @@ public class PropertyInfoHolder {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o)
+        if (this == o) {
             return true;
-        if (o == null || getClass() != o.getClass())
+        }
+
+        if (o == null || getClass() != o.getClass()) {
             return false;
-        PropertyInfoHolder that = (PropertyInfoHolder) o;
+        }
+
+        PropertyInfo that = (PropertyInfo) o;
         return index == that.index && Objects.equals(name, that.name) && access == that.access;
     }
 
