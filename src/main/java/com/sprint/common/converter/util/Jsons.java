@@ -1,8 +1,7 @@
-package com.sprint.common.converter.conversion.nested.json;
+package com.sprint.common.converter.util;
 
+import com.sprint.common.converter.conversion.nested.json.JsonConverter;
 import com.sprint.common.converter.exception.JsonException;
-import com.sprint.common.converter.util.Beans;
-import com.sprint.common.converter.util.Types;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -69,10 +68,10 @@ public class Jsons {
         return jsonConverter.toJavaObjects(value, type, collectionType);
     }
 
-    public static <T> Collection<T> toJavaObjectList(String value, Type type) throws JsonException {
+    public static <T> List<T> toJavaObjectList(String value, Type type) throws JsonException {
         if (jsonConverter == null) {
             return null;
         }
-        return jsonConverter.toJavaObjects(value, type, List.class);
+        return (List<T>) jsonConverter.toJavaObjects(value, type, List.class);
     }
 }

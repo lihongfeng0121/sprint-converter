@@ -6,7 +6,7 @@ import com.sprint.common.converter.Converter;
 import com.sprint.common.converter.TypeReference;
 import com.sprint.common.converter.util.Beans;
 import com.sprint.common.converter.exception.JsonException;
-import com.sprint.common.converter.conversion.nested.json.Jsons;
+import com.sprint.common.converter.util.Jsons;
 import com.sprint.common.converter.exception.ConversionException;
 import com.sprint.common.converter.test.bean.*;
 import com.sprint.common.converter.util.Assert;
