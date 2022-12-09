@@ -1,5 +1,6 @@
 package com.sprint.common.converter.util;
 
+import com.sprint.common.converter.TypeReference;
 import com.sprint.common.converter.conversion.nested.json.JsonConverter;
 import com.sprint.common.converter.exception.JsonException;
 import org.slf4j.Logger;
@@ -51,6 +52,20 @@ public class Jsons {
             return null;
         }
         return jsonConverter.toJsonString(obj);
+    }
+
+    public static <T> T toJavaObject(String value, Class<T> type) throws JsonException {
+        if (jsonConverter == null) {
+            return null;
+        }
+        return jsonConverter.toJavaObject(value, type);
+    }
+
+    public static <T> T toJavaObject(String value, TypeReference<T> type) throws JsonException {
+        if (jsonConverter == null) {
+            return null;
+        }
+        return jsonConverter.toJavaObject(value, type.getType());
     }
 
     public static <T> T toJavaObject(String value, Type type) throws JsonException {
