@@ -66,7 +66,7 @@ public class BeanConverter {
             if (sourceClass.isAssignableFrom(sourceType)) {
                 throw new ConversionException("source type[" + sourceType + "] not from " + sourceClass);
             }
-            return Converter.doEnforce(Beans.cast(source, finalTargetClass, convert, ignoreProperties));
+            return Converter.enforce(Beans.cast(source, finalTargetClass, convert, ignoreProperties));
         };
     }
 
@@ -88,7 +88,7 @@ public class BeanConverter {
         if (!Types.isMap(sourceType) || !Types.isBean(sourceType) || !Types.isMap(finalTargetClass) || !Types.isBean(finalTargetClass)) {
             throw new NotSupportConvertException(sourceType, targetClass);
         }
-        return Converter.doEnforce(Beans.cast(source, finalTargetClass, ignoreProperties));
+        return Converter.enforce(Beans.cast(source, finalTargetClass, ignoreProperties));
     }
 
 
@@ -110,6 +110,6 @@ public class BeanConverter {
         if (!Types.isMap(sourceType) || !Types.isBean(sourceType) || !Types.isMap(finalTargetClass) || !Types.isBean(finalTargetClass)) {
             throw new NotSupportConvertException(sourceType, targetClass);
         }
-        return Converter.doEnforce(Beans.cast(source, finalTargetClass, false, ignoreProperties));
+        return Converter.enforce(Beans.cast(source, finalTargetClass, false, ignoreProperties));
     }
 }

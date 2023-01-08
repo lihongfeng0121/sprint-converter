@@ -33,7 +33,7 @@ public class EnumConverters implements DynamicConverterLoader {
                 return null;
             }
             if (targetType != null) {
-                return Enum.valueOf(Converter.doEnforce(targetType), String.valueOf(source));
+                return Enum.valueOf(Converter.enforce(targetType), String.valueOf(source));
             }
             return null;
         }

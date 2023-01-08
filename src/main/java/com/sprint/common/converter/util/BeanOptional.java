@@ -347,27 +347,27 @@ public class BeanOptional<T> {
     }
 
     public <P> List<P> getList(String key, Class<P> clazz) {
-        return Converter.doEnforce(doGet(key, Types.makeType(List.class, new Type[]{clazz}, null), () -> null));
+        return Converter.enforce(doGet(key, Types.makeType(List.class, new Type[]{clazz}, null), () -> null));
     }
 
     public <P> List<P> safeGetList(String key, Class<P> clazz) {
-        return Converter.doEnforce(doSafeGet(key, Types.makeType(List.class, new Type[]{clazz}, null), () -> null));
+        return Converter.enforce(doSafeGet(key, Types.makeType(List.class, new Type[]{clazz}, null), () -> null));
     }
 
     public <P> Set<P> getSet(String key, Class<P> clazz) {
-        return Converter.doEnforce(doGet(key, Types.makeType(Set.class, new Type[]{clazz}, null), () -> null));
+        return Converter.enforce(doGet(key, Types.makeType(Set.class, new Type[]{clazz}, null), () -> null));
     }
 
     public <P> Set<P> safeGetSet(String key, Class<P> clazz) {
-        return Converter.doEnforce(doSafeGet(key, Types.makeType(Set.class, new Type[]{clazz}, null), () -> null));
+        return Converter.enforce(doSafeGet(key, Types.makeType(Set.class, new Type[]{clazz}, null), () -> null));
     }
 
     public <K, V> Map<K, V> getMap(String key, Class<K> keyClazz, Class<V> valClazz) {
-        return Converter.doEnforce(doGet(key, Types.makeType(Map.class, new Type[]{keyClazz, valClazz}, null), () -> null));
+        return Converter.enforce(doGet(key, Types.makeType(Map.class, new Type[]{keyClazz, valClazz}, null), () -> null));
     }
 
     public <K, V> Map<K, V> safeGetMap(String key, Class<K> keyClazz, Class<V> valClazz) {
-        return Converter.doEnforce(doSafeGet(key, Types.makeType(Map.class, new Type[]{keyClazz, valClazz}, null), () -> null));
+        return Converter.enforce(doSafeGet(key, Types.makeType(Map.class, new Type[]{keyClazz, valClazz}, null), () -> null));
     }
 
     public <P> P get(String key, Class<P> clazz, Supplier<P> defaultSupplier) {

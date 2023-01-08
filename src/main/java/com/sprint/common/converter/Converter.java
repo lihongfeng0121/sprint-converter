@@ -58,7 +58,7 @@ public interface Converter<S, T> {
      * @return 转换后转换器
      */
     default <S1, V1> Converter<S1, V1> enforce() {
-        return (s1) -> doEnforce(convert(doEnforce(s1)));
+        return (s1) -> enforce(convert(enforce(s1)));
     }
 
     /**
@@ -196,7 +196,7 @@ public interface Converter<S, T> {
      * @return 自身转换器
      */
     static <S, T> Converter<S, T> enforcer() {
-        return Converter::doEnforce;
+        return Converter::enforce;
     }
 
     /**
@@ -207,7 +207,7 @@ public interface Converter<S, T> {
      * @param <T> T
      * @return t
      */
-    static <S, T> T doEnforce(S s) {
+    static <S, T> T enforce(S s) {
         return (T) s;
     }
 }

@@ -81,7 +81,7 @@ public final class AnyConverter {
         for (Type type : types) {
             target = NestedConverters.convert(target, null, type);
         }
-        return Converter.doEnforce(target);
+        return Converter.enforce(target);
     }
 
     /**

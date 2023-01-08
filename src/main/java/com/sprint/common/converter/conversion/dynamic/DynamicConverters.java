@@ -80,14 +80,14 @@ public final class DynamicConverters {
      */
     public static <S, T> Converter<S, T> getConverter(Class<S> sourceClass, Class<T> targetClass) {
         Optional<Converter<?, ?>> converterOptional = cache.computeIfAbsent(getKey(sourceClass, targetClass), (k) -> {
-            DynamicConverter<T> dynamicConverter = Converter.doEnforce(DYNAMIC_CONVERTER_CACHE.stream()
+            DynamicConverter<T> dynamicConverter = Converter.enforce(DYNAMIC_CONVERTER_CACHE.stream()
                     .filter(item -> item.support(sourceClass, targetClass)).findFirst().orElse(null));
             if (dynamicConverter == null) {
                 return Optional.empty();
             }
             return Optional.of((source) -> dynamicConverter.convert(source, targetClass));
         });
-        return converterOptional.<Converter<S, T>>map(Converter::enforce).orElse(null);
+        return converterOptional.<Converter<S, T>>map(converter -> converter.enforce()).orElse(null);
     }
 
 }

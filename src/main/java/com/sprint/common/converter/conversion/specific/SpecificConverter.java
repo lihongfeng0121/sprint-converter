@@ -30,7 +30,7 @@ public interface SpecificConverter<S, T> {
      * @return sourceClass
      */
     default Class<S> getSourceClass() {
-        return Converter.doEnforce(Types.getInterfaceSuperclass(getClass(), SpecificConverter.class, 0));
+        return Converter.enforce(Types.getInterfaceSuperclass(getClass(), SpecificConverter.class, 0));
     }
 
     /**
@@ -39,7 +39,7 @@ public interface SpecificConverter<S, T> {
      * @return targetClass
      */
     default Class<T> getTargetClass() {
-        return Converter.doEnforce(Types.getInterfaceSuperclass(getClass(), SpecificConverter.class, 1));
+        return Converter.enforce(Types.getInterfaceSuperclass(getClass(), SpecificConverter.class, 1));
     }
 
     /**

@@ -334,7 +334,7 @@ public final class Beans {
             String property = propertyCascade[0];
             Object back;
             if (obj instanceof Map) {
-                Map<?, ?> map = Converter.doEnforce(obj);
+                Map<?, ?> map = Converter.enforce(obj);
                 Object res = map.get(propertyName);
                 if (res != null) {
                     return res;
