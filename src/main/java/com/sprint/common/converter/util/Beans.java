@@ -3,10 +3,10 @@ package com.sprint.common.converter.util;
 import com.sprint.common.converter.Converter;
 import com.sprint.common.converter.TypeReference;
 import com.sprint.common.converter.conversion.nested.NestedConverters;
-import com.sprint.common.converter.exception.BeansException;
 import com.sprint.common.converter.conversion.nested.bean.FilterCallback;
 import com.sprint.common.converter.conversion.nested.bean.introspection.CachedIntrospectionResults;
 import com.sprint.common.converter.conversion.nested.bean.introspection.PropertyAccess;
+import com.sprint.common.converter.exception.BeansException;
 import com.sprint.common.converter.exception.ConversionException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -18,8 +18,6 @@ import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import java.util.function.Function;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -35,8 +33,6 @@ public final class Beans {
     private static final Logger logger = LoggerFactory.getLogger(Beans.class);
 
     private static final String[] STRING_ARRAY = new String[0];
-
-    private static final Pattern POINT_PATTERN = Pattern.compile("\\.(\\w)");
 
     private static final Function<String, String[]> SPLITTER = (str) -> str == null ? new String[]{}
             : str.split("\\.");
@@ -763,34 +759,11 @@ public final class Beans {
     public static Map<String, Object> unfold(Object source, String... ignoreProperties) {
         List<String> propertyNames = Properties.getReadPropertyNames(source, true);
         Map<String, Object> map = new HashMap<>(propertyNames.size());
-        propertyNames.stream().filter(property -> !contained(ignoreProperties, property))
-                .forEach(property -> map.put(pointToCamel(property), getProperty(source, property)));
+        propertyNames.stream().filter(property -> !Miscs.contained(ignoreProperties, property))
+                .forEach(property -> map.put(Miscs.pointToCamel(property), getProperty(source, property)));
         return map;
     }
 
-    static boolean contained(String[] ts, String t) {
-        if (ts != null && t != null) {
-            for (String obj : ts) {
-                if (obj != null && obj.equals(t)) {
-                    return true;
-                }
-            }
-        }
-        return false;
-    }
-
-    static String pointToCamel(String source) {
-        if (source == null || source.isEmpty()) {
-            return source;
-        }
-        Matcher matcher = POINT_PATTERN.matcher(source);
-        StringBuffer result = new StringBuffer();
-        while (matcher.find()) {
-            matcher.appendReplacement(result, matcher.group(1).toUpperCase());
-        }
-        matcher.appendTail(result);
-        return result.toString();
-    }
 
     /**
      * bean 转 map
@@ -808,8 +781,8 @@ public final class Beans {
      */
     public static Map<String, Object> toMapWithFilter(Object source, String[] sourceProps, String[] alias,
                                                       FilterCallback filterCallback) throws BeansException {
-        Map<String, Object> result = new HashMap<>();
         if (sourceProps != null && sourceProps.length != 0) {
+            Map<String, Object> result = new LinkedHashMap<>(sourceProps.length);
             for (int i = 0; i < sourceProps.length; ++i) {
                 String sourceProp = sourceProps[i];
                 Object value = null;
@@ -892,7 +865,7 @@ public final class Beans {
      */
     public static List<Map<String, Object>> toMap(Collection<?> source, String[] sourceProps, String[] alias,
                                                   Map<String, Object> other, FilterCallback filterCallback) {
-        List<Map<String, Object>> list = new LinkedList<>();
+        List<Map<String, Object>> list = new ArrayList<>(Miscs.size(source));
         for (Object object : source) {
             Map<String, Object> map = toMapWithFilter(object, sourceProps, alias, filterCallback);
             if (other != null) {

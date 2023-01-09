@@ -24,7 +24,7 @@ public class Jsons {
 
     private static JsonConverter jsonConverter;
 
-    /**
+    /*
      * 设置一些通用的属性
      */
     static {
