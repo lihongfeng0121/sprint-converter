@@ -54,15 +54,15 @@ public class BeanConverter {
      * @return Converter
      */
     public static <S, T> Converter<S, T> converter(Class<S> sourceClass, Class<T> targetClass, boolean convert, String... ignoreProperties) {
+        Class<?> finalTargetClass = Types.isObjectType(targetClass) ? sourceClass : targetClass;
+        if (!(Types.isMap(sourceClass) || Types.isBean(sourceClass)) || !(Types.isMap(finalTargetClass) || Types.isBean(finalTargetClass))) {
+            throw new NotSupportConvertException(sourceClass, targetClass);
+        }
         return (source) -> {
             if (source == null) {
                 return null;
             }
             Class<?> sourceType = source.getClass();
-            Class<?> finalTargetClass = Types.isObjectType(targetClass) ? sourceType : targetClass;
-            if (!Types.isMap(sourceClass) || !Types.isBean(sourceClass) || !Types.isMap(finalTargetClass) || !Types.isBean(finalTargetClass)) {
-                throw new NotSupportConvertException(sourceClass, targetClass);
-            }
             if (sourceClass.isAssignableFrom(sourceType)) {
                 throw new ConversionException("source type[" + sourceType + "] not from " + sourceClass);
             }
@@ -85,7 +85,7 @@ public class BeanConverter {
         }
         Class<?> sourceType = source.getClass();
         Class<?> finalTargetClass = Types.isObjectType(targetClass) ? sourceType : targetClass;
-        if (!Types.isMap(sourceType) || !Types.isBean(sourceType) || !Types.isMap(finalTargetClass) || !Types.isBean(finalTargetClass)) {
+        if (!(Types.isMap(sourceType) || Types.isBean(sourceType)) || !(Types.isMap(finalTargetClass) || Types.isBean(finalTargetClass))) {
             throw new NotSupportConvertException(sourceType, targetClass);
         }
         return Converter.enforce(Beans.cast(source, finalTargetClass, ignoreProperties));
@@ -107,7 +107,7 @@ public class BeanConverter {
         }
         Class<?> sourceType = source.getClass();
         Class<?> finalTargetClass = Types.isObjectType(targetClass) ? sourceType : targetClass;
-        if (!Types.isMap(sourceType) || !Types.isBean(sourceType) || !Types.isMap(finalTargetClass) || !Types.isBean(finalTargetClass)) {
+        if (!(Types.isMap(sourceType) || Types.isBean(sourceType)) || !(Types.isMap(finalTargetClass) || Types.isBean(finalTargetClass))) {
             throw new NotSupportConvertException(sourceType, targetClass);
         }
         return Converter.enforce(Beans.cast(source, finalTargetClass, false, ignoreProperties));

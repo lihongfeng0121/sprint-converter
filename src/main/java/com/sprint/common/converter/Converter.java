@@ -62,6 +62,17 @@ public interface Converter<S, T> {
     }
 
     /**
+     * 转换之后转换
+     *
+     * @param <S1> s1
+     * @param <V1> v1
+     * @return 转换后转换器
+     */
+    default <S1, V1> Converter<S1, V1> enforce(Class<S1> sc1, Class<V1> vc1) {
+        return (s1) -> enforce(convert(enforce(s1)));
+    }
+
+    /**
      * 当转换发生异常
      *
      * @param handler handler

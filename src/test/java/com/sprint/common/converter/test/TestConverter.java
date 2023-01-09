@@ -1,9 +1,6 @@
 package com.sprint.common.converter.test;
 
-import com.sprint.common.converter.AnyConverter;
-import com.sprint.common.converter.BaseConverter;
-import com.sprint.common.converter.Converter;
-import com.sprint.common.converter.TypeReference;
+import com.sprint.common.converter.*;
 import com.sprint.common.converter.util.Beans;
 import com.sprint.common.converter.exception.JsonException;
 import com.sprint.common.converter.util.Jsons;
@@ -152,7 +149,7 @@ public class TestConverter {
 
         System.out.println("----------------test json to bean---------------------");
 
-        Map<String, Object> res = AnyConverter.convert("{\"name\":\"zhangsan\"}", Map.class);
+        Map<String, Object> res = AnyConverter.convert("{\"name\":\"zhangsan\"}", TypeReference.STR_OBJ_MAP);
         System.out.println(res);
     }
 
@@ -202,7 +199,7 @@ public class TestConverter {
         System.out.println(AnyConverter.convert("2021-11-12", Date.class));
         System.out.println(AnyConverter.convert("2021-11-12", Year.class));
 
-        System.out.println("test base convert total cost:" + (System.currentTimeMillis() - tms));
+        System.out.println("test base convert success, total cost:" + (System.currentTimeMillis() - tms));
     }
 
     @Test
@@ -285,7 +282,7 @@ public class TestConverter {
         Student student = new Student();
         student.setName("zhangsan");
         student.setLevel("一年级");
-        Student2 student2 = AnyConverter.convert(student, Student2.class);
+        Student2 student2 = BeanConverter.convert(student, Student2.class);
         System.out.println("student1 ->" + Jsons.toJsonString(student));
         System.out.println("student2 ->" + Jsons.toJsonString(student2));
     }
