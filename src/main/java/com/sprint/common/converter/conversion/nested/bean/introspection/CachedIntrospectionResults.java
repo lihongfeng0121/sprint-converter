@@ -2,6 +2,7 @@ package com.sprint.common.converter.conversion.nested.bean.introspection;
 
 import com.sprint.common.converter.exception.BeansException;
 import com.sprint.common.converter.util.ConcurrentReferenceHashMap;
+import com.sprint.common.converter.util.Types;
 
 import java.beans.BeanInfo;
 import java.beans.IntrospectionException;
@@ -57,21 +58,11 @@ public class CachedIntrospectionResults {
     private CachedIntrospectionResults(Class<?> beanClass) throws BeansException {
         try {
             this.beanInfo = Introspector.getBeanInfo(beanClass, Introspector.IGNORE_ALL_BEANINFO);
-
             this.propertyAccessCache = new LinkedHashMap<>();
             // This call is slow so we do it once.
             PropertyDescriptor[] pds = this.beanInfo.getPropertyDescriptors();
             for (PropertyDescriptor pd : pds) {
-                if (Class.class == beanClass
-                        && ("classLoader".equals(pd.getName()) || "protectionDomain".equals(pd.getName()))) {
-                    // Ignore Class.getClassLoader() and getProtectionDomain() methods - nobody needs to bind to
-                    // those
-                    continue;
-                }
-                if (IGNORE_CLASS.equals(pd.getName())) {
-                    continue;
-                }
-                if (PropertyAccess.existProperty(pd.getName(), beanClass, pd.getReadMethod(), pd.getWriteMethod())) {
+                if (filterPropertyDescriptor(beanClass, pd)) {
                     this.propertyAccessCache.put(pd.getName(),
                             new PropertyAccess(pd.getName(), beanClass, pd.getReadMethod(), pd.getWriteMethod()));
                 }
@@ -174,5 +165,29 @@ public class CachedIntrospectionResults {
         }
 
         return fieldNames;
+    }
+
+    public boolean filterPropertyDescriptor(Class<?> beanClass, PropertyDescriptor pd) {
+        if (Class.class == beanClass
+                && ("classLoader".equals(pd.getName()) || "protectionDomain".equals(pd.getName()))) {
+            // Ignore Class.getClassLoader() and getProtectionDomain() methods - nobody needs to bind to
+            // those
+            return false;
+        }
+        if (IGNORE_CLASS.equals(pd.getName())) {
+            return false;
+        }
+        if (pd.getReadMethod() != null) {
+            return true;
+        } else if (pd.getWriteMethod() != null) {
+            return true;
+        } else {
+            try {
+                Types.getDeclaredField(beanClass, pd.getName());
+                return true;
+            } catch (NoSuchFieldException e) {
+                return false;
+            }
+        }
     }
 }

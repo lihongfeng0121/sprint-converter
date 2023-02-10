@@ -214,19 +214,4 @@ public class PropertyAccess implements Cloneable {
 
         return annotations;
     }
-
-    public static boolean existProperty(String name, Class<?> beanClass, Method readMethod, Method writeMethod) {
-        if (readMethod != null) {
-            return true;
-        } else if (writeMethod != null) {
-            return true;
-        } else {
-            try {
-                Types.getDeclaredField(beanClass, name);
-                return true;
-            } catch (NoSuchFieldException e) {
-                return false;
-            }
-        }
-    }
 }
