@@ -41,55 +41,9 @@ public class PropertyAccess implements Cloneable {
         this.readMethod = readMethod;
         this.writeMethod = writeMethod;
         this.beanClass = beanClass;
-        this.field = doGetBeanPropertyField(name, beanClass);
-        this.type = doGetBeanPropertyType(name, beanClass, readMethod, writeMethod);
-        this.annotations = doGetBeanPropertyAnnotations(name, beanClass, readMethod, writeMethod);
-    }
-
-    private Field doGetBeanPropertyField(String name, Class<?> beanClass) {
-        try {
-            return beanClass.getField(name);
-        } catch (NoSuchFieldException e) {
-            logger.debug("PropertyAccess#doGetBeanPropertyField({})not exit!", name);
-        }
-        return null;
-    }
-
-    private Type doGetBeanPropertyType(String name, Class<?> beanClass, Method readMethod, Method writeMethod) {
-        if (readMethod != null) {
-            return readMethod.getGenericReturnType();
-        } else if (writeMethod != null) {
-            return Optional.of(writeMethod.getGenericParameterTypes()).map(array -> array[0]).orElse(null);
-        } else {
-            try {
-                return Types.getDeclaredField(beanClass, name).getGenericType();
-            } catch (NoSuchFieldException e) {
-                throw new IllegalStateException("property access name:{" + name + " not exit!}");
-            }
-        }
-    }
-
-    private Map<Class<?>, Annotation> doGetBeanPropertyAnnotations(String name, Class<?> beanClass, Method readMethod,
-                                                                   Method writeMethod) {
-        Map<Class<?>, Annotation> annotations = new HashMap<>();
-        if (readMethod != null) {
-            annotations.putAll(Arrays.stream(readMethod.getAnnotations())
-                    .collect(Collectors.toMap(Annotation::annotationType, Function.identity())));
-        }
-
-        if (writeMethod != null) {
-            annotations.putAll(Arrays.stream(writeMethod.getAnnotations())
-                    .collect(Collectors.toMap(Annotation::annotationType, Function.identity())));
-        }
-
-        try {
-            Field field = Types.getDeclaredField(beanClass, name);
-            annotations.putAll(Arrays.stream(field.getAnnotations())
-                    .collect(Collectors.toMap(Annotation::annotationType, Function.identity())));
-        } catch (NoSuchFieldException ignored) {
-        }
-
-        return annotations;
+        this.field = getBeanPropertyField(name, beanClass);
+        this.type = getBeanPropertyType(name, beanClass, readMethod, writeMethod);
+        this.annotations = getBeanPropertyAnnotations(name, beanClass, readMethod, writeMethod);
     }
 
     public String getName() {
@@ -212,5 +166,67 @@ public class PropertyAccess implements Cloneable {
             logger.debug("clone error", ignored);
         }
         return null;
+    }
+
+
+    public static Field getBeanPropertyField(String name, Class<?> beanClass) {
+        try {
+            return beanClass.getField(name);
+        } catch (NoSuchFieldException e) {
+            logger.debug("PropertyAccess#doGetBeanPropertyField({})not exit!", name);
+        }
+        return null;
+    }
+
+    public static Type getBeanPropertyType(String name, Class<?> beanClass, Method readMethod, Method writeMethod) {
+        if (readMethod != null) {
+            return readMethod.getGenericReturnType();
+        } else if (writeMethod != null) {
+            return Optional.of(writeMethod.getGenericParameterTypes()).map(array -> array[0]).orElse(null);
+        } else {
+            try {
+                return Types.getDeclaredField(beanClass, name).getGenericType();
+            } catch (NoSuchFieldException e) {
+                throw new IllegalStateException("property access name:{" + name + " not exit!}");
+            }
+        }
+    }
+
+    public static Map<Class<?>, Annotation> getBeanPropertyAnnotations(String name, Class<?> beanClass, Method readMethod,
+                                                                       Method writeMethod) {
+        Map<Class<?>, Annotation> annotations = new HashMap<>();
+        if (readMethod != null) {
+            annotations.putAll(Arrays.stream(readMethod.getAnnotations())
+                    .collect(Collectors.toMap(Annotation::annotationType, Function.identity())));
+        }
+
+        if (writeMethod != null) {
+            annotations.putAll(Arrays.stream(writeMethod.getAnnotations())
+                    .collect(Collectors.toMap(Annotation::annotationType, Function.identity())));
+        }
+
+        try {
+            Field field = Types.getDeclaredField(beanClass, name);
+            annotations.putAll(Arrays.stream(field.getAnnotations())
+                    .collect(Collectors.toMap(Annotation::annotationType, Function.identity())));
+        } catch (NoSuchFieldException ignored) {
+        }
+
+        return annotations;
+    }
+
+    public static boolean existProperty(String name, Class<?> beanClass, Method readMethod, Method writeMethod) {
+        if (readMethod != null) {
+            return true;
+        } else if (writeMethod != null) {
+            return true;
+        } else {
+            try {
+                Types.getDeclaredField(beanClass, name);
+                return true;
+            } catch (NoSuchFieldException e) {
+                return false;
+            }
+        }
     }
 }

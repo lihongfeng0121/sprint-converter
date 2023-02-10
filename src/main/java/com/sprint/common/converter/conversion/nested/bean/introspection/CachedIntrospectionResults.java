@@ -71,9 +71,10 @@ public class CachedIntrospectionResults {
                 if (IGNORE_CLASS.equals(pd.getName())) {
                     continue;
                 }
-
-                this.propertyAccessCache.put(pd.getName(),
-                        new PropertyAccess(pd.getName(), beanClass, pd.getReadMethod(), pd.getWriteMethod()));
+                if (PropertyAccess.existProperty(pd.getName(), beanClass, pd.getReadMethod(), pd.getWriteMethod())) {
+                    this.propertyAccessCache.put(pd.getName(),
+                            new PropertyAccess(pd.getName(), beanClass, pd.getReadMethod(), pd.getWriteMethod()));
+                }
             }
 
             Class<?> clazz = beanClass;

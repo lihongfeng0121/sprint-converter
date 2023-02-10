@@ -40,7 +40,7 @@ public class JsonObject extends LinkedHashMap<String, Object> {
     }
 
     public <T> T get(String key, Class<T> type) {
-        return AnyConverter.convert(key, type);
+        return AnyConverter.convert(get(key), type);
     }
 
     public <T> T get(String key, Class<T> type, Supplier<T> supplier) {
@@ -49,6 +49,14 @@ public class JsonObject extends LinkedHashMap<String, Object> {
 
     public ObjectValue getObjectValue(String key) {
         return ObjectValue.valueOf(get(key));
+    }
+
+    public JsonObject getJsonObject(String key) {
+        return get(key, JsonObject.class);
+    }
+
+    public JsonArray getJsonArray(String key) {
+        return get(key, JsonArray.class);
     }
 
     public String getString(String key) {
