@@ -3,6 +3,7 @@ package com.sprint.common.converter.util;
 import com.sprint.common.converter.AnyConverter;
 import com.sprint.common.converter.BaseConverter;
 import com.sprint.common.converter.Converter;
+import com.sprint.common.converter.TypeReference;
 
 import java.io.Serializable;
 import java.lang.reflect.Type;
@@ -240,6 +241,10 @@ public class JsonArray implements List<Object>, Cloneable, RandomAccess, Seriali
             for (Object item : this) {
                 list.add((T) JsonObject.toJavaObject(item));
             }
+        } else if (ObjectValue.class.isAssignableFrom(clazz)) {
+            for (Object item : this) {
+                list.add((T) ObjectValue.valueOf(item));
+            }
         } else {
             for (Object item : this) {
                 T classItem = AnyConverter.convert(item, clazz);
@@ -249,6 +254,15 @@ public class JsonArray implements List<Object>, Cloneable, RandomAccess, Seriali
 
         return list;
     }
+
+    public List<JsonObject> toJsonObjectList() {
+        return toJavaList(JsonObject.class);
+    }
+
+    public List<ObjectValue> toObjectValueList() {
+        return toJavaList(ObjectValue.class);
+    }
+
 
     @Override
     public Object set(int index, Object element) {
@@ -327,8 +341,11 @@ public class JsonArray implements List<Object>, Cloneable, RandomAccess, Seriali
         }
         if (value instanceof JsonArray) {
             return (JsonArray) value;
+        } else if (value instanceof List) {
+            return new JsonArray((List) value);
         } else {
-            return value instanceof List ? new JsonArray((List) value) : new JsonArray(AnyConverter.convert(value, List.class));
+            List<Object> list = AnyConverter.convert(value, TypeReference.OBJ_LIST);
+            return new JsonArray(list);
         }
     }
 }
