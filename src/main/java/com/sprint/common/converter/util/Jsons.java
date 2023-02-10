@@ -9,6 +9,7 @@ import org.slf4j.LoggerFactory;
 import java.lang.reflect.Type;
 import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 import java.util.ServiceLoader;
 
 /**
@@ -83,10 +84,41 @@ public class Jsons {
         return jsonConverter.toJavaObjects(value, type, collectionType);
     }
 
+    public static <T> List<T> toJavaObjectList(String value, Class<T> type) throws JsonException {
+        if (jsonConverter == null) {
+            return null;
+        }
+        return (List<T>) jsonConverter.toJavaObjects(value, type, List.class);
+    }
+
     public static <T> List<T> toJavaObjectList(String value, Type type) throws JsonException {
         if (jsonConverter == null) {
             return null;
         }
         return (List<T>) jsonConverter.toJavaObjects(value, type, List.class);
     }
+
+    public static <T> List<T> toJavaObjectList(String value, TypeReference<T> type) throws JsonException {
+        if (jsonConverter == null) {
+            return null;
+        }
+        return (List<T>) jsonConverter.toJavaObjects(value, type.getType(), List.class);
+    }
+
+    public static Map<String, Object> toMap(String value) throws JsonException {
+        return toJavaObject(value, TypeReference.STR_OBJ_MAP);
+    }
+
+    public static List<Map<String, Object>> toMaps(String value) throws JsonException {
+        return toJavaObjectList(value, TypeReference.STR_OBJ_MAP);
+    }
+
+    public static JsonArray toJsonArray(String value) {
+        return new JsonArray(toJavaObjectList(value, Object.class));
+    }
+
+    public static JsonObject toJsonObject(String value) {
+        return JsonObject.parse(value);
+    }
+
 }

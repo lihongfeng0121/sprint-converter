@@ -1,6 +1,7 @@
 package com.sprint.common.converter.util;
 
 import com.sprint.common.converter.AnyConverter;
+import com.sprint.common.converter.Converter;
 import com.sprint.common.converter.TypeReference;
 
 import java.lang.reflect.Type;
@@ -8,6 +9,7 @@ import java.sql.Timestamp;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 /**
  * @author hongfeng.li
@@ -23,6 +25,10 @@ public abstract class AbstractValue {
         } else {
             return getValue() == null;
         }
+    }
+
+    public <T> BeanOptional<T> getBeanOptional() {
+        return Converter.enforce(BeanOptional.ofNullable(getValue()));
     }
 
     public <T> T getValue(Class<T> type, T defaultValue) {
@@ -111,5 +117,27 @@ public abstract class AbstractValue {
 
     public Timestamp getTimestamp(Timestamp defaultValue) {
         return getValue(Timestamp.class, defaultValue);
+    }
+
+    public ObjectValue getObjectValue() {
+        return ObjectValue.valueOf(this);
+    }
+
+    @Override
+    public String toString() {
+        return getValue() == null ? "null" : getValue().toString();
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        ObjectValue that = (ObjectValue) o;
+        return Objects.equals(getValue(), that.getValue());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(getValue());
     }
 }

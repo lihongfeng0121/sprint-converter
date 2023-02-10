@@ -1,14 +1,10 @@
 package com.sprint.common.converter.test;
 
 import com.sprint.common.converter.*;
-import com.sprint.common.converter.util.Beans;
+import com.sprint.common.converter.util.*;
 import com.sprint.common.converter.exception.JsonException;
-import com.sprint.common.converter.util.Jsons;
 import com.sprint.common.converter.exception.ConversionException;
 import com.sprint.common.converter.test.bean.*;
-import com.sprint.common.converter.util.Assert;
-import com.sprint.common.converter.util.GenericsResolver;
-import com.sprint.common.converter.util.Types;
 import org.junit.Test;
 
 import java.lang.reflect.Type;
@@ -285,5 +281,17 @@ public class TestConverter {
         Student2 student2 = BeanConverter.convert(student, Student2.class);
         System.out.println("student1 ->" + Jsons.toJsonString(student));
         System.out.println("student2 ->" + Jsons.toJsonString(student2));
+    }
+
+    @Test
+    public void testJson(){
+        JsonObject parse = JsonObject.parse("{\"name\":\"hongfeng.li\"}");
+        ObjectValue name = parse.getObjectValue("name");
+        System.out.println(name);
+        System.out.println(parse);
+
+        JsonArray values = new JsonArray();
+        values.add("12345");
+        System.out.println(Arrays.toString(values.toArray(new Integer[]{})));
     }
 }
