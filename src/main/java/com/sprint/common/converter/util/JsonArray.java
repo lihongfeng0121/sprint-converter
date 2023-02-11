@@ -10,6 +10,7 @@ import java.lang.reflect.Type;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.sql.Timestamp;
+import java.time.*;
 import java.util.*;
 
 /**
@@ -233,6 +234,31 @@ public class JsonArray implements List<Object>, Cloneable, RandomAccess, Seriali
     public Timestamp getTimestamp(int index) {
         Object value = this.get(index);
         return BaseConverter.convert(value, java.sql.Timestamp.class);
+    }
+
+    public LocalDate getLocalDate(int index) {
+        Object value = this.get(index);
+        return BaseConverter.convert(value, LocalDate.class);
+    }
+
+    public LocalDateTime getLocalDateTime(int index) {
+        Object value = this.get(index);
+        return BaseConverter.convert(value, LocalDateTime.class);
+    }
+
+    public LocalTime getLocalTime(int index) {
+        Object value = this.get(index);
+        return BaseConverter.convert(value, LocalTime.class);
+    }
+
+    public YearMonth getYearMonth(int index) {
+        Object value = this.get(index);
+        return BaseConverter.convert(value, YearMonth.class);
+    }
+
+    public Year getYear(int index) {
+        Object value = this.get(index);
+        return BaseConverter.convert(value, Year.class);
     }
 
     public <T> List<T> toJavaList(Class<T> clazz) {
