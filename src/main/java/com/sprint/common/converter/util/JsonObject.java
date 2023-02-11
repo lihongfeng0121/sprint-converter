@@ -2,9 +2,9 @@ package com.sprint.common.converter.util;
 
 import com.sprint.common.converter.AnyConverter;
 
+import java.beans.Transient;
 import java.sql.Timestamp;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
+import java.time.*;
 import java.util.Date;
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -145,6 +145,36 @@ public class JsonObject extends LinkedHashMap<String, Object> {
 
     public Boolean getBoolean(String key, Boolean defaultVal) {
         return get(key, Boolean.class, () -> defaultVal);
+    }
+
+    @Transient
+    public LocalTime getLocalTime(String key) {
+        return get(key, LocalTime.class);
+    }
+
+    @Transient
+    public LocalTime getLocalTime(String key, LocalTime defaultValue) {
+        return get(key, LocalTime.class, () -> defaultValue);
+    }
+
+    @Transient
+    public YearMonth getYearMonth(String key) {
+        return get(key, YearMonth.class);
+    }
+
+    @Transient
+    public YearMonth getYearMonth(String key, YearMonth defaultValue) {
+        return get(key, YearMonth.class, () -> defaultValue);
+    }
+
+    @Transient
+    public Year getYear(String key) {
+        return get(key, Year.class);
+    }
+
+    @Transient
+    public Year getYear(String key, Year defaultValue) {
+        return get(key, Year.class, () -> defaultValue);
     }
 
     @Override
