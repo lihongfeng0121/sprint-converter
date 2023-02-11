@@ -1,10 +1,10 @@
 package com.sprint.common.converter.test;
 
 import com.sprint.common.converter.*;
-import com.sprint.common.converter.util.*;
-import com.sprint.common.converter.exception.JsonException;
 import com.sprint.common.converter.exception.ConversionException;
+import com.sprint.common.converter.exception.JsonException;
 import com.sprint.common.converter.test.bean.*;
+import com.sprint.common.converter.util.*;
 import org.junit.Test;
 
 import java.lang.reflect.Type;
@@ -284,14 +284,14 @@ public class TestConverter {
     }
 
     @Test
-    public void testJson(){
-        JsonObject parse = JsonObject.parse("{\"name\":\"hongfeng.li\"}");
+    public void testJson() {
+        JsonObject parse = JsonObject.parse("{\"name\":\"2022-12-01\"}");
         ObjectValue name = parse.getObjectValue("name");
-        System.out.println(name);
         System.out.println(parse);
+        System.out.println(name);
+        System.out.println(name.getLocalDateTime().toString());
 
-        JsonArray values = new JsonArray();
-        values.add("12345");
-        System.out.println(Arrays.toString(values.toArray(new Integer[]{})));
+        JsonArray values = AnyConverter.convert(parse, JsonArray.class);
+        System.out.println(values.toString());
     }
 }

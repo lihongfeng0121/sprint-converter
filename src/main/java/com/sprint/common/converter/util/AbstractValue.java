@@ -6,6 +6,10 @@ import com.sprint.common.converter.TypeReference;
 
 import java.lang.reflect.Type;
 import java.sql.Timestamp;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.Year;
+import java.time.YearMonth;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -118,6 +122,39 @@ public abstract class AbstractValue {
     public Timestamp getTimestamp(Timestamp defaultValue) {
         return getValue(Timestamp.class, defaultValue);
     }
+
+    public LocalDate getLocalDate() {
+        return getValue(LocalDate.class);
+    }
+
+    public LocalDate getLocalDate(LocalDate defaultValue) {
+        return getValue(LocalDate.class, defaultValue);
+    }
+
+    public LocalDateTime getLocalDateTime() {
+        return getValue(LocalDateTime.class);
+    }
+
+    public LocalDateTime getLocalDateTime(LocalDateTime defaultValue) {
+        return getValue(LocalDateTime.class, defaultValue);
+    }
+
+    public YearMonth getYearMonth() {
+        return getValue(YearMonth.class);
+    }
+
+    public YearMonth getYearMonth(YearMonth defaultValue) {
+        return getValue(YearMonth.class, defaultValue);
+    }
+
+    public Year getYear() {
+        return getValue(Year.class);
+    }
+
+    public Year getYear(Year defaultValue) {
+        return getValue(Year.class, defaultValue);
+    }
+
 
     public ObjectValue getObjectValue() {
         return ObjectValue.valueOf(this);
