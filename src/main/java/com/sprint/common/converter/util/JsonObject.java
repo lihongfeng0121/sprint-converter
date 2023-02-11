@@ -47,102 +47,127 @@ public class JsonObject extends LinkedHashMap<String, Object> {
         return Optional.ofNullable(get(key)).map(val -> AnyConverter.convert(val, type)).orElseGet(supplier::get);
     }
 
+    @Transient
     public ObjectValue getObjectValue(String key) {
         return ObjectValue.valueOf(get(key));
     }
 
+    @Transient
     public JsonObject getJsonObject(String key) {
         return get(key, JsonObject.class);
     }
 
+    @Transient
     public JsonArray getJsonArray(String key) {
         return get(key, JsonArray.class);
     }
 
+    @Transient
     public String getString(String key) {
         return get(key, String.class);
     }
 
+    @Transient
     public String getString(String key, String defaultValue) {
         return get(key, String.class, () -> defaultValue);
     }
 
+    @Transient
     public int getIntValue(String key) {
         return get(key, Integer.TYPE, () -> 0);
     }
 
+    @Transient
     public int getIntValue(String key, int defaultValue) {
         return get(key, Integer.TYPE, () -> defaultValue);
     }
 
+    @Transient
     public Integer getInteger(String key) {
         return get(key, Integer.class);
     }
 
+    @Transient
     public long getLongValue(String key) {
         return get(key, Long.TYPE, () -> 0L);
     }
 
+    @Transient
     public long getLongValue(String key, long defaultValue) {
         return get(key, Long.TYPE, () -> defaultValue);
     }
 
+    @Transient
     public Long getLong(String key) {
         return get(key, Long.class);
     }
 
+    @Transient
     public double getDoubleValue(String key) {
         return get(key, Double.TYPE, () -> 0D);
     }
 
+    @Transient
     public double getDoubleValue(String key, double defaultValue) {
         return get(key, Double.TYPE, () -> defaultValue);
     }
 
+    @Transient
     public Double getDouble(String key) {
         return get(key, Double.class);
     }
 
+    @Transient
     public Date getDate(String key) {
         return get(key, Date.class);
     }
 
+    @Transient
     public Date getDate(String key, Date defaultVal) {
         return get(key, Date.class, () -> defaultVal);
     }
 
+    @Transient
     public Timestamp getTimestamp(String key) {
         return get(key, Timestamp.class);
     }
 
+    @Transient
     public Timestamp getTimestamp(String key, Timestamp defaultVal) {
         return get(key, Timestamp.class, () -> defaultVal);
     }
 
+    @Transient
     public LocalDate getLocalDate(String key) {
         return get(key, LocalDate.class);
     }
 
+    @Transient
     public LocalDate getLocalDate(String key, LocalDate defaultVal) {
         return get(key, LocalDate.class, () -> defaultVal);
     }
 
+    @Transient
     public LocalDateTime getLocalDateTime(String key) {
         return get(key, LocalDateTime.class);
     }
 
+    @Transient
     public LocalDateTime getLocalDateTime(String key, LocalDateTime defaultVal) {
         return get(key, LocalDateTime.class, () -> defaultVal);
     }
 
+    @Transient
     public Boolean getBoolean(String key) {
         return get(key, Boolean.class);
     }
 
+    @Transient
     public Boolean getBooleanValue(String key) {
         return get(key, Boolean.TYPE, () -> Boolean.FALSE);
     }
 
+    @Transient
     public Boolean getBoolean(String key, Boolean defaultVal) {
         return get(key, Boolean.class, () -> defaultVal);
     }
