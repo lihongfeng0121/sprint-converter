@@ -20,7 +20,7 @@ import java.util.function.Supplier;
  * @author hongfeng.li
  * @since 2021/3/17
  */
-public class BeanOptional<T> {
+public final class BeanOptional<T> {
 
     private static final BeanOptional<?> EMPTY = new BeanOptional<>();
 

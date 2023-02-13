@@ -132,7 +132,7 @@ public class JsonArray implements List<Object>, Cloneable, RandomAccess, Seriali
 
     public ObjectValue getObjectValue(int index) {
         Object obj = this.list.get(index);
-        return ObjectValue.valueOf(obj);
+        return ObjectValue.ofNullable(obj);
     }
 
     public Boolean getBoolean(int index) {
@@ -269,7 +269,7 @@ public class JsonArray implements List<Object>, Cloneable, RandomAccess, Seriali
             }
         } else if (ObjectValue.class.isAssignableFrom(clazz)) {
             for (Object item : this) {
-                list.add((T) ObjectValue.valueOf(item));
+                list.add((T) ObjectValue.ofNullable(item));
             }
         } else {
             for (Object item : this) {

@@ -28,7 +28,7 @@ public abstract class AbstractValue {
             return getValue() == null;
         }
     }
-    
+
     @Transient
     public <T> BeanOptional<T> getBeanOptional() {
         return Converter.enforce(BeanOptional.ofNullable(getValue()));
@@ -196,7 +196,7 @@ public abstract class AbstractValue {
 
     @Transient
     public ObjectValue getObjectValue() {
-        return ObjectValue.valueOf(this);
+        return ObjectValue.ofNullable(this);
     }
 
     @Override

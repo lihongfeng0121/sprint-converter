@@ -49,7 +49,7 @@ public class JsonObject extends LinkedHashMap<String, Object> {
 
     @Transient
     public ObjectValue getObjectValue(String key) {
-        return ObjectValue.valueOf(get(key));
+        return ObjectValue.ofNullable(get(key));
     }
 
     @Transient

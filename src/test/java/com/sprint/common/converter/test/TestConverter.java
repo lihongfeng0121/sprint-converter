@@ -122,7 +122,7 @@ public class TestConverter {
                     });
         }
 
-        System.out.println("test first bean convert total cost:" + (System.currentTimeMillis() - tms));
+        System.out.println("test first 100000 bean convert total cost:" + (System.currentTimeMillis() - tms));
 
         tms = System.currentTimeMillis();
         TypeBean2<List<List<Integer>>> bean3 = AnyConverter.convert(bean2,
@@ -290,6 +290,18 @@ public class TestConverter {
         System.out.println(parse);
         System.out.println(name);
         System.out.println(name.getLocalDateTime().toString());
+
+        JsonArray values = AnyConverter.convert(parse, JsonArray.class);
+        System.out.println(values.toString());
+    }
+
+    @Test
+    public void testObjectValue() {
+        JsonObject parse = JsonObject.parse("{\"name\":\"2022-12-01\"}");
+        ObjectValue name = parse.getObjectValue("name");
+        System.out.println(parse);
+        System.out.println(name);
+        System.out.println(AnyConverter.convert(name, Date.class));
 
         JsonArray values = AnyConverter.convert(parse, JsonArray.class);
         System.out.println(values.toString());
