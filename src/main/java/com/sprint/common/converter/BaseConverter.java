@@ -120,13 +120,12 @@ public final class BaseConverter {
      */
     public static <T> T convert(Object source, Class<T> targetClass, ErrorHandler<Object, T> errorHandler)
             throws ConversionException {
-        if (source == null) {
-            return getDefaultValue(targetClass);
-        }
         if (targetClass == null) {
             throw new IllegalArgumentException("Target type is missing");
         }
-
+        if (source == null) {
+            return getDefaultValue(targetClass);
+        }
         Class<?> sourceClass = source.getClass();
         Converter<?, T> converter = converter(sourceClass, targetClass);
 
