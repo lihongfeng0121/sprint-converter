@@ -5,6 +5,7 @@ import com.sprint.common.converter.conversion.specific.SpecificConverters;
 import com.sprint.common.converter.exception.ConversionException;
 import com.sprint.common.converter.exception.ConvertErrorException;
 import com.sprint.common.converter.exception.NotSupportConvertException;
+import com.sprint.common.converter.util.Defaults;
 import com.sprint.common.converter.util.Types;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -120,7 +121,11 @@ public final class BaseConverter {
     public static <T> T convert(Object source, Class<T> targetClass, ErrorHandler<Object, T> errorHandler)
             throws ConversionException {
         if (source == null) {
-            return null;
+            if (Types.isPrimitiveTypeClass(targetClass)) {
+                return Defaults.defaultValue(targetClass);
+            } else {
+                return null;
+            }
         }
         if (targetClass == null) {
             throw new IllegalArgumentException("Target type is missing");

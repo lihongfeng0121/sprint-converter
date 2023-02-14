@@ -1,6 +1,7 @@
 package com.sprint.common.converter.util;
 
 import com.sprint.common.converter.AnyConverter;
+import com.sprint.common.converter.BaseConverter;
 import com.sprint.common.converter.Converter;
 import com.sprint.common.converter.TypeReference;
 
@@ -40,6 +41,16 @@ public abstract class AbstractValue {
     }
 
     @Transient
+    public <T> T getBaseValue(Class<T> type, T defaultValue) {
+        return isNullOrEmpty() ? defaultValue : BaseConverter.convert(getValue(), type);
+    }
+
+    @Transient
+    public <T> T getBaseValue(Class<T> type) {
+        return BaseConverter.convert(getValue(), type);
+    }
+
+    @Transient
     public <T> T getValue(Class<T> type) {
         return getValue(type, null);
     }
@@ -66,47 +77,47 @@ public abstract class AbstractValue {
 
     @Transient
     public int getIntValue() {
-        return getValue(int.class, 0);
+        return getBaseValue(int.class, 0);
     }
 
     @Transient
     public int getIntValue(int defaultValue) {
-        return getValue(int.class, defaultValue);
+        return getBaseValue(int.class, defaultValue);
     }
 
     @Transient
     public Integer getInteger() {
-        return getValue(Integer.class, null);
+        return getBaseValue(Integer.class, null);
     }
 
     @Transient
     public long getLongValue() {
-        return getValue(long.class, 0L);
+        return getBaseValue(long.class, 0L);
     }
 
     @Transient
     public long getLongValue(long defaultValue) {
-        return getValue(long.class, defaultValue);
+        return getBaseValue(long.class, defaultValue);
     }
 
     @Transient
     public Long getLong() {
-        return getValue(Long.class, null);
+        return getBaseValue(Long.class, null);
     }
 
     @Transient
     public double getDoubleValue(double defaultValue) {
-        return getValue(double.class, defaultValue);
+        return getBaseValue(double.class, defaultValue);
     }
 
     @Transient
     public Double getDouble() {
-        return getValue(Double.class, null);
+        return getBaseValue(Double.class, null);
     }
 
     @Transient
     public Boolean getBoolean() {
-        return getValue(Boolean.class, null);
+        return getBaseValue(Boolean.class, null);
     }
 
     @Transient
@@ -126,72 +137,72 @@ public abstract class AbstractValue {
 
     @Transient
     public Date getDate() {
-        return getValue(Date.class, null);
+        return getBaseValue(Date.class, null);
     }
 
     @Transient
     public Date getDate(Date defaultValue) {
-        return getValue(Date.class, defaultValue);
+        return getBaseValue(Date.class, defaultValue);
     }
 
     @Transient
     public Timestamp getTimestamp() {
-        return getValue(Timestamp.class, null);
+        return getBaseValue(Timestamp.class, null);
     }
 
     @Transient
     public Timestamp getTimestamp(Timestamp defaultValue) {
-        return getValue(Timestamp.class, defaultValue);
+        return getBaseValue(Timestamp.class, defaultValue);
     }
 
     @Transient
     public LocalDate getLocalDate() {
-        return getValue(LocalDate.class);
+        return getBaseValue(LocalDate.class, null);
     }
 
     @Transient
     public LocalDate getLocalDate(LocalDate defaultValue) {
-        return getValue(LocalDate.class, defaultValue);
+        return getBaseValue(LocalDate.class, defaultValue);
     }
 
     @Transient
     public LocalTime getLocalTime() {
-        return getValue(LocalTime.class);
+        return getBaseValue(LocalTime.class, null);
     }
 
     @Transient
     public LocalTime getLocalTime(LocalTime defaultValue) {
-        return getValue(LocalTime.class, defaultValue);
+        return getBaseValue(LocalTime.class, defaultValue);
     }
 
     @Transient
     public LocalDateTime getLocalDateTime() {
-        return getValue(LocalDateTime.class);
+        return getBaseValue(LocalDateTime.class, null);
     }
 
     @Transient
     public LocalDateTime getLocalDateTime(LocalDateTime defaultValue) {
-        return getValue(LocalDateTime.class, defaultValue);
+        return getBaseValue(LocalDateTime.class, defaultValue);
     }
 
     @Transient
     public YearMonth getYearMonth() {
-        return getValue(YearMonth.class);
+        return getBaseValue(YearMonth.class, null);
     }
 
     @Transient
     public YearMonth getYearMonth(YearMonth defaultValue) {
-        return getValue(YearMonth.class, defaultValue);
+        return getBaseValue(YearMonth.class, defaultValue);
     }
 
     @Transient
     public Year getYear() {
-        return getValue(Year.class);
+        return getBaseValue(Year.class, null);
     }
 
     @Transient
     public Year getYear(Year defaultValue) {
-        return getValue(Year.class, defaultValue);
+        return getBaseValue(Year.class, defaultValue);
     }
 
     @Transient
@@ -206,8 +217,12 @@ public abstract class AbstractValue {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
         ObjectValue that = (ObjectValue) o;
         return Objects.equals(getValue(), that.getValue());
     }

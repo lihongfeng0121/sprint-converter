@@ -303,7 +303,14 @@ public class TestConverter {
         System.out.println(name);
         System.out.println(AnyConverter.convert(name, Date.class));
 
-        JsonArray values = AnyConverter.convert(parse, JsonArray.class);
+        Optional<JsonArray> values = AnyConverter.convert(parse, new TypeReference<Optional<JsonArray>>() {
+        });
         System.out.println(values.toString());
+        Optional<ObjectValue> convert = AnyConverter.convert(values, new TypeReference<Optional<ObjectValue>>() {
+        });
+        System.out.println(convert);
+
+        ObjectValue objectValue = AnyConverter.convert(name, ObjectValue.class);
+        System.out.println(objectValue);
     }
 }

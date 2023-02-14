@@ -3,3 +3,5 @@ com.sprint.common.converter.conversion.nested.converters.CollectionConverters
 com.sprint.common.converter.conversion.nested.converters.JsonConverters
 com.sprint.common.converter.conversion.nested.converters.MapConverters
 com.sprint.common.converter.conversion.nested.converters.Multi2SingleConverters
+com.sprint.common.converter.conversion.nested.converters.OptionalConverters
+com.sprint.common.converter.conversion.nested.converters.ObjectValueConverters
