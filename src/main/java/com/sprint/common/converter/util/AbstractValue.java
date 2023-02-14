@@ -76,6 +76,16 @@ public abstract class AbstractValue {
     }
 
     @Transient
+    public String getString() {
+        return getBaseValue(String.class, null);
+    }
+
+    @Transient
+    public String getString(String defaultValue) {
+        return getBaseValue(String.class, defaultValue);
+    }
+
+    @Transient
     public int getIntValue() {
         return getBaseValue(int.class, 0);
     }

@@ -124,7 +124,7 @@ public final class BaseConverter {
             throw new IllegalArgumentException("Target type is missing");
         }
         if (source == null) {
-            return getDefaultValue(targetClass);
+            return Defaults.defaultValue(targetClass);
         }
         Class<?> sourceClass = source.getClass();
         Converter<?, T> converter = converter(sourceClass, targetClass);
@@ -163,14 +163,6 @@ public final class BaseConverter {
                     return errorHandler.handle(ex, source);
                 }
             }
-        }
-    }
-
-    private static <T> T getDefaultValue(Class<T> targetClass) {
-        if (Types.isPrimitiveTypeClass(targetClass)) {
-            return Defaults.defaultValue(targetClass);
-        } else {
-            return null;
         }
     }
 }

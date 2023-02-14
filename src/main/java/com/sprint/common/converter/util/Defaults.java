@@ -1,9 +1,6 @@
 package com.sprint.common.converter.util;
 
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Objects;
+import java.util.*;
 
 /**
  * @author hongfeng.li
@@ -27,6 +24,8 @@ public class Defaults {
         put(map, long.class, 0L);
         put(map, float.class, 0f);
         put(map, double.class, 0d);
+        put(map, Optional.class, Optional.empty());
+        put(map, ObjectValue.class, ObjectValue.empty());
         DEFAULTS = Collections.unmodifiableMap(map);
     }
 

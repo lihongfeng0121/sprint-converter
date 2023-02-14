@@ -136,11 +136,7 @@ public final class NestedConverters {
 
     private static <T> T getDefaultValue(Type targetBeanType, Type targetType) {
         Class<?> targetClass = Types.extractClass(targetType, targetBeanType);
-        if (Types.isPrimitiveTypeClass(targetClass)) {
-            return Converter.enforce(Defaults.defaultValue(targetClass));
-        } else {
-            return null;
-        }
+        return Converter.enforce(Defaults.defaultValue(targetClass));
     }
 
     /**
