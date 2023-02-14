@@ -163,6 +163,9 @@ public class TestConverter {
     @Test
     public void testBaseConvert() {
         long tms = System.currentTimeMillis();
+        System.out.println(AnyConverter.convert(null, boolean.class));
+        System.out.println(AnyConverter.convert(null, int.class));
+        System.out.println(AnyConverter.convert(null, double.class));
         System.out.println(AnyConverter.convert(1, Boolean.class));
         System.out.println(AnyConverter.convert(1L, Boolean.class));
         System.out.println(AnyConverter.convert(1D, Boolean.class));

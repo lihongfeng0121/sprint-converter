@@ -6,6 +6,7 @@ import com.sprint.common.converter.ErrorHandler;
 import com.sprint.common.converter.exception.ConversionException;
 import com.sprint.common.converter.exception.NotSupportConvertException;
 import com.sprint.common.converter.util.Beans;
+import com.sprint.common.converter.util.Defaults;
 import com.sprint.common.converter.util.Types;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -123,7 +124,7 @@ public final class NestedConverters {
      */
     public static <S, T> T convert(S value, Type targetBeanType, Type targetType) throws ConversionException {
         if (value == null) {
-            return null;
+            return getDefaultValue(targetBeanType, targetType);
         }
         Class<?> sourceClass = value.getClass();
         Converter<S, T> converter = getConverter(sourceClass, targetBeanType, targetType);
@@ -131,6 +132,15 @@ public final class NestedConverters {
             throw new NotSupportConvertException(sourceClass, Types.extractClass(targetType, targetBeanType));
         }
         return converter.convert(value);
+    }
+
+    private static <T> T getDefaultValue(Type targetBeanType, Type targetType) {
+        Class<?> targetClass = Types.extractClass(targetType, targetBeanType);
+        if (Types.isPrimitiveTypeClass(targetClass)) {
+            return Converter.enforce(Defaults.defaultValue(targetClass));
+        } else {
+            return null;
+        }
     }
 
     /**
@@ -147,7 +157,7 @@ public final class NestedConverters {
      */
     public static <S, T> T convert(S value, Type targetBeanType, Type targetType, ErrorHandler<S, T> errorHandler) throws ConversionException {
         if (value == null) {
-            return null;
+            return getDefaultValue(targetBeanType, targetType);
         }
         Class<?> sourceClass = value.getClass();
         Converter<S, T> converter = getConverter(sourceClass, targetBeanType, targetType);
