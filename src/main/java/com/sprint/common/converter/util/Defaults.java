@@ -1,7 +1,5 @@
 package com.sprint.common.converter.util;
 
-import com.sun.istack.internal.Nullable;
-
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
@@ -41,7 +39,6 @@ public class Defaults {
      * false} for {@code boolean} and {@code '\0'} for {@code char}. For non-primitive types and
      * {@code void}, {@code null} is returned.
      */
-    @Nullable
     public static <T> T defaultValue(Class<T> type) {
         // Primitives.wrap(type).cast(...) would avoid the warning, but we can't use that from here
         @SuppressWarnings("unchecked") // the put method enforces this key-value relationship
