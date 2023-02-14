@@ -169,7 +169,7 @@ public final class ObjectValue extends AbstractValue {
      * @throws NullPointerException if the mapping function is null or returns
      *                              a null result
      */
-    public ObjectValue flatMap(Function<Object, ObjectValue> mapper) {
+    public ObjectValue flatMap(Function<?, ObjectValue> mapper) {
         Objects.requireNonNull(mapper);
         if (!isPresent())
             return empty();
