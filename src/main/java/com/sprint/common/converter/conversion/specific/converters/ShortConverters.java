@@ -3,6 +3,7 @@ package com.sprint.common.converter.conversion.specific.converters;
 import com.sprint.common.converter.conversion.specific.SpecificConverter;
 import com.sprint.common.converter.conversion.specific.SpecificConverterLoader;
 import com.sprint.common.converter.exception.ConversionException;
+import com.sprint.common.converter.util.Miscs;
 
 /**
  * Short转换器
@@ -35,7 +36,7 @@ public class ShortConverters implements SpecificConverterLoader {
 
         @Override
         public Short convert(String obj) throws ConversionException {
-            return obj == null ? 0 : Double.valueOf(obj).shortValue();
+            return Miscs.isBlank(obj) ? 0 : Double.valueOf(obj).shortValue();
         }
 
         @Override
@@ -53,7 +54,7 @@ public class ShortConverters implements SpecificConverterLoader {
 
         @Override
         public Short convert(String obj) throws ConversionException {
-            return obj == null ? null : Double.valueOf(obj).shortValue();
+            return Miscs.isBlank(obj) ? null : Double.valueOf(obj).shortValue();
         }
 
         @Override

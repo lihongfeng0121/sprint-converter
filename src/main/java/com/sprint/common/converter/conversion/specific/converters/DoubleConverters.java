@@ -3,6 +3,7 @@ package com.sprint.common.converter.conversion.specific.converters;
 import com.sprint.common.converter.conversion.specific.SpecificConverter;
 import com.sprint.common.converter.conversion.specific.SpecificConverterLoader;
 import com.sprint.common.converter.exception.ConversionException;
+import com.sprint.common.converter.util.Miscs;
 
 /**
  * Double转换器
@@ -35,7 +36,7 @@ public class DoubleConverters implements SpecificConverterLoader {
 
         @Override
         public Double convert(String obj) throws ConversionException {
-            return obj == null ? 0D : Double.parseDouble(obj);
+            return Miscs.isBlank(obj) ? 0D : Double.parseDouble(obj);
         }
 
         @Override
@@ -53,7 +54,7 @@ public class DoubleConverters implements SpecificConverterLoader {
 
         @Override
         public Double convert(String obj) throws ConversionException {
-            return obj == null ? null : Double.valueOf(obj);
+            return Miscs.isBlank(obj) ? null : Double.valueOf(obj);
         }
 
         @Override

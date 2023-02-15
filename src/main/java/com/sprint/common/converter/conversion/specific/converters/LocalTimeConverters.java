@@ -3,6 +3,7 @@ package com.sprint.common.converter.conversion.specific.converters;
 import com.sprint.common.converter.conversion.specific.SpecificConverter;
 import com.sprint.common.converter.conversion.specific.SpecificConverterLoader;
 import com.sprint.common.converter.exception.ConversionException;
+import com.sprint.common.converter.util.Miscs;
 
 import java.time.Instant;
 import java.time.LocalTime;
@@ -114,7 +115,7 @@ public class LocalTimeConverters implements SpecificConverterLoader {
 
         @Override
         public LocalTime convert(String source) throws ConversionException {
-            if (source == null) {
+            if (Miscs.isBlank(source)) {
                 return null;
             }
             return LocalTime.parse(source);

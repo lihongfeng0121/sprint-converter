@@ -3,6 +3,7 @@ package com.sprint.common.converter.conversion.specific.converters;
 import com.sprint.common.converter.conversion.specific.SpecificConverter;
 import com.sprint.common.converter.conversion.specific.SpecificConverterLoader;
 import com.sprint.common.converter.exception.ConversionException;
+import com.sprint.common.converter.util.Miscs;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -76,7 +77,7 @@ public class LongConverters implements SpecificConverterLoader {
 
         @Override
         public Long convert(String obj) throws ConversionException {
-            return obj == null ? 0L : Double.valueOf(obj).longValue();
+            return Miscs.isBlank(obj) ? 0L : Double.valueOf(obj).longValue();
         }
 
         @Override
@@ -94,7 +95,7 @@ public class LongConverters implements SpecificConverterLoader {
 
         @Override
         public Long convert(String obj) throws ConversionException {
-            return obj == null ? null : Double.valueOf(obj).longValue();
+            return Miscs.isBlank(obj) ? null : Double.valueOf(obj).longValue();
         }
 
         @Override

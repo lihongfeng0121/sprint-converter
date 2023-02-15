@@ -3,6 +3,7 @@ package com.sprint.common.converter.conversion.specific.converters;
 import com.sprint.common.converter.conversion.specific.SpecificConverter;
 import com.sprint.common.converter.conversion.specific.SpecificConverterLoader;
 import com.sprint.common.converter.exception.ConversionException;
+import com.sprint.common.converter.util.Miscs;
 
 import java.text.ParseException;
 import java.time.*;
@@ -218,7 +219,7 @@ public class YearConverters implements SpecificConverterLoader {
 
         @Override
         public Year convert(String source) throws ConversionException {
-            if (source == null) {
+            if (Miscs.isBlank(source)) {
                 return null;
             }
             try {

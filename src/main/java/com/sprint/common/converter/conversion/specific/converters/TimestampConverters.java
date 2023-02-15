@@ -3,6 +3,7 @@ package com.sprint.common.converter.conversion.specific.converters;
 import com.sprint.common.converter.conversion.specific.SpecificConverter;
 import com.sprint.common.converter.conversion.specific.SpecificConverterLoader;
 import com.sprint.common.converter.exception.ConversionException;
+import com.sprint.common.converter.util.Miscs;
 
 import java.sql.Timestamp;
 import java.text.ParseException;
@@ -63,7 +64,7 @@ public class TimestampConverters implements SpecificConverterLoader {
 
         @Override
         public Timestamp convert(String obj) throws ConversionException {
-            if (obj == null) {
+            if (Miscs.isBlank(obj)) {
                 return null;
             } else {
                 try {

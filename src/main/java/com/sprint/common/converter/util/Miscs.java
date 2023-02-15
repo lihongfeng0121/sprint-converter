@@ -10,7 +10,20 @@ import java.util.regex.Pattern;
  * @author hongfeng.li
  * @since 2022/6/5
  */
-class Miscs {
+public class Miscs {
+
+    public static boolean isBlank(CharSequence cs) {
+        int strLen;
+        if (cs == null || (strLen = cs.length()) == 0) {
+            return true;
+        }
+        for (int i = 0; i < strLen; i++) {
+            if (!Character.isWhitespace(cs.charAt(i))) {
+                return false;
+            }
+        }
+        return true;
+    }
 
     private static final Pattern POINT_PATTERN = Pattern.compile("\\.(\\w)");
 

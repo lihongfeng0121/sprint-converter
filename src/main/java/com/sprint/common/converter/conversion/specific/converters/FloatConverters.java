@@ -3,6 +3,7 @@ package com.sprint.common.converter.conversion.specific.converters;
 import com.sprint.common.converter.conversion.specific.SpecificConverter;
 import com.sprint.common.converter.conversion.specific.SpecificConverterLoader;
 import com.sprint.common.converter.exception.ConversionException;
+import com.sprint.common.converter.util.Miscs;
 
 import java.math.BigDecimal;
 
@@ -55,7 +56,7 @@ public class FloatConverters implements SpecificConverterLoader {
 
         @Override
         public Float convert(String obj) throws ConversionException {
-            return obj == null ? 0F : new BigDecimal(obj).floatValue();
+            return Miscs.isBlank(obj) ? 0F : new BigDecimal(obj).floatValue();
         }
 
         @Override
@@ -75,7 +76,7 @@ public class FloatConverters implements SpecificConverterLoader {
 
         @Override
         public Float convert(String obj) throws ConversionException {
-            return obj == null ? null : new BigDecimal(obj).floatValue();
+            return Miscs.isBlank(obj) ? null : new BigDecimal(obj).floatValue();
         }
 
         @Override

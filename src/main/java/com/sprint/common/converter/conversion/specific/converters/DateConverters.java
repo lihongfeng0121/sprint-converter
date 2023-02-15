@@ -3,6 +3,7 @@ package com.sprint.common.converter.conversion.specific.converters;
 import com.sprint.common.converter.conversion.specific.SpecificConverter;
 import com.sprint.common.converter.conversion.specific.SpecificConverterLoader;
 import com.sprint.common.converter.exception.ConversionException;
+import com.sprint.common.converter.util.Miscs;
 
 import java.math.BigInteger;
 import java.sql.Date;
@@ -84,7 +85,7 @@ public class DateConverters implements SpecificConverterLoader {
 
         @Override
         public Date convert(String obj) throws ConversionException {
-            if (obj == null) {
+            if (Miscs.isBlank(obj)) {
                 return null;
             } else {
                 try {

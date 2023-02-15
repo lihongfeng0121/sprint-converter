@@ -4,6 +4,7 @@ import com.sprint.common.converter.conversion.specific.SpecificConverter;
 import com.sprint.common.converter.conversion.specific.SpecificConverterLoader;
 import com.sprint.common.converter.exception.ConversionException;
 import com.sprint.common.converter.exception.ConvertErrorException;
+import com.sprint.common.converter.util.Miscs;
 
 import java.math.BigInteger;
 import java.text.ParseException;
@@ -131,7 +132,7 @@ public class DateTimeConverters implements SpecificConverterLoader {
 
         @Override
         public Date convert(String obj) throws ConversionException {
-            if (obj == null) {
+            if (Miscs.isBlank(obj)) {
                 return null;
             } else {
                 try {

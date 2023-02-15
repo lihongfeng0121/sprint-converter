@@ -3,6 +3,7 @@ package com.sprint.common.converter.conversion.specific.converters;
 import com.sprint.common.converter.conversion.specific.SpecificConverter;
 import com.sprint.common.converter.conversion.specific.SpecificConverterLoader;
 import com.sprint.common.converter.exception.ConversionException;
+import com.sprint.common.converter.util.Miscs;
 
 import java.math.BigDecimal;
 
@@ -37,7 +38,7 @@ public class BigDecimalConverters implements SpecificConverterLoader {
 
         @Override
         public BigDecimal convert(String source) throws ConversionException {
-            return source == null ? null : new BigDecimal(source);
+            return Miscs.isBlank(source) ? null : new BigDecimal(source);
         }
 
         @Override
