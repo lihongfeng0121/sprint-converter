@@ -3,6 +3,7 @@ package com.sprint.common.converter;
 import com.sprint.common.converter.exception.ConversionException;
 import com.sprint.common.converter.exception.NotSupportConvertException;
 import com.sprint.common.converter.util.Beans;
+import com.sprint.common.converter.util.Defaults;
 import com.sprint.common.converter.util.Types;
 
 /**
@@ -60,7 +61,7 @@ public class BeanConverter {
         }
         return (source) -> {
             if (source == null) {
-                return null;
+                return Defaults.defaultValue(targetClass);
             }
             Class<?> sourceType = source.getClass();
             if (sourceClass.isAssignableFrom(sourceType)) {
@@ -81,7 +82,7 @@ public class BeanConverter {
      */
     public static <T> T convert(Object source, Class<T> targetClass, String... ignoreProperties) {
         if (source == null) {
-            return null;
+            return Defaults.defaultValue(targetClass);
         }
         Class<?> sourceType = source.getClass();
         Class<?> finalTargetClass = Types.isObjectType(targetClass) ? sourceType : targetClass;
@@ -103,7 +104,7 @@ public class BeanConverter {
      */
     public static <T> T shallowConvert(Object source, Class<T> targetClass, String... ignoreProperties) {
         if (source == null) {
-            return null;
+            return Defaults.defaultValue(targetClass);
         }
         Class<?> sourceType = source.getClass();
         Class<?> finalTargetClass = Types.isObjectType(targetClass) ? sourceType : targetClass;

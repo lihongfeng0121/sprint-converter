@@ -98,6 +98,9 @@ public final class NestedConverters {
         }
 
         return (source) -> {
+            if (source == null) {
+                return getDefaultValue(targetBeanType, targetType);
+            }
             for (NestedConverter nestedConverter : nestedConverters) {
                 if (nestedConverter.preCheckSourceVal(source)) {
                     try {
@@ -177,9 +180,8 @@ public final class NestedConverters {
         public Object convert(Object sourceValue, Type targetBeanType, Type targetFiledType)
                 throws ConversionException {
             if (sourceValue == null) {
-                return null;
+                return getDefaultValue(targetBeanType, targetFiledType);
             }
-
             Class<?> sourceType = sourceValue.getClass();
             Class<?> targetClassType = Types.extractClass(targetFiledType, targetBeanType);
             if (Types.isPrimitiveTypeOrWrapClass(targetClassType) && Objects.equals(sourceType, targetClassType)) {

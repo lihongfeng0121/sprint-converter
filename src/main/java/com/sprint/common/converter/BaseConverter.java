@@ -44,7 +44,7 @@ public final class BaseConverter {
         if (converter == null) {
             return null;
         }
-        return converter.enforce();
+        return converter.enforce(sourceClass, targetClass).onNullGet(() -> Defaults.defaultValue(targetClass));
     }
 
     /**

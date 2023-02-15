@@ -3,6 +3,7 @@ package com.sprint.common.converter;
 import com.sprint.common.converter.conversion.nested.NestedConverters;
 import com.sprint.common.converter.exception.BeansException;
 import com.sprint.common.converter.util.Assert;
+import com.sprint.common.converter.util.Defaults;
 import com.sprint.common.converter.util.Types;
 
 import java.lang.reflect.Type;
@@ -28,7 +29,7 @@ public final class AnyConverter {
      * @return target
      */
     public static <S, T> Converter<S, T> converter(Class<S> sourceType, Class<T> targetType) {
-        return NestedConverters.getConverter(sourceType, targetType);
+        return NestedConverters.getConverter(sourceType, targetType).enforce(sourceType, targetType);
     }
 
     /**

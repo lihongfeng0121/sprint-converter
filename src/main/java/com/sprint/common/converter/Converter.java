@@ -97,7 +97,7 @@ public interface Converter<S, T> {
      * @param supplier supplier
      * @return Converter
      */
-    default Converter<S, T> onErrorGet(Supplier<T> supplier) {
+    default Converter<S, T> onErrorGet(Supplier<? extends T> supplier) {
         Objects.requireNonNull(supplier);
         return (s) -> {
             try {
@@ -143,12 +143,12 @@ public interface Converter<S, T> {
     }
 
     /**
-     * 当转换发生异常获取值
+     * 当原值为空时获取值
      *
      * @param supplier supplier
      * @return Converter
      */
-    default Converter<S, T> onNullGet(Supplier<T> supplier) {
+    default Converter<S, T> onNullGet(Supplier<? extends T> supplier) {
         Objects.requireNonNull(supplier);
         return (s) -> {
             if (s == null) {
