@@ -173,7 +173,7 @@ public class PropertyAccess implements Cloneable {
         try {
             return beanClass.getField(name);
         } catch (NoSuchFieldException e) {
-            logger.debug("PropertyAccess#doGetBeanPropertyField({})not exit!", name);
+            logger.debug("PropertyAccess#doGetBeanPropertyField({}.{})not exit!", beanClass, name);
         }
         return null;
     }
