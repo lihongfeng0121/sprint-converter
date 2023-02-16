@@ -68,11 +68,11 @@ public final class BaseConverter {
      */
     public static <T> T convertIgnore(Object source, Class<T> targetClass) {
         try {
-            return convert(source, targetClass, (ex, var1) -> null);
+            return convert(source, targetClass, (ex, var1) -> Defaults.defaultValue(targetClass));
         } catch (Exception e) {
             logger.warn(String.format("not support [%s][%s] -> %s", source.getClass(), source, targetClass.getName()),
                     e);
-            return null;
+            return Defaults.defaultValue(targetClass);
         }
     }
 
