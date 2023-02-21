@@ -3,10 +3,12 @@ package com.sprint.common.converter.conversion.specific.converters;
 import com.sprint.common.converter.conversion.specific.SpecificConverter;
 import com.sprint.common.converter.conversion.specific.SpecificConverterLoader;
 import com.sprint.common.converter.exception.ConversionException;
+import com.sprint.common.converter.util.Dates;
 import com.sprint.common.converter.util.Miscs;
 
-import java.text.ParseException;
-import java.time.*;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.YearMonth;
 import java.util.Date;
 
 /**
@@ -18,13 +20,6 @@ import java.util.Date;
  */
 public class YearMonthConverters implements SpecificConverterLoader {
 
-    public static YearMonth toYearMonth(Date date) {
-        if (date == null) {
-            return null;
-        }
-        ZonedDateTime zonedDateTime = Instant.ofEpochMilli(date.getTime()).atZone(ZoneId.systemDefault());
-        return YearMonth.of(zonedDateTime.getYear(), zonedDateTime.getMonth());
-    }
 
     public static class LocalDateToYearMonth implements SpecificConverter<LocalDate, YearMonth> {
 
@@ -75,7 +70,7 @@ public class YearMonthConverters implements SpecificConverterLoader {
             if (source == null) {
                 return null;
             }
-            return toYearMonth(source);
+            return Dates.toYearMonth(source);
         }
 
         @Override
@@ -97,7 +92,7 @@ public class YearMonthConverters implements SpecificConverterLoader {
             if (source == null) {
                 return null;
             }
-            return toYearMonth(source);
+            return Dates.toYearMonth(source);
         }
 
         @Override
@@ -118,7 +113,7 @@ public class YearMonthConverters implements SpecificConverterLoader {
             if (source == null) {
                 return null;
             }
-            return toYearMonth(source);
+            return Dates.toYearMonth(source);
         }
 
         @Override
@@ -139,7 +134,7 @@ public class YearMonthConverters implements SpecificConverterLoader {
             if (source == null) {
                 return null;
             }
-            return toYearMonth(new Date(source));
+            return Dates.toYearMonth(new Date(source));
         }
 
         @Override
@@ -160,11 +155,7 @@ public class YearMonthConverters implements SpecificConverterLoader {
             if (Miscs.isBlank(source)) {
                 return null;
             }
-            try {
-                return toYearMonth(DateTimeConverters.toDate(source));
-            } catch (ParseException ex) {
-                throw new ConversionException(ex);
-            }
+            return Dates.toYearMonth(Dates.toDate(source));
         }
 
         @Override

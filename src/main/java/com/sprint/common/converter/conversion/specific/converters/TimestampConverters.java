@@ -3,13 +3,12 @@ package com.sprint.common.converter.conversion.specific.converters;
 import com.sprint.common.converter.conversion.specific.SpecificConverter;
 import com.sprint.common.converter.conversion.specific.SpecificConverterLoader;
 import com.sprint.common.converter.exception.ConversionException;
+import com.sprint.common.converter.util.Dates;
 import com.sprint.common.converter.util.Miscs;
 
 import java.sql.Timestamp;
-import java.text.ParseException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.ZoneId;
 import java.util.Date;
 
 /**
@@ -20,27 +19,6 @@ import java.util.Date;
  * @since 2019年12月25日
  */
 public class TimestampConverters implements SpecificConverterLoader {
-
-    public static Timestamp toTimestamp(Date date) {
-        if (date == null) {
-            return null;
-        }
-        return new Timestamp(date.getTime());
-    }
-
-    public static Timestamp toTimestamp(LocalDate localDate) {
-        if (localDate == null) {
-            return null;
-        }
-        return Timestamp.from(localDate.atStartOfDay().atZone(ZoneId.systemDefault()).toInstant());
-    }
-
-    public static Timestamp toTimestamp(LocalDateTime localDateTime) {
-        if (localDateTime == null) {
-            return null;
-        }
-        return Timestamp.from(localDateTime.atZone(ZoneId.systemDefault()).toInstant());
-    }
 
     public static class NumberToTimestamp implements SpecificConverter<Number, Timestamp> {
 
@@ -67,11 +45,7 @@ public class TimestampConverters implements SpecificConverterLoader {
             if (Miscs.isBlank(obj)) {
                 return null;
             } else {
-                try {
-                    return toTimestamp(DateTimeConverters.toDate(obj));
-                } catch (ParseException ex) {
-                    throw new ConversionException(ex);
-                }
+                return Dates.toTimestamp(Dates.toDate(obj));
             }
         }
 
@@ -90,7 +64,7 @@ public class TimestampConverters implements SpecificConverterLoader {
 
         @Override
         public Timestamp convert(Date obj) throws ConversionException {
-            return toTimestamp(obj);
+            return Dates.toTimestamp(obj);
         }
 
         @Override
@@ -108,7 +82,7 @@ public class TimestampConverters implements SpecificConverterLoader {
 
         @Override
         public Timestamp convert(LocalDate obj) throws ConversionException {
-            return toTimestamp(obj);
+            return Dates.toTimestamp(obj);
         }
 
         @Override
@@ -126,7 +100,7 @@ public class TimestampConverters implements SpecificConverterLoader {
 
         @Override
         public Timestamp convert(LocalDateTime obj) throws ConversionException {
-            return toTimestamp(obj);
+            return Dates.toTimestamp(obj);
         }
 
         @Override

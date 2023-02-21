@@ -3,10 +3,13 @@ package com.sprint.common.converter.conversion.specific.converters;
 import com.sprint.common.converter.conversion.specific.SpecificConverter;
 import com.sprint.common.converter.conversion.specific.SpecificConverterLoader;
 import com.sprint.common.converter.exception.ConversionException;
+import com.sprint.common.converter.util.Dates;
 import com.sprint.common.converter.util.Miscs;
 
-import java.text.ParseException;
-import java.time.*;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.Year;
+import java.time.YearMonth;
 import java.util.Date;
 
 /**
@@ -17,13 +20,6 @@ import java.util.Date;
  * @since 2021年02月05日
  */
 public class YearConverters implements SpecificConverterLoader {
-
-    public static Year toYear(Date date) {
-        if (date == null) {
-            return null;
-        }
-        return Year.of(Instant.ofEpochMilli(date.getTime()).atZone(ZoneId.systemDefault()).getYear());
-    }
 
     public static class LocalDateToYear implements SpecificConverter<LocalDate, Year> {
 
@@ -95,7 +91,7 @@ public class YearConverters implements SpecificConverterLoader {
             if (source == null) {
                 return null;
             }
-            return toYear(source);
+            return Dates.toYear(source);
         }
 
         @Override
@@ -117,7 +113,7 @@ public class YearConverters implements SpecificConverterLoader {
             if (source == null) {
                 return null;
             }
-            return toYear(source);
+            return Dates.toYear(source);
         }
 
         @Override
@@ -138,7 +134,7 @@ public class YearConverters implements SpecificConverterLoader {
             if (source == null) {
                 return null;
             }
-            return toYear(source);
+            return Dates.toYear(source);
         }
 
         @Override
@@ -222,11 +218,7 @@ public class YearConverters implements SpecificConverterLoader {
             if (Miscs.isBlank(source)) {
                 return null;
             }
-            try {
-                return toYear(DateTimeConverters.toDate(source));
-            } catch (ParseException ex) {
-                throw new ConversionException(ex);
-            }
+            return Dates.toYear(source);
         }
 
         @Override

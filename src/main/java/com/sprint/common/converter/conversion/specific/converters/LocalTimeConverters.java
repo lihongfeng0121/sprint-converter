@@ -3,12 +3,10 @@ package com.sprint.common.converter.conversion.specific.converters;
 import com.sprint.common.converter.conversion.specific.SpecificConverter;
 import com.sprint.common.converter.conversion.specific.SpecificConverterLoader;
 import com.sprint.common.converter.exception.ConversionException;
+import com.sprint.common.converter.util.Dates;
 import com.sprint.common.converter.util.Miscs;
 
-import java.time.Instant;
 import java.time.LocalTime;
-import java.time.ZoneId;
-import java.time.ZonedDateTime;
 import java.time.temporal.TemporalAccessor;
 import java.util.Date;
 
@@ -21,21 +19,6 @@ import java.util.Date;
  */
 public class LocalTimeConverters implements SpecificConverterLoader {
 
-    public static LocalTime toLocalTime(Date date) {
-        if (date == null) {
-            return null;
-        }
-        ZonedDateTime zonedDateTime = Instant.ofEpochMilli(date.getTime()).atZone(ZoneId.systemDefault());
-        return zonedDateTime.toLocalDateTime().toLocalTime();
-    }
-
-    public static LocalTime toLocalTime(Long date) {
-        if (date == null) {
-            return null;
-        }
-        ZonedDateTime zonedDateTime = Instant.ofEpochMilli(date).atZone(ZoneId.systemDefault());
-        return zonedDateTime.toLocalDateTime().toLocalTime();
-    }
 
     public static class NumberToLocalTime implements SpecificConverter<Number, LocalTime> {
 
@@ -47,11 +30,11 @@ public class LocalTimeConverters implements SpecificConverterLoader {
 
             long ts = source.longValue();
 
-            if (ts > 8640000000000L) {
+            if (ts > Dates.ONE_DAY_NANO) {
                 return LocalTime.ofNanoOfDay(ts);
-            } else if (ts > 86400000L) {
-                return toLocalTime(ts);
-            } else if (ts > 86400L) {
+            } else if (ts > Dates.ONE_DAY_MILLI) {
+                return Dates.toLocalTime(ts);
+            } else if (ts > Dates.ONE_DAY_SECOND) {
                 return LocalTime.ofNanoOfDay(ts * 1000000L);
             } else {
                 return LocalTime.ofSecondOfDay(ts);
@@ -97,7 +80,7 @@ public class LocalTimeConverters implements SpecificConverterLoader {
             if (source == null) {
                 return null;
             }
-            return toLocalTime(source);
+            return Dates.toLocalTime(source);
         }
 
         @Override

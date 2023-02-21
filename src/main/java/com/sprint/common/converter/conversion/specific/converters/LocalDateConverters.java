@@ -3,14 +3,12 @@ package com.sprint.common.converter.conversion.specific.converters;
 import com.sprint.common.converter.conversion.specific.SpecificConverter;
 import com.sprint.common.converter.conversion.specific.SpecificConverterLoader;
 import com.sprint.common.converter.exception.ConversionException;
+import com.sprint.common.converter.util.Dates;
 import com.sprint.common.converter.util.Miscs;
 
 import java.sql.Timestamp;
-import java.text.ParseException;
-import java.time.Instant;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.ZoneId;
 import java.util.Date;
 
 /**
@@ -22,39 +20,11 @@ import java.util.Date;
  */
 public class LocalDateConverters implements SpecificConverterLoader {
 
-    public static Long toTime(LocalDate localDate) {
-        if (localDate == null) {
-            return null;
-        }
-        return Date.from(localDate.atStartOfDay().atZone(ZoneId.systemDefault()).toInstant()).getTime();
-    }
-
-    public static LocalDate toLocalDate(Date date) {
-        if (date == null) {
-            return null;
-        }
-        return Instant.ofEpochMilli(date.getTime()).atZone(ZoneId.systemDefault()).toLocalDate();
-    }
-
-    public static LocalDate toLocalDate(LocalDateTime date) {
-        if (date == null) {
-            return null;
-        }
-        return date.toLocalDate();
-    }
-
-    public static LocalDate toLocalDate(Long ts) {
-        if (ts == null) {
-            return null;
-        }
-        return Instant.ofEpochMilli(ts).atZone(ZoneId.systemDefault()).toLocalDate();
-    }
-
     public static class NumberToLocalDate implements SpecificConverter<Number, LocalDate> {
 
         @Override
         public LocalDate convert(Number obj) throws ConversionException {
-            return obj == null ? null : toLocalDate(obj.longValue());
+            return obj == null ? null : Dates.toLocalDate(obj.longValue());
         }
 
         @Override
@@ -75,11 +45,7 @@ public class LocalDateConverters implements SpecificConverterLoader {
             if (Miscs.isBlank(obj)) {
                 return null;
             } else {
-                try {
-                    return toLocalDate(DateTimeConverters.toDate(obj));
-                } catch (ParseException ex) {
-                    throw new ConversionException(ex);
-                }
+                return Dates.toLocalDate(Dates.toDate(obj));
             }
         }
 
@@ -98,7 +64,7 @@ public class LocalDateConverters implements SpecificConverterLoader {
 
         @Override
         public LocalDate convert(java.sql.Date obj) throws ConversionException {
-            return toLocalDate(obj);
+            return Dates.toLocalDate(obj);
         }
 
         @Override
@@ -116,7 +82,7 @@ public class LocalDateConverters implements SpecificConverterLoader {
 
         @Override
         public LocalDate convert(java.util.Date obj) throws ConversionException {
-            return toLocalDate(obj);
+            return Dates.toLocalDate(obj);
         }
 
         @Override
@@ -134,7 +100,7 @@ public class LocalDateConverters implements SpecificConverterLoader {
 
         @Override
         public LocalDate convert(Timestamp obj) throws ConversionException {
-            return toLocalDate(obj);
+            return Dates.toLocalDate(obj);
         }
 
         @Override
@@ -152,7 +118,7 @@ public class LocalDateConverters implements SpecificConverterLoader {
 
         @Override
         public LocalDate convert(LocalDateTime obj) throws ConversionException {
-            return toLocalDate(obj);
+            return Dates.toLocalDate(obj);
         }
 
         @Override

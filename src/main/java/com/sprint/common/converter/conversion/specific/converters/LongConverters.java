@@ -3,6 +3,7 @@ package com.sprint.common.converter.conversion.specific.converters;
 import com.sprint.common.converter.conversion.specific.SpecificConverter;
 import com.sprint.common.converter.conversion.specific.SpecificConverterLoader;
 import com.sprint.common.converter.exception.ConversionException;
+import com.sprint.common.converter.util.Dates;
 import com.sprint.common.converter.util.Miscs;
 
 import java.time.LocalDate;
@@ -149,7 +150,7 @@ public class LongConverters implements SpecificConverterLoader {
 
         @Override
         public Long convert(LocalDate source) throws ConversionException {
-            return LocalDateConverters.toTime(source);
+            return Dates.toTime(source);
         }
 
         @Override
@@ -167,7 +168,7 @@ public class LongConverters implements SpecificConverterLoader {
 
         @Override
         public Long convert(LocalDate source) throws ConversionException {
-            return Optional.ofNullable(LocalDateConverters.toTime(source)).orElse(0L);
+            return Optional.ofNullable(Dates.toTime(source)).orElse(0L);
         }
 
         @Override
@@ -185,7 +186,7 @@ public class LongConverters implements SpecificConverterLoader {
 
         @Override
         public Long convert(LocalDateTime source) throws ConversionException {
-            return LocalDateTimeConverters.toTime(source);
+            return Dates.toTime(source);
         }
 
         @Override
@@ -203,7 +204,7 @@ public class LongConverters implements SpecificConverterLoader {
 
         @Override
         public Long convert(LocalDateTime source) throws ConversionException {
-            return Optional.ofNullable(LocalDateTimeConverters.toTime(source)).orElse(0L);
+            return Optional.ofNullable(Dates.toTime(source)).orElse(0L);
         }
 
         @Override

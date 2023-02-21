@@ -3,12 +3,12 @@ package com.sprint.common.converter.conversion.specific.converters;
 import com.sprint.common.converter.conversion.specific.SpecificConverter;
 import com.sprint.common.converter.conversion.specific.SpecificConverterLoader;
 import com.sprint.common.converter.exception.ConversionException;
+import com.sprint.common.converter.util.Dates;
 import com.sprint.common.converter.util.Miscs;
 
 import java.math.BigInteger;
 import java.sql.Date;
 import java.sql.Timestamp;
-import java.text.ParseException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 
@@ -20,27 +20,6 @@ import java.time.LocalDateTime;
  * @since 2019年12月25日
  */
 public class DateConverters implements SpecificConverterLoader {
-
-    public static Date toSqlDate(java.util.Date date) {
-        if (date == null) {
-            return null;
-        }
-        return new Date(date.getTime());
-    }
-
-    public static Date toSqlDate(LocalDate localDate) {
-        if (localDate == null) {
-            return null;
-        }
-        return Date.valueOf(localDate);
-    }
-
-    public static Date toSqlDate(LocalDateTime localDateTime) {
-        if (localDateTime == null) {
-            return null;
-        }
-        return Date.valueOf(localDateTime.toLocalDate());
-    }
 
     public DateConverters() {
     }
@@ -88,11 +67,7 @@ public class DateConverters implements SpecificConverterLoader {
             if (Miscs.isBlank(obj)) {
                 return null;
             } else {
-                try {
-                    return toSqlDate(DateTimeConverters.toDate(obj));
-                } catch (ParseException ex) {
-                    throw new ConversionException(ex);
-                }
+                return Dates.toSqlDate(Dates.toDate(obj));
             }
         }
 
@@ -114,7 +89,7 @@ public class DateConverters implements SpecificConverterLoader {
             if (obj == null) {
                 return null;
             }
-            return toSqlDate(obj);
+            return Dates.toSqlDate(obj);
         }
 
         @Override
@@ -132,7 +107,7 @@ public class DateConverters implements SpecificConverterLoader {
 
         @Override
         public Date convert(Timestamp obj) throws ConversionException {
-            return toSqlDate(obj);
+            return Dates.toSqlDate(obj);
         }
 
         @Override
@@ -150,7 +125,7 @@ public class DateConverters implements SpecificConverterLoader {
 
         @Override
         public Date convert(LocalDate obj) throws ConversionException {
-            return toSqlDate(obj);
+            return Dates.toSqlDate(obj);
         }
 
         @Override
@@ -168,7 +143,7 @@ public class DateConverters implements SpecificConverterLoader {
 
         @Override
         public Date convert(LocalDateTime obj) throws ConversionException {
-            return toSqlDate(obj);
+            return Dates.toSqlDate(obj);
         }
 
         @Override
