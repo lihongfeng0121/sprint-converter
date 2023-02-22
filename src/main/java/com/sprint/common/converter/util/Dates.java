@@ -6,7 +6,6 @@ import java.sql.Timestamp;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.*;
-import java.time.format.DateTimeFormatter;
 import java.util.Date;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -21,17 +20,11 @@ public class Dates {
     public final static long ONE_DAY_MILLI = 86400000L;
     public final static long ONE_DAY_SECOND = 86400L;
     public final static String YEAR_PATTERN_1 = "yyyy";
-    public static final DateTimeFormatter FORMATTER_YEAR_PATTERN_1 = DateTimeFormatter.ofPattern(YEAR_PATTERN_1);
     public final static String MONTH_PATTERN_2 = "yyyyMM";
-    public static final DateTimeFormatter FORMATTER_MONTH_PATTERN_2 = DateTimeFormatter.ofPattern(MONTH_PATTERN_2);
     public final static String DATE_PATTERN_1 = "yyyyMMdd";
-    public static final DateTimeFormatter FORMATTER_DATE_PATTERN_1 = DateTimeFormatter.ofPattern(DATE_PATTERN_1);
     public final static String DATE_PATTERN_HOUR_2 = "yyyyMMddHH";
-    public static final DateTimeFormatter FORMATTER_DATE_PATTERN_HOUR_2 = DateTimeFormatter.ofPattern(DATE_PATTERN_HOUR_2);
     public final static String DATE_PATTERN_HOUR_MM_2 = "yyyyMMddHHmm";
-    public static final DateTimeFormatter FORMATTER_DATE_PATTERN_HOUR_MM_2 = DateTimeFormatter.ofPattern(DATE_PATTERN_HOUR_MM_2);
     public final static String DATETIME_PATTERN_1 = "yyyyMMddHHmmss";
-    public static final DateTimeFormatter FORMATTER_DATETIME_PATTERN_1 = DateTimeFormatter.ofPattern(DATETIME_PATTERN_1);
 
     private static final Map<String, ThreadLocal<SimpleDateFormat>> dateFormats = new ConcurrentHashMap<>();
 
@@ -94,15 +87,6 @@ public class Dates {
     private static String removeDateStringSplit(String dateString) {
         return dateString.trim().replace(" ", "").replace("-", "").replace("/", "").replace(":", "").replace("年", "")
                 .replace("月", "").replace("日", "").replace("时", "").replace("分", "").replace("秒", "").replace("T", "");
-    }
-
-    private static DateTimeFormatter getDateTimeFormatter(String dateString) {
-        int length = dateString.length();
-        return length < 6 ? FORMATTER_YEAR_PATTERN_1
-                : length < 8 ? FORMATTER_MONTH_PATTERN_2
-                : length < 10 ? FORMATTER_DATE_PATTERN_1
-                : length < 12 ? FORMATTER_DATE_PATTERN_HOUR_2
-                : length < 14 ? FORMATTER_DATE_PATTERN_HOUR_MM_2 : FORMATTER_DATETIME_PATTERN_1;
     }
 
     public static java.sql.Date toSqlDate(java.util.Date date) {
