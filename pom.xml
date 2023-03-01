@@ -4,7 +4,7 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <groupId>io.github.lihongfeng0121</groupId>
     <modelVersion>4.0.0</modelVersion>
-    <version>1.0.2</version>
+    <version>1.0.3</version>
     <artifactId>sprint-converter</artifactId>
     <packaging>jar</packaging>
     <url>https://github.com/lihongfeng0121/sprint-converter.git</url>

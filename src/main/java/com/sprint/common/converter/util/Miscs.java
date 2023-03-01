@@ -1,8 +1,12 @@
 package com.sprint.common.converter.util;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.util.Collection;
 import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.function.Supplier;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -44,6 +48,19 @@ public class Miscs {
             i += ts.length;
         }
         return ts.length > i ? ts[i] : defaultValue;
+    }
+
+
+    /**
+     * 获取数据元素
+     *
+     * @param ts           数组
+     * @param i            位置
+     * @param <T>          数组元素类型
+     * @return 数组元素
+     */
+    public static <T> T at(T[] ts, int i) {
+        return at(ts, i, null);
     }
 
     /**
@@ -120,5 +137,41 @@ public class Miscs {
         }
 
         return map;
+    }
+
+    public static <K, V> V get(Map<K, V> map, K key, Supplier<V> supplier) {
+        V v = map.get(key);
+        if (v != null) {
+            return v;
+        }
+        V value = supplier.get();
+        map.put(key, value);
+        return value;
+    }
+
+    public static final int BUFFER_SIZE = 4096;
+
+    /**
+     * Copy the contents of the given InputStream to the given OutputStream.
+     * Leaves both streams open when done.
+     *
+     * @param in  the InputStream to copy from
+     * @param out the OutputStream to copy to
+     * @return the number of bytes copied
+     * @throws IOException in case of I/O errors
+     */
+    public static int copy(InputStream in, OutputStream out) throws IOException {
+        Assert.notNull(in, "No InputStream specified");
+        Assert.notNull(out, "No OutputStream specified");
+
+        int byteCount = 0;
+        byte[] buffer = new byte[BUFFER_SIZE];
+        int bytesRead = -1;
+        while ((bytesRead = in.read(buffer)) != -1) {
+            out.write(buffer, 0, bytesRead);
+            byteCount += bytesRead;
+        }
+        out.flush();
+        return byteCount;
     }
 }

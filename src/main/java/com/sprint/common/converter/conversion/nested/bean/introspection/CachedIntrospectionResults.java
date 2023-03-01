@@ -30,7 +30,7 @@ public class CachedIntrospectionResults {
     /* 忽略转化的字段 */
     private static final String IGNORE_CLASS = "class";
 
-    private static final ConcurrentMap<Class<?>, CachedIntrospectionResults> cache = new ConcurrentReferenceHashMap<>();
+    private static final ConcurrentReferenceHashMap<Class<?>, CachedIntrospectionResults> cache = new ConcurrentReferenceHashMap<>();
 
     public static CachedIntrospectionResults forClass(Class<?> beanClass) {
         CachedIntrospectionResults results = cache.get(beanClass);

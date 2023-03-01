@@ -5,8 +5,7 @@ import com.sprint.common.converter.conversion.nested.NestedConverterLoader;
 import com.sprint.common.converter.conversion.nested.NestedConverters;
 import com.sprint.common.converter.exception.ConversionException;
 import com.sprint.common.converter.util.ObjectValue;
-
-import java.lang.reflect.Type;
+import com.sprint.common.converter.util.TypeDescriptor;
 
 /**
  * @author hongfeng.li
@@ -25,18 +24,18 @@ public class ObjectValueConverters implements NestedConverterLoader {
         }
 
         @Override
-        public boolean support(Class<?> sourceClass, Class<?> targetClass) {
-            return ObjectValue.class.isAssignableFrom(sourceClass);
+        public boolean support(TypeDescriptor sourceType, TypeDescriptor targetType) {
+            return ObjectValue.class.isAssignableFrom(sourceType.getActualClass());
         }
 
         @Override
-        public Object convert(Object sourceValue, Type targetBeanType, Type targetFiledType)
+        public Object convert(Object sourceValue, TypeDescriptor targetTypeDescriptor)
                 throws ConversionException {
             ObjectValue objectValue = (ObjectValue) sourceValue;
             if (objectValue == null) {
                 return null;
             }
-            return objectValue.map(item -> NestedConverters.convert(item, targetBeanType, targetFiledType)).orElse(null);
+            return objectValue.map(item -> NestedConverters.convert(item, targetTypeDescriptor)).orElse(null);
         }
     }
 
@@ -48,17 +47,17 @@ public class ObjectValueConverters implements NestedConverterLoader {
         }
 
         @Override
-        public boolean support(Class<?> sourceClass, Class<?> targetClass) {
-            return !ObjectValue.class.isAssignableFrom(sourceClass) && ObjectValue.class.isAssignableFrom(targetClass);
+        public boolean support(TypeDescriptor sourceType, TypeDescriptor targetType) {
+            return !ObjectValue.class.isAssignableFrom(sourceType.getActualClass()) && ObjectValue.class.isAssignableFrom(targetType.getActualClass());
         }
 
         @Override
-        public Object convert(Object sourceValue, Type targetBeanType, Type targetFiledType)
+        public Object convert(Object sourceValue, TypeDescriptor targetTypeDescriptor)
                 throws ConversionException {
             if (sourceValue == null) {
                 return ObjectValue.empty();
             }
-            return ObjectValue.ofNullable(NestedConverters.convert(sourceValue, null, sourceValue.getClass()));
+            return ObjectValue.ofNullable(NestedConverters.convert(sourceValue, TypeDescriptor.of(sourceValue.getClass())));
         }
     }
 
@@ -70,18 +69,18 @@ public class ObjectValueConverters implements NestedConverterLoader {
         }
 
         @Override
-        public boolean support(Class<?> sourceClass, Class<?> targetClass) {
-            return ObjectValue.class.isAssignableFrom(sourceClass) && ObjectValue.class.isAssignableFrom(targetClass);
+        public boolean support(TypeDescriptor sourceType, TypeDescriptor targetType) {
+            return ObjectValue.class.isAssignableFrom(sourceType.getActualClass()) && ObjectValue.class.isAssignableFrom(targetType.getActualClass());
         }
 
         @Override
-        public Object convert(Object sourceValue, Type targetBeanType, Type targetFiledType)
+        public Object convert(Object sourceValue, TypeDescriptor targetTypeDescriptor)
                 throws ConversionException {
             if (sourceValue == null) {
                 return null;
             }
             ObjectValue objectValue = (ObjectValue) sourceValue;
-            return objectValue.map(item -> NestedConverters.convert(item, null, item.getClass()));
+            return objectValue.map(item -> NestedConverters.convert(item, TypeDescriptor.of(item.getClass())));
         }
     }
 }

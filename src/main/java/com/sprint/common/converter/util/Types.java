@@ -348,15 +348,15 @@ public class Types {
     /**
      * 获取类的范型
      *
-     * @param beanType  类
-     * @param fieldType 类
+     * @param declaringType 类
+     * @param rawType       类
      * @return ComponentType
      */
-    public static Type getComponentType(Type beanType, Type fieldType) {
-        if (fieldType instanceof TypeVariable) {
-            return resolveVariableTypeMap(beanType).get(fieldType);
+    public static Type getActualType(Type declaringType, Type rawType) {
+        if (rawType instanceof TypeVariable) {
+            return resolveVariableTypeMap(declaringType).get(rawType);
         } else {
-            return fieldType;
+            return rawType;
         }
     }
 
@@ -402,33 +402,33 @@ public class Types {
     /**
      * 提取Class对象
      *
-     * @param type      类型
-     * @param clazzType clazzType
+     * @param rawType       类型
+     * @param declaringType 描述类型
      * @return Class对象
      */
-    public static Class<?> extractClass(Type type, Type clazzType) {
-        if (isArray(type)) {
-            Class<?> componentType = extractClass(getArrayComponentType(type, clazzType));
+    public static Class<?> extractClass(Type rawType, Type declaringType) {
+        if (isArray(rawType)) {
+            Class<?> componentType = extractClass(getArrayComponentType(rawType, declaringType));
             return Array.newInstance(componentType, 0).getClass();
         } else {
-            if (type instanceof Class<?>) {
-                return (Class<?>) type;
-            } else if (type instanceof ParameterizedType) {
-                return extractClass(((ParameterizedType) type).getRawType(), clazzType);
-            } else if (type instanceof WildcardType) {
-                WildcardType wildcardType = (WildcardType) type;
+            if (rawType instanceof Class<?>) {
+                return (Class<?>) rawType;
+            } else if (rawType instanceof ParameterizedType) {
+                return extractClass(((ParameterizedType) rawType).getRawType(), declaringType);
+            } else if (rawType instanceof WildcardType) {
+                WildcardType wildcardType = (WildcardType) rawType;
                 if (wildcardType.getUpperBounds() != null && wildcardType.getUpperBounds().length > 0) {
-                    return extractClass(wildcardType.getUpperBounds()[0], clazzType);
+                    return extractClass(wildcardType.getUpperBounds()[0], declaringType);
                 } else if (wildcardType.getLowerBounds() != null && wildcardType.getLowerBounds().length > 0) {
-                    return extractClass(wildcardType.getLowerBounds()[0], clazzType);
+                    return extractClass(wildcardType.getLowerBounds()[0], declaringType);
                 } else {
                     return OBJECT_CLASS;
                 }
-            } else if (type instanceof TypeVariable && clazzType != null) {
-                if (clazzType instanceof Class) {
-                    return extractClass(resolveSuperclassVariableTypeMap((Class<?>) clazzType).get(type), clazzType);
-                } else if (clazzType instanceof ParameterizedType) {
-                    return extractClass(resolveVariableTypeMap(clazzType).get(type), clazzType);
+            } else if (rawType instanceof TypeVariable && declaringType != null) {
+                if (declaringType instanceof Class) {
+                    return extractClass(resolveSuperclassVariableTypeMap((Class<?>) declaringType).get(rawType), declaringType);
+                } else if (declaringType instanceof ParameterizedType) {
+                    return extractClass(resolveVariableTypeMap(declaringType).get(rawType), declaringType);
                 } else {
                     return OBJECT_CLASS;
                 }
@@ -458,19 +458,30 @@ public class Types {
     /**
      * 获取数组中元素的Class对象
      *
-     * @param type      type
-     * @param clazzType clazzType
+     * @param type type
      * @return ArrayComponentType
      */
-    public static Type getArrayComponentType(Type type, Type clazzType) {
-        if (type instanceof Class<?>) {
-            return ((Class<?>) type).getComponentType();
-        } else if (type instanceof ParameterizedType) {
-            return getArrayComponentType(((ParameterizedType) type).getRawType(), clazzType);
-        } else if (type instanceof GenericArrayType) {
-            return extractGenericArrayClass((GenericArrayType) type, clazzType);
-        } else if (type instanceof TypeVariable) {
-            return getArrayComponentType(getComponentType(clazzType, type), clazzType);
+    public static Type getArrayComponentType(Type type) {
+        return getArrayComponentType(type, null);
+    }
+
+
+    /**
+     * 获取数组中元素的Class对象
+     *
+     * @param rawType       rawType
+     * @param declaringType declaringType
+     * @return ArrayComponentType
+     */
+    public static Type getArrayComponentType(Type rawType, Type declaringType) {
+        if (rawType instanceof Class<?>) {
+            return ((Class<?>) rawType).getComponentType();
+        } else if (rawType instanceof ParameterizedType) {
+            return getArrayComponentType(((ParameterizedType) rawType).getRawType(), declaringType);
+        } else if (rawType instanceof GenericArrayType) {
+            return extractGenericArrayClass((GenericArrayType) rawType, declaringType);
+        } else if (rawType instanceof TypeVariable) {
+            return getArrayComponentType(getActualType(declaringType, rawType), declaringType);
         } else {
             return OBJECT_CLASS;
         }
@@ -482,7 +493,7 @@ public class Types {
      * @param genericArrayType 泛型数组类型
      * @return 数组中元素的Class对象
      */
-    private static Type extractGenericArrayClass(GenericArrayType genericArrayType, Type clazzType) {
+    private static Type extractGenericArrayClass(GenericArrayType genericArrayType, Type declaringType) {
         Type componentType = genericArrayType.getGenericComponentType();
         if (componentType instanceof Class<?>) {
             return componentType;
@@ -490,13 +501,13 @@ public class Types {
             return componentType;
         } else if (componentType instanceof GenericArrayType) {
             return Array
-                    .newInstance(extractClass(extractGenericArrayClass((GenericArrayType) componentType, clazzType)), 0)
+                    .newInstance(extractClass(extractGenericArrayClass((GenericArrayType) componentType, declaringType)), 0)
                     .getClass();
         } else if (componentType instanceof TypeVariable) {
-            if (clazzType instanceof Class) {
-                return resolveSuperclassVariableTypeMap((Class<?>) clazzType).get(componentType);
-            } else if (clazzType instanceof ParameterizedType) {
-                return resolveVariableTypeMap(clazzType).get(componentType);
+            if (declaringType instanceof Class) {
+                return resolveSuperclassVariableTypeMap((Class<?>) declaringType).get(componentType);
+            } else if (declaringType instanceof ParameterizedType) {
+                return resolveVariableTypeMap(declaringType).get(componentType);
             } else {
                 return OBJECT_CLASS;
             }
@@ -508,43 +519,43 @@ public class Types {
     /**
      * 获取Map key/value 类型
      *
-     * @param fieldType fieldType
+     * @param type type
      * @return key/value 类型
      */
-    public static Type[] getMapKVType(Type fieldType) {
-        return getMapKVType(null, fieldType);
+    public static Type[] getMapKVType(Type type) {
+        return getMapKVType(null, type);
     }
 
     /**
      * 获取Map key/value 类型
      *
-     * @param beanType  beanType
-     * @param fieldType fieldType
+     * @param declaringType declaringType
+     * @param rawType       rawType
      * @return key/value 类型
      */
-    public static Type[] getMapKVType(Type beanType, Type fieldType) {
-        return MAP_GENERICS_RESOLVER.resolve(beanType, fieldType);
+    public static Type[] getMapKVType(Type declaringType, Type rawType) {
+        return MAP_GENERICS_RESOLVER.resolve(declaringType, rawType);
     }
 
     /**
      * 获取集合元素类型
      *
-     * @param fieldType fieldType
+     * @param type type
      * @return 集合元素类型
      */
-    public static Type getCollectionItemType(Type fieldType) {
-        return getCollectionItemType(null, fieldType);
+    public static Type getCollectionItemType(Type type) {
+        return getCollectionItemType(null, type);
     }
 
     /**
      * 获取集合元素类型
      *
-     * @param beanType  beanType
-     * @param fieldType fieldType
+     * @param declaringType declaringType
+     * @param rawType       rawType
      * @return 集合元素类型
      */
-    public static Type getCollectionItemType(Type beanType, Type fieldType) {
-        return COLLECTION_GENERICS_RESOLVER.resolve(beanType, fieldType)[0];
+    public static Type getCollectionItemType(Type declaringType, Type rawType) {
+        return COLLECTION_GENERICS_RESOLVER.resolve(declaringType, rawType)[0];
     }
 
     /**
@@ -599,6 +610,14 @@ public class Types {
      */
     public static boolean isPrimitiveTypeClass(Class<?> clazz) {
         return primitiveTypeToWrapperMap.containsKey(clazz);
+    }
+
+    public static Class<?> getPrimitiveTypeClass(Class<?> clazz){
+        return primitiveWrapperTypeMap.get(clazz);
+    }
+
+    public static Class<?> getPrimitiveWrapTypeClass(Class<?> clazz){
+        return primitiveTypeToWrapperMap.get(clazz);
     }
 
     /**

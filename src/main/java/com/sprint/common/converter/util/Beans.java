@@ -132,6 +132,8 @@ public final class Beans {
             newMap = new LinkedHashMap<>();
         } else if (Types.getConstructorIfAvailable(mapClass) != null) {
             newMap = (Map<K, V>) instance(mapClass);
+        } else if (SortedMap.class == mapClass || NavigableMap.class == mapClass) {
+            newMap = new TreeMap<>();
         } else if (HashMap.class.isAssignableFrom(mapClass)) {
             newMap = new HashMap<>();
         } else if (ConcurrentMap.class.isAssignableFrom(mapClass)) {
@@ -275,8 +277,8 @@ public final class Beans {
             desc.setValue(obj, null);
         } else {
             if (convert) {
-                Object targetValue = NestedConverters.convert(value, beanType == null ? desc.getBeanClass() : beanType,
-                        desc.getType());
+                Object targetValue = NestedConverters.convert(value, TypeDescriptor.of(beanType == null ? desc.getBeanClass() : beanType,
+                        desc.getType()));
                 if (targetValue != null) {
                     desc.setValue(obj, targetValue);
                 }
@@ -295,8 +297,7 @@ public final class Beans {
         } else {
             if (convert) {
                 Type valueType = Types.getMapKVType(beanType)[1];
-                Object targetValue = NestedConverters.convert(value, beanType == null ? Map.class : beanType,
-                        valueType);
+                Object targetValue = NestedConverters.convert(value, TypeDescriptor.of(beanType == null ? Map.class : beanType, valueType));
                 if (targetValue != null) {
                     map.put(propertyName, targetValue);
                 }

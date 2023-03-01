@@ -3,12 +3,13 @@ package com.sprint.common.converter.conversion.nested.converters;
 import com.sprint.common.converter.conversion.nested.NestedConverter;
 import com.sprint.common.converter.conversion.nested.NestedConverterLoader;
 import com.sprint.common.converter.conversion.nested.NestedConverters;
-import com.sprint.common.converter.util.Beans;
 import com.sprint.common.converter.exception.ConversionException;
+import com.sprint.common.converter.util.Beans;
+import com.sprint.common.converter.util.Defaults;
+import com.sprint.common.converter.util.TypeDescriptor;
 import com.sprint.common.converter.util.Types;
 
 import java.lang.reflect.Array;
-import java.lang.reflect.Type;
 import java.util.Collection;
 
 /**
@@ -28,24 +29,22 @@ public class CollectionConverters implements NestedConverterLoader {
         }
 
         @Override
-        public boolean support(Class<?> sourceClass, Class<?> targetClass) {
-            return Types.isArray(sourceClass) && Types.isCollection(targetClass);
+        public boolean support(TypeDescriptor sourceType, TypeDescriptor targetType) {
+            return sourceType.isArray() && targetType.isCollection();
         }
 
         @Override
-        public Object convert(Object sourceValue, Type targetBeanType, Type targetFiledType)
+        public Object convert(Object sourceValue, TypeDescriptor targetTypeDescriptor)
                 throws ConversionException {
-            Class<?> extractClass = Types.extractClass(targetFiledType, targetBeanType);
+            Class<?> extractClass = targetTypeDescriptor.getActualClass();
             Collection<Object> targetCValue = Beans.instanceCollection(extractClass);
-            Type actualType = Types.getCollectionItemType(targetBeanType, targetFiledType);
+            TypeDescriptor itemTypeDescriptor = targetTypeDescriptor.getCollectionItemTypeDescriptor();
             for (int i = 0, length = Array.getLength(sourceValue); i < length; i++) {
                 Object item = Array.get(sourceValue, i);
                 if (item != null) {
-                    Type thisActualType = actualType == null || Types.isObjectType(actualType) ? item.getClass() : actualType;
-                    targetCValue
-                            .add(NestedConverters.convert(Array.get(sourceValue, i), targetBeanType, thisActualType));
+                    targetCValue.add(NestedConverters.convert(Array.get(sourceValue, i), itemTypeDescriptor));
                 } else {
-                    targetCValue.add(null);
+                    targetCValue.add(Defaults.defaultValue(itemTypeDescriptor.getActualClass()));
                 }
             }
             return targetCValue;
@@ -63,32 +62,30 @@ public class CollectionConverters implements NestedConverterLoader {
         }
 
         @Override
-        public boolean support(Class<?> sourceClass, Class<?> targetClass) {
-            return Types.isCollection(sourceClass) && Types.isCollection(targetClass);
+        public boolean support(TypeDescriptor sourceType, TypeDescriptor targetType) {
+            return sourceType.isCollection() && targetType.isCollection();
         }
 
         @Override
-        public Object convert(Object sourceValue, Type targetBeanType, Type targetFiledType)
-                throws ConversionException {
+        public Object convert(Object sourceValue, TypeDescriptor targetTypeDescriptor) throws ConversionException {
             if (sourceValue == null) {
                 return null;
             }
             Collection<?> collection = (Collection<?>) sourceValue;
-            Class<?> extractClass = Types.extractClass(targetFiledType, targetBeanType);
+            Class<?> extractClass = targetTypeDescriptor.getActualClass();
             Collection<Object> targetCValue = extractClass.isAssignableFrom(collection.getClass())
                     ? Beans.instanceCollection(collection.getClass())
                     : Beans.instanceCollection(extractClass);
-            if (Types.isBean(targetCValue.getClass())) {
+            if (Types.isBean(sourceValue.getClass()) && Types.isBean(targetCValue.getClass())) {
                 Beans.copyProperties(collection, targetCValue, true, true, false, Types.COLLECTION_IGNORES);
             }
             if (!collection.isEmpty()) {
-                Type actualType = Types.getCollectionItemType(targetBeanType, targetFiledType);
+                TypeDescriptor itemTypeDescriptor = targetTypeDescriptor.getCollectionItemTypeDescriptor();
                 for (Object item : collection) {
                     if (item == null) {
-                        targetCValue.add(null);
+                        targetCValue.add(Defaults.defaultValue(itemTypeDescriptor.getActualClass()));
                     } else {
-                        targetCValue.add(NestedConverters.convert(item, targetBeanType,
-                                actualType == null || Types.isObjectType(actualType) ? item.getClass() : actualType));
+                        targetCValue.add(NestedConverters.convert(item, itemTypeDescriptor));
                     }
                 }
             }
@@ -107,25 +104,23 @@ public class CollectionConverters implements NestedConverterLoader {
         }
 
         @Override
-        public boolean support(Class<?> sourceClass, Class<?> targetClass) {
-            return !Types.isArray(sourceClass) && !Types.isCollection(sourceClass) && Types.isCollection(targetClass);
+        public boolean support(TypeDescriptor sourceType, TypeDescriptor targetType) {
+            return !sourceType.isArray() && !sourceType.isCollection() && targetType.isCollection();
         }
 
         @Override
-        public Object convert(Object sourceValue, Type targetBeanType, Type targetFiledType)
+        public Object convert(Object sourceValue, TypeDescriptor targetTypeDescriptor)
                 throws ConversionException {
             if (sourceValue == null) {
                 return null;
             }
-            Class<?> extractClass = Types.extractClass(targetFiledType, targetBeanType);
+            Class<?> extractClass = targetTypeDescriptor.getActualClass();
             Collection<Object> targetCValue = Beans.instanceCollection(extractClass);
-            Type actualType = Types.getCollectionItemType(targetBeanType, targetFiledType);
-            Class<?> actualTypeClass = Types.extractClass(actualType);
-            if (Types.isBean(actualTypeClass) && Types.isBean(extractClass)) {
-                Beans.copyProperties(sourceValue, targetCValue, Types.COLLECTION_IGNORES);
+            TypeDescriptor itemTypeDescriptor = targetTypeDescriptor.getCollectionItemTypeDescriptor();
+            if (Types.isBean(sourceValue.getClass()) && targetTypeDescriptor.isBean()) {
+                Beans.copyProperties(sourceValue, targetCValue, true, true, false, Types.COLLECTION_IGNORES);
             }
-            targetCValue.add(NestedConverters.convert(sourceValue, targetBeanType,
-                    actualType == null || Types.isObjectType(actualType) ? sourceValue.getClass() : actualType));
+            targetCValue.add(NestedConverters.convert(sourceValue, itemTypeDescriptor));
             return targetCValue;
         }
     }

@@ -3,13 +3,13 @@ package com.sprint.common.converter.conversion.nested.converters;
 import com.sprint.common.converter.conversion.nested.NestedConverter;
 import com.sprint.common.converter.conversion.nested.NestedConverterLoader;
 import com.sprint.common.converter.conversion.nested.NestedConverters;
-import com.sprint.common.converter.util.Beans;
 import com.sprint.common.converter.exception.ConversionException;
 import com.sprint.common.converter.exception.NotSupportConvertException;
+import com.sprint.common.converter.util.Beans;
+import com.sprint.common.converter.util.TypeDescriptor;
 import com.sprint.common.converter.util.Types;
 
 import java.lang.reflect.Array;
-import java.lang.reflect.Type;
 import java.util.Collection;
 
 /**
@@ -31,8 +31,8 @@ public class Multi2SingleConverters implements NestedConverterLoader {
         }
 
         @Override
-        public boolean support(Class<?> sourceClass, Class<?> targetClass) {
-            return Types.isCollection(sourceClass) && !Types.isArray(targetClass) && !Types.isCollection(targetClass);
+        public boolean support(TypeDescriptor sourceType, TypeDescriptor targetType) {
+            return sourceType.isCollection() && !targetType.isArray() && !targetType.isCollection();
         }
 
         @Override
@@ -41,7 +41,7 @@ public class Multi2SingleConverters implements NestedConverterLoader {
         }
 
         @Override
-        public Object convert(Object sourceValue, Type targetBeanType, Type targetFiledType)
+        public Object convert(Object sourceValue, TypeDescriptor targetTypeDescriptor)
                 throws ConversionException {
             Collection<?> collection = (Collection<?>) sourceValue;
             if (collection == null) {
@@ -49,8 +49,8 @@ public class Multi2SingleConverters implements NestedConverterLoader {
             }
 
             if (collection.isEmpty()) {
-                Class<?> extractClass = Types.extractClass(targetFiledType, targetBeanType);
-                if (Types.isBean(extractClass)) {
+                if (targetTypeDescriptor.isBean()) {
+                    Class<?> extractClass = targetTypeDescriptor.getActualClass();
                     Object target = Beans.instance(extractClass);
                     Beans.copyProperties(collection, target, true, true, false, Types.COLLECTION_IGNORES);
                     return target;
@@ -59,7 +59,7 @@ public class Multi2SingleConverters implements NestedConverterLoader {
                 }
             }
 
-            return NestedConverters.convert(collection.stream().findFirst().get(), targetBeanType, targetFiledType);
+            return NestedConverters.convert(collection.stream().findFirst().get(), targetTypeDescriptor);
         }
     }
 
@@ -74,8 +74,8 @@ public class Multi2SingleConverters implements NestedConverterLoader {
         }
 
         @Override
-        public boolean support(Class<?> sourceClass, Class<?> targetClass) {
-            return Types.isArray(sourceClass) && !Types.isArray(targetClass) && Types.isCollection(targetClass);
+        public boolean support(TypeDescriptor sourceType, TypeDescriptor targetType) {
+            return sourceType.isArray() && !targetType.isArray() && targetType.isCollection();
         }
 
         @Override
@@ -84,7 +84,7 @@ public class Multi2SingleConverters implements NestedConverterLoader {
         }
 
         @Override
-        public Object convert(Object sourceValue, Type targetBeanType, Type targetFiledType)
+        public Object convert(Object sourceValue, TypeDescriptor targetTypeDescriptor)
                 throws ConversionException {
             if (sourceValue == null) {
                 return null;
@@ -97,10 +97,10 @@ public class Multi2SingleConverters implements NestedConverterLoader {
             }
 
             if (length > 1) {
-                throw new NotSupportConvertException(sourceValue.getClass(), Types.extractClass(targetFiledType, targetBeanType));
+                throw new NotSupportConvertException(sourceValue.getClass(), targetTypeDescriptor.getActualClass());
             }
 
-            return NestedConverters.convert(Array.get(sourceValue, 0), targetBeanType, targetFiledType);
+            return NestedConverters.convert(Array.get(sourceValue, 0), targetTypeDescriptor);
         }
     }
 }

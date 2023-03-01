@@ -3,8 +3,14 @@ package com.sprint.common.converter.conversion.specific.converters;
 import com.sprint.common.converter.conversion.specific.SpecificConverter;
 import com.sprint.common.converter.conversion.specific.SpecificConverterLoader;
 import com.sprint.common.converter.exception.ConversionException;
+import com.sprint.common.converter.util.Miscs;
 
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
+import java.sql.Blob;
+import java.sql.SQLException;
 
 /**
  * @author hongfeng.li
@@ -56,6 +62,44 @@ public class ByteArrayConverters implements SpecificConverterLoader {
                 bytes2[i] = bytes[i];
             }
             return bytes2;
+        }
+    }
+
+    public static class BlobToByteArray implements SpecificConverter<Blob, byte[]> {
+
+        @Override
+        public byte[] convert(Blob source) throws ConversionException {
+            if (source == null) {
+                return null;
+            }
+
+            InputStream blobStream = null;
+            try {
+
+                blobStream = source.getBinaryStream();
+
+                if (blobStream != null) {
+
+                    ByteArrayOutputStream baos = new ByteArrayOutputStream();
+                    Miscs.copy(blobStream, baos);
+                    return baos.toByteArray();
+                }
+
+            } catch (SQLException e) {
+                throw new ConversionException("Couldn't retrieve data from blob.", e);
+            } catch (IOException e) {
+                throw new ConversionException("Couldn't retrieve data from blob.", e);
+            } finally {
+                if (blobStream != null) {
+                    try {
+                        blobStream.close();
+                    } catch (IOException e) {
+                        throw new ConversionException("Couldn't close binary stream for given blob.", e);
+                    }
+                }
+            }
+
+            return null;
         }
     }
 }

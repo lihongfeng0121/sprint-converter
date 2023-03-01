@@ -8,6 +8,7 @@ import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.locks.ReentrantLock;
+import java.util.function.Supplier;
 
 /**
  * 软引用HashMap
@@ -188,6 +189,16 @@ public class ConcurrentReferenceHashMap<K, V> extends AbstractMap<K, V> implemen
         Reference<K, V> reference = getReference(key, Restructure.WHEN_NECESSARY);
         Entry<K, V> entry = (reference != null ? reference.get() : null);
         return (entry != null ? entry.getValue() : null);
+    }
+
+    public V get(K key, Supplier<V> supplier) {
+        V v = get(key);
+        if (v != null) {
+            return v;
+        }
+        V value = supplier.get();
+        put(key, value);
+        return value;
     }
 
     @Override

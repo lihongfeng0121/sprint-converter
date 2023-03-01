@@ -3,11 +3,12 @@ package com.sprint.common.converter.conversion.nested.converters;
 import com.sprint.common.converter.conversion.nested.NestedConverter;
 import com.sprint.common.converter.conversion.nested.NestedConverterLoader;
 import com.sprint.common.converter.conversion.nested.NestedConverters;
-import com.sprint.common.converter.util.Beans;
 import com.sprint.common.converter.exception.ConversionException;
+import com.sprint.common.converter.util.Beans;
+import com.sprint.common.converter.util.Miscs;
+import com.sprint.common.converter.util.TypeDescriptor;
 import com.sprint.common.converter.util.Types;
 
-import java.lang.reflect.Type;
 import java.util.Map;
 
 /**
@@ -26,19 +27,19 @@ public class MapConverters implements NestedConverterLoader {
         }
 
         @Override
-        public boolean support(Class<?> sourceClass, Class<?> targetClass) {
-            return Types.isMap(sourceClass) && Types.isMap(targetClass);
+        public boolean support(TypeDescriptor sourceType, TypeDescriptor targetType) {
+            return sourceType.isMap() && targetType.isMap();
         }
 
         @Override
-        public Object convert(Object sourceValue, Type targetBeanType, Type targetFiledType)
+        public Object convert(Object sourceValue, TypeDescriptor targetTypeDescriptor)
                 throws ConversionException {
             if (sourceValue == null) {
                 return null;
             }
 
             Map<?, ?> mValue = (Map<?, ?>) sourceValue;
-            Class<?> extractClass = Types.extractClass(targetFiledType, targetBeanType);
+            Class<?> extractClass = targetTypeDescriptor.getActualClass();
             Map<Object, Object> targetMValue = extractClass.isAssignableFrom(mValue.getClass())
                     ? Beans.instanceMap(mValue.getClass())
                     : Beans.instanceMap(extractClass);
@@ -48,20 +49,18 @@ public class MapConverters implements NestedConverterLoader {
             }
 
             if (!mValue.isEmpty()) {
-                Type[] kvType = Types.getMapKVType(targetBeanType, targetFiledType);
-                Type keyActualType = kvType[0];
-                Type valActualType = kvType[1];
+                TypeDescriptor[] kvTypeDescriptor = targetTypeDescriptor.getMapKVTypeDescriptor();
+                TypeDescriptor keyActualType = Miscs.at(kvTypeDescriptor, 0);
+                TypeDescriptor valActualType = Miscs.at(kvTypeDescriptor, 1);
 
                 for (Map.Entry<?, ?> entry : mValue.entrySet()) {
                     Object key = entry.getKey();
                     Object val = entry.getValue();
                     if (key != null) {
-                        key = NestedConverters.convert(key, targetBeanType,
-                                Types.isObjectType(keyActualType) ? key.getClass() : keyActualType);
+                        key = NestedConverters.convert(key, keyActualType);
                     }
                     if (val != null) {
-                        val = NestedConverters.convert(val, targetBeanType,
-                                Types.isObjectType(valActualType) ? val.getClass() : valActualType);
+                        val = NestedConverters.convert(val, valActualType);
                     }
                     targetMValue.put(key, val);
                 }

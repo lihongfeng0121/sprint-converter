@@ -4,10 +4,9 @@ import com.sprint.common.converter.conversion.nested.NestedConverter;
 import com.sprint.common.converter.conversion.nested.NestedConverterLoader;
 import com.sprint.common.converter.conversion.nested.NestedConverters;
 import com.sprint.common.converter.exception.ConversionException;
-import com.sprint.common.converter.util.Types;
+import com.sprint.common.converter.util.TypeDescriptor;
 
 import java.lang.reflect.Array;
-import java.lang.reflect.Type;
 import java.util.Collection;
 
 /**
@@ -29,24 +28,23 @@ public class ArrayConverters implements NestedConverterLoader {
         }
 
         @Override
-        public boolean support(Class<?> sourceClass, Class<?> targetClass) {
-            return Types.isArray(sourceClass) && Types.isArray(targetClass);
+        public boolean support(TypeDescriptor sourceType, TypeDescriptor targetType) {
+            return sourceType.isArray() && targetType.isArray();
         }
 
         @Override
-        public Object convert(Object sourceValue, Type targetBeanType, Type targetFiledType)
+        public Object convert(Object sourceValue, TypeDescriptor typeDescriptor)
                 throws ConversionException {
             if (sourceValue == null) {
                 return null;
             }
-            Type actualType = Types.getArrayComponentType(targetFiledType, targetBeanType);
+            TypeDescriptor arrayComponentType = typeDescriptor.getArrayComponentTypeDescriptor();
             int length = Array.getLength(sourceValue);
-            Object targetCValue = Array.newInstance(Types.extractClass(actualType, targetBeanType), length);
+            Object targetCValue = Array.newInstance(arrayComponentType.getActualClass(), length);
             for (int i = 0; i < length; i++) {
                 Object item = Array.get(sourceValue, i);
                 if (item != null) {
-                    item = NestedConverters.convert(Array.get(sourceValue, i), targetBeanType,
-                            Types.isObjectType(actualType) ? item.getClass() : actualType);
+                    item = NestedConverters.convert(Array.get(sourceValue, i), arrayComponentType);
                 }
                 Array.set(targetCValue, i, item);
             }
@@ -65,19 +63,19 @@ public class ArrayConverters implements NestedConverterLoader {
         }
 
         @Override
-        public boolean support(Class<?> sourceClass, Class<?> targetClass) {
-            return !Types.isArray(sourceClass) && !Types.isCollection(sourceClass) && Types.isArray(targetClass);
+        public boolean support(TypeDescriptor sourceType, TypeDescriptor targetType) {
+            return !sourceType.isArray() && !sourceType.isCollection() && targetType.isArray();
         }
 
         @Override
-        public Object convert(Object sourceValue, Type targetBeanType, Type targetFiledType)
+        public Object convert(Object sourceValue, TypeDescriptor typeDescriptor)
                 throws ConversionException {
             if (sourceValue == null) {
                 return null;
             }
-            Type actualType = Types.getArrayComponentType(targetFiledType, targetBeanType);
-            Object targetCValue = Array.newInstance(Types.extractClass(actualType, targetBeanType), 1);
-            Array.set(targetCValue, 0, NestedConverters.convert(sourceValue, targetBeanType, actualType));
+            TypeDescriptor arrayComponentType = typeDescriptor.getArrayComponentTypeDescriptor();
+            Object targetCValue = Array.newInstance(arrayComponentType.getActualClass(), 1);
+            Array.set(targetCValue, 0, NestedConverters.convert(sourceValue, arrayComponentType));
             return targetCValue;
         }
     }
@@ -93,23 +91,22 @@ public class ArrayConverters implements NestedConverterLoader {
         }
 
         @Override
-        public boolean support(Class<?> sourceClass, Class<?> targetClass) {
-            return Types.isCollection(sourceClass) && Types.isArray(targetClass);
+        public boolean support(TypeDescriptor sourceType, TypeDescriptor targetType) {
+            return sourceType.isCollection() && targetType.isArray();
         }
 
         @Override
-        public Object convert(Object sourceValue, Type targetBeanType, Type targetFiledType)
+        public Object convert(Object sourceValue, TypeDescriptor targetTypeDescriptor)
                 throws ConversionException {
             if (sourceValue == null) {
                 return null;
             }
             Collection<?> cValue = (Collection<?>) sourceValue;
-            Type actualType = Types.getArrayComponentType(targetFiledType, targetBeanType);
-            Object targetCValue = Array.newInstance(Types.extractClass(actualType, targetBeanType), cValue.size());
+            TypeDescriptor arrayComponentType = targetTypeDescriptor.getArrayComponentTypeDescriptor();
+            Object targetCValue = Array.newInstance(arrayComponentType.getActualClass(), cValue.size());
             int i = 0;
             for (Object item : cValue) {
-                Array.set(targetCValue, i++, NestedConverters.convert(item, targetBeanType,
-                        Types.isObjectType(actualType) ? item.getClass() : actualType));
+                Array.set(targetCValue, i++, NestedConverters.convert(item, arrayComponentType));
             }
             return targetCValue;
         }

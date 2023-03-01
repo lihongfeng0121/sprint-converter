@@ -3,12 +3,12 @@ package com.sprint.common.converter.conversion.nested.converters;
 import com.sprint.common.converter.conversion.nested.NestedConverter;
 import com.sprint.common.converter.conversion.nested.NestedConverterLoader;
 import com.sprint.common.converter.conversion.nested.NestedConverters;
-import com.sprint.common.converter.util.Jsons;
 import com.sprint.common.converter.exception.ConversionException;
 import com.sprint.common.converter.exception.NotSupportConvertException;
+import com.sprint.common.converter.util.Jsons;
+import com.sprint.common.converter.util.TypeDescriptor;
 import com.sprint.common.converter.util.Types;
 
-import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.LinkedHashMap;
@@ -29,13 +29,13 @@ public class JsonConverters implements NestedConverterLoader {
         }
 
         @Override
-        public boolean support(Class<?> sourceClass, Class<?> targetClass) {
-            return (Types.isMulti(sourceClass) || Types.isBean(sourceClass))
-                    && String.class.isAssignableFrom(targetClass);
+        public boolean support(TypeDescriptor sourceType, TypeDescriptor targetType) {
+            return (sourceType.isMulti() || sourceType.isBean())
+                    && String.class.isAssignableFrom(targetType.getActualClass());
         }
 
         @Override
-        public Object convert(Object sourceValue, Type targetBeanType, Type targetFiledType)
+        public Object convert(Object sourceValue, TypeDescriptor targetTypeDescriptor)
                 throws ConversionException {
             if (sourceValue == null) {
                 return null;
@@ -55,8 +55,8 @@ public class JsonConverters implements NestedConverterLoader {
         }
 
         @Override
-        public boolean support(Class<?> sourceClass, Class<?> targetClass) {
-            return String.class.isAssignableFrom(sourceClass) && Types.isBean(targetClass);
+        public boolean support(TypeDescriptor sourceType, TypeDescriptor targetType) {
+            return String.class.isAssignableFrom(sourceType.getActualClass()) && targetType.isBean();
         }
 
         @Override
@@ -65,7 +65,7 @@ public class JsonConverters implements NestedConverterLoader {
         }
 
         @Override
-        public Object convert(Object sourceValue, Type targetBeanType, Type targetFiledType)
+        public Object convert(Object sourceValue, TypeDescriptor targetTypeDescriptor)
                 throws ConversionException {
             if (sourceValue == null) {
                 return null;
@@ -73,10 +73,10 @@ public class JsonConverters implements NestedConverterLoader {
             String jsonStr = (String) sourceValue;
 
             if (!Types.isJsonObject(jsonStr)) {
-                throw new NotSupportConvertException(sourceValue.getClass(), Types.extractClass(targetFiledType, targetBeanType));
+                throw new NotSupportConvertException(sourceValue.getClass(), targetTypeDescriptor.getActualClass());
             }
             Object map = Jsons.toJavaObject(jsonStr, LinkedHashMap.class);
-            return NestedConverters.convert(map, targetBeanType, targetFiledType);
+            return NestedConverters.convert(map, targetTypeDescriptor);
         }
     }
 
@@ -91,8 +91,8 @@ public class JsonConverters implements NestedConverterLoader {
         }
 
         @Override
-        public boolean support(Class<?> sourceClass, Class<?> targetClass) {
-            return String.class.isAssignableFrom(sourceClass) && Types.isMap(targetClass);
+        public boolean support(TypeDescriptor sourceType, TypeDescriptor targetType) {
+            return String.class.isAssignableFrom(sourceType.getActualClass()) && targetType.isMap();
         }
 
         @Override
@@ -101,7 +101,7 @@ public class JsonConverters implements NestedConverterLoader {
         }
 
         @Override
-        public Object convert(Object sourceValue, Type targetBeanType, Type targetFiledType)
+        public Object convert(Object sourceValue, TypeDescriptor targetTypeDescriptor)
                 throws ConversionException {
             if (sourceValue == null) {
                 return null;
@@ -109,10 +109,10 @@ public class JsonConverters implements NestedConverterLoader {
             String jsonStr = (String) sourceValue;
 
             if (!Types.isJsonObject(jsonStr)) {
-                throw new NotSupportConvertException(sourceValue.getClass(), Types.extractClass(targetFiledType, targetBeanType));
+                throw new NotSupportConvertException(sourceValue.getClass(), targetTypeDescriptor.getActualClass());
             }
             Object map = Jsons.toJavaObject(jsonStr, LinkedHashMap.class);
-            return NestedConverters.convert(map, targetBeanType, targetFiledType);
+            return NestedConverters.convert(map, targetTypeDescriptor);
         }
     }
 
@@ -127,8 +127,8 @@ public class JsonConverters implements NestedConverterLoader {
         }
 
         @Override
-        public boolean support(Class<?> sourceClass, Class<?> targetClass) {
-            return String.class.isAssignableFrom(sourceClass) && Types.isCollection(targetClass);
+        public boolean support(TypeDescriptor sourceType, TypeDescriptor targetType) {
+            return String.class.isAssignableFrom(sourceType.getActualClass()) && targetType.isCollection();
         }
 
         @Override
@@ -137,7 +137,7 @@ public class JsonConverters implements NestedConverterLoader {
         }
 
         @Override
-        public Object convert(Object sourceValue, Type targetBeanType, Type targetFiledType)
+        public Object convert(Object sourceValue, TypeDescriptor targetTypeDescriptor)
                 throws ConversionException {
             if (sourceValue == null) {
                 return null;
@@ -146,11 +146,11 @@ public class JsonConverters implements NestedConverterLoader {
             String jsonStr = (String) sourceValue;
 
             if (!Types.isJsonArray(jsonStr)) {
-                throw new NotSupportConvertException(sourceValue.getClass(), Types.extractClass(targetFiledType, targetBeanType));
+                throw new NotSupportConvertException(sourceValue.getClass(), targetTypeDescriptor.getActualClass());
             }
 
             Collection<?> list = Jsons.toJavaObjects(jsonStr, Types.OBJECT_CLASS, ArrayList.class);
-            return NestedConverters.convert(list, targetBeanType, targetFiledType);
+            return NestedConverters.convert(list, targetTypeDescriptor);
         }
     }
 
@@ -165,8 +165,8 @@ public class JsonConverters implements NestedConverterLoader {
         }
 
         @Override
-        public boolean support(Class<?> sourceClass, Class<?> targetClass) {
-            return String.class.isAssignableFrom(sourceClass) && Types.isArray(targetClass);
+        public boolean support(TypeDescriptor sourceType, TypeDescriptor targetType) {
+            return String.class.isAssignableFrom(sourceType.getActualClass()) && targetType.isArray();
         }
 
         @Override
@@ -175,7 +175,7 @@ public class JsonConverters implements NestedConverterLoader {
         }
 
         @Override
-        public Object convert(Object sourceValue, Type targetBeanType, Type targetFiledType)
+        public Object convert(Object sourceValue, TypeDescriptor targetTypeDescriptor)
                 throws ConversionException {
             if (sourceValue == null) {
                 return null;
@@ -184,11 +184,11 @@ public class JsonConverters implements NestedConverterLoader {
             String jsonStr = (String) sourceValue;
 
             if (!Types.isJsonArray(jsonStr)) {
-                throw new NotSupportConvertException(sourceValue.getClass(), Types.extractClass(targetFiledType, targetBeanType));
+                throw new NotSupportConvertException(sourceValue.getClass(), targetTypeDescriptor.getActualClass());
             }
 
             Collection<?> list = Jsons.toJavaObjects(jsonStr, Types.OBJECT_CLASS, ArrayList.class);
-            return NestedConverters.convert(list, targetBeanType, targetFiledType);
+            return NestedConverters.convert(list, targetTypeDescriptor);
         }
     }
 }

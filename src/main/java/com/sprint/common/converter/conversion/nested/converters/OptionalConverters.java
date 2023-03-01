@@ -4,8 +4,7 @@ import com.sprint.common.converter.conversion.nested.NestedConverter;
 import com.sprint.common.converter.conversion.nested.NestedConverterLoader;
 import com.sprint.common.converter.conversion.nested.NestedConverters;
 import com.sprint.common.converter.exception.ConversionException;
-import com.sprint.common.converter.util.GenericsResolver;
-import com.sprint.common.converter.util.Types;
+import com.sprint.common.converter.util.TypeDescriptor;
 
 import java.lang.reflect.Type;
 import java.util.Optional;
@@ -15,7 +14,6 @@ import java.util.Optional;
  * @since 2023/2/14
  */
 public class OptionalConverters implements NestedConverterLoader {
-
 
     /**
      * Optional转对象
@@ -28,24 +26,22 @@ public class OptionalConverters implements NestedConverterLoader {
         }
 
         @Override
-        public boolean support(Class<?> sourceClass, Class<?> targetClass) {
-            return Optional.class.isAssignableFrom(sourceClass) && !Optional.class.isAssignableFrom(targetClass);
+        public boolean support(TypeDescriptor sourceType, TypeDescriptor targetType) {
+            return Optional.class.isAssignableFrom(sourceType.getActualClass()) && !Optional.class.isAssignableFrom(targetType.getActualClass());
         }
 
         @Override
-        public Object convert(Object sourceValue, Type targetBeanType, Type targetFiledType)
+        public Object convert(Object sourceValue, TypeDescriptor targetTypeDescriptor)
                 throws ConversionException {
             Optional<?> optional = (Optional<?>) sourceValue;
             if (optional == null || !optional.isPresent()) {
                 return null;
             }
-            return optional.map(item -> NestedConverters.convert(item, targetBeanType, targetFiledType)).orElse(null);
+            return optional.map(item -> NestedConverters.convert(item, targetTypeDescriptor)).orElse(null);
         }
     }
 
     public static class Optional2Optional implements NestedConverter {
-
-        public static final GenericsResolver OPTIONAL_TYPE_RESOLVER = GenericsResolver.of(Optional.class);
 
         @Override
         public int sort() {
@@ -53,12 +49,12 @@ public class OptionalConverters implements NestedConverterLoader {
         }
 
         @Override
-        public boolean support(Class<?> sourceClass, Class<?> targetClass) {
-            return Optional.class.isAssignableFrom(sourceClass) && Optional.class.isAssignableFrom(targetClass);
+        public boolean support(TypeDescriptor sourceType, TypeDescriptor targetType) {
+            return Optional.class.isAssignableFrom(sourceType.getActualClass()) && Optional.class.isAssignableFrom(targetType.getActualClass());
         }
 
         @Override
-        public Object convert(Object sourceValue, Type targetBeanType, Type targetFiledType)
+        public Object convert(Object sourceValue, TypeDescriptor targetTypeDescriptor)
                 throws ConversionException {
             Optional<?> optional = (Optional<?>) sourceValue;
             if (optional == null) {
@@ -67,30 +63,31 @@ public class OptionalConverters implements NestedConverterLoader {
             if (!optional.isPresent()) {
                 return Optional.empty();
             }
-            Type actualType = OPTIONAL_TYPE_RESOLVER.resolve(targetBeanType, targetFiledType)[0];
-            return optional.map(item -> NestedConverters.convert(item, targetBeanType, actualType == null || Types.isObjectType(actualType) ? item.getClass() : actualType));
+            Type actualType = targetTypeDescriptor.getGenericsTypes(Optional.class)[0];
+            return optional.map(item -> NestedConverters.convert(item, TypeDescriptor.of(targetTypeDescriptor.getDeclaringType(), actualType)));
         }
     }
 
     public static class Object2Optional implements NestedConverter {
+
         @Override
         public int sort() {
             return 5;
         }
 
         @Override
-        public boolean support(Class<?> sourceClass, Class<?> targetClass) {
-            return !Optional.class.isAssignableFrom(sourceClass) && Optional.class.isAssignableFrom(targetClass);
+        public boolean support(TypeDescriptor sourceType, TypeDescriptor targetType) {
+            return !Optional.class.isAssignableFrom(sourceType.getActualClass()) && Optional.class.isAssignableFrom(targetType.getActualClass());
         }
 
         @Override
-        public Object convert(Object sourceValue, Type targetBeanType, Type targetFiledType)
+        public Object convert(Object sourceValue, TypeDescriptor targetTypeDescriptor)
                 throws ConversionException {
             if (sourceValue == null) {
                 return Optional.empty();
             }
-            Type actualType = GenericsResolver.of(Optional.class).resolve(targetBeanType, targetFiledType)[0];
-            return Optional.ofNullable(NestedConverters.convert(sourceValue, targetBeanType, actualType == null || Types.isObjectType(actualType) ? sourceValue.getClass() : actualType));
+            Type actualType = targetTypeDescriptor.getGenericsTypes(Optional.class)[0];
+            return Optional.ofNullable(NestedConverters.convert(sourceValue, TypeDescriptor.of(targetTypeDescriptor.getDeclaringType(), actualType)));
         }
     }
 }

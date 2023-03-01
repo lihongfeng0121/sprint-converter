@@ -1,8 +1,7 @@
 package com.sprint.common.converter.conversion.nested;
 
 import com.sprint.common.converter.exception.ConversionException;
-
-import java.lang.reflect.Type;
+import com.sprint.common.converter.util.TypeDescriptor;
 
 /**
  * bean属性转换器
@@ -25,11 +24,11 @@ public interface NestedConverter {
     /**
      * 是否支持
      *
-     * @param sourceClass sourceClass
-     * @param targetClass targetClass
+     * @param sourceType sourceType
+     * @param targetType targetType
      * @return 是否支持
      */
-    boolean support(Class<?> sourceClass, Class<?> targetClass);
+    boolean support(TypeDescriptor sourceType, TypeDescriptor targetType);
 
 
     /**
@@ -45,11 +44,10 @@ public interface NestedConverter {
     /**
      * 转化
      *
-     * @param sourceValue     原值
-     * @param targetBeanType  bean类型
-     * @param targetFiledType 属性类型
+     * @param sourceValue          原值
+     * @param targetTypeDescriptor 目标值类型
      * @return 目标值
      * @throws ConversionException e
      */
-    Object convert(Object sourceValue, Type targetBeanType, Type targetFiledType) throws ConversionException;
+    Object convert(Object sourceValue, TypeDescriptor targetTypeDescriptor) throws ConversionException;
 }

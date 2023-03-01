@@ -54,18 +54,40 @@ public class GenericsResolver {
     /**
      * 解析范型真实类型
      *
-     * @param beanType  bean类型（可为空）
-     * @param fieldType 类型
+     * @param declaringType 描述类型（可为空）
+     * @param rawType       类型
      * @return 范型
      */
-    public Type[] resolve(Type beanType, Type fieldType) {
-        if (fieldType instanceof TypeVariable && beanType != null) {
-            return resolve(Types.getComponentType(beanType, fieldType));
-        } else if (fieldType instanceof ParameterizedType) {
-            ParameterizedType parameterizedType = getParameterizedType(beanType, fieldType);
+    public Type[] resolve(Type declaringType, Type rawType) {
+        if (rawType instanceof TypeVariable && declaringType != null) {
+            return resolve(Types.getActualType(declaringType, rawType));
+        } else if (rawType instanceof ParameterizedType) {
+            ParameterizedType parameterizedType = getParameterizedType(declaringType, rawType);
             return getTypeParametersFromCache(parameterizedType);
-        } else if (fieldType instanceof Class<?>) {
-            return resolve((Class<?>) fieldType);
+        } else if (rawType instanceof Class<?>) {
+            return resolve((Class<?>) rawType);
+        } else {
+            return getNoneTypeParameters();
+        }
+    }
+
+
+    /**
+     * 解析范型真实类型
+     *
+     * @param type 类型
+     * @return 范型
+     */
+    public Type[] resolve(TypeDescriptor type) {
+        Type declaringType = type.getDeclaringType();
+        Type rawType = type.getRawType();
+        if (rawType instanceof TypeVariable && declaringType != null) {
+            return resolve(Types.getActualType(declaringType, rawType));
+        } else if (rawType instanceof ParameterizedType) {
+            ParameterizedType parameterizedType = getParameterizedType(declaringType, rawType);
+            return getTypeParametersFromCache(parameterizedType);
+        } else if (rawType instanceof Class<?>) {
+            return resolve((Class<?>) rawType);
         } else {
             return getNoneTypeParameters();
         }
@@ -74,11 +96,11 @@ public class GenericsResolver {
     /**
      * 解析范型真实类型
      *
-     * @param fieldType 类型
+     * @param type 类型
      * @return 范型
      */
-    public Type[] resolve(Type fieldType) {
-        return resolve(null, fieldType);
+    public Type[] resolve(Type type) {
+        return resolve(null, type);
     }
 
     /**
@@ -101,24 +123,18 @@ public class GenericsResolver {
         return clazz.getName().startsWith(JAVA_INNER) ? getNoneTypeParameters() : resolve(getSuperType(clazz, classType));
     }
 
-    private ParameterizedType getParameterizedType(Type beanType, Type fieldType) {
-        ParameterizedType parameterizedType = (ParameterizedType) fieldType;
-        if (beanType != null) {
-            Map<TypeVariable<?>, Type> variableTypeMap = Types.resolveVariableTypeMap(beanType);
-            parameterizedType = makeParameterizedType(Types.extractClass(fieldType),
+    private ParameterizedType getParameterizedType(Type declaringType, Type rawType) {
+        ParameterizedType parameterizedType = (ParameterizedType) rawType;
+        if (declaringType != null) {
+            Map<TypeVariable<?>, Type> variableTypeMap = Types.resolveVariableTypeMap(declaringType);
+            parameterizedType = makeParameterizedType(Types.extractClass(rawType),
                     parameterizedType.getActualTypeArguments(), variableTypeMap);
         }
         return parameterizedType;
     }
 
     private Type[] getTypeParametersFromCache(ParameterizedType parameterizedType) {
-        Type[] types = MAP_PARAMETER_TYPE_CACHE.get(parameterizedType);
-        if (types != null) {
-            return types;
-        }
-        types = doResolve(parameterizedType);
-        MAP_PARAMETER_TYPE_CACHE.put(parameterizedType, types);
-        return types;
+        return Miscs.get(MAP_PARAMETER_TYPE_CACHE, parameterizedType, () -> doResolve(parameterizedType));
     }
 
     private Type[] doResolve(ParameterizedType parameterizedType) {

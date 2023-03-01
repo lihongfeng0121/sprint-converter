@@ -7,9 +7,12 @@ import com.sprint.common.converter.test.bean.*;
 import com.sprint.common.converter.util.*;
 import org.junit.Test;
 
+import javax.sql.rowset.serial.SerialBlob;
 import java.lang.reflect.Type;
 import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.sql.Blob;
+import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -95,8 +98,10 @@ public class TestConverter {
     public void testBeanConvert() {
         TypeBean<Object> bean = new TypeBean<>();
         bean.setName("zhangsan");
+        bean.setArray("zhegshiyige");
         System.out.println(bean);
         System.out.println(AnyConverter.convert(bean, TypeBean.class));
+        System.out.println(AnyConverter.convert(bean, TypeBean2.class));
 
         System.out.println("----------------test beans---------------------");
 
@@ -108,7 +113,7 @@ public class TestConverter {
         inner1.setInner("100000");
         bean1.setListList(Collections.singletonList(Collections.singletonList(inner1)));
         bean1.setHouse(Collections.singletonList("yanchengyuan"));
-        //bean1.setArray("[\"1231231\"]");
+        bean1.setArray("[\"1231231\"]");
 
         TypeBean2<List<List<Integer>>> bean2 = AnyConverter.convert(bean1,
                 new TypeReference<TypeBean2<List<List<Integer>>>>() {
@@ -315,5 +320,12 @@ public class TestConverter {
 
         ObjectValue objectValue = AnyConverter.convert(name, ObjectValue.class);
         System.out.println(objectValue);
+    }
+
+    @Test
+    public void testByteConverter() throws SQLException {
+        char[] convert = AnyConverter.convert(new Character[]{'1','2'}, new TypeReference<char[]>() {
+        });
+        System.out.println(Arrays.toString(convert));
     }
 }
