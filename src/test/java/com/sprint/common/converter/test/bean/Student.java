@@ -15,4 +15,12 @@ public class Student extends Man {
     public void setLevel(String level) {
         this.level = level;
     }
+
+    @Override
+    public String toString() {
+        return "Student{" +
+                "level='" + level + '\'' +
+                ", name='" + name + '\'' +
+                '}';
+    }
 }

@@ -134,7 +134,7 @@ public class GenericsResolver {
     }
 
     private Type[] getTypeParametersFromCache(ParameterizedType parameterizedType) {
-        return Miscs.get(MAP_PARAMETER_TYPE_CACHE, parameterizedType, () -> doResolve(parameterizedType));
+        return MAP_PARAMETER_TYPE_CACHE.computeIfAbsent(parameterizedType, (key) -> doResolve(parameterizedType));
     }
 
     private Type[] doResolve(ParameterizedType parameterizedType) {
@@ -144,7 +144,7 @@ public class GenericsResolver {
             return Arrays.stream(actualTypeArguments).map(this::getWildcardTypeUpperBounds).toArray(Type[]::new);
         }
         Class<?> rawClass = (Class<?>) rawType;
-        Map<TypeVariable<?>, Type> actualTypeMap = Miscs.toMap(rawClass.getTypeParameters(), actualTypeArguments);
+        Map<TypeVariable<?>, Type> actualTypeMap = Maps.toMap(rawClass.getTypeParameters(), actualTypeArguments);
         Type superType = getSuperType(rawClass, this.classType);
         if (superType instanceof ParameterizedType) {
             Class<?> superClass = Types.extractClass(superType);

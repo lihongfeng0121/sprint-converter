@@ -371,7 +371,7 @@ public class Types {
         if (clazz.isInterface()) {
             throw new IllegalArgumentException("Specified class [" + clazz + "] is an interface");
         }
-        return Miscs.toMap(clazz.getTypeParameters(), getActualTypeArguments(type));
+        return Maps.toMap(clazz.getTypeParameters(), getActualTypeArguments(type));
     }
 
 
@@ -386,7 +386,7 @@ public class Types {
             throw new IllegalArgumentException("Specified class [" + clazz + "] is an interface");
         }
         Class<?> superclass = clazz.getSuperclass();
-        return Miscs.toMap(superclass.getTypeParameters(), getClassSuperclassType(clazz));
+        return Maps.toMap(superclass.getTypeParameters(), getClassSuperclassType(clazz));
     }
 
     /**

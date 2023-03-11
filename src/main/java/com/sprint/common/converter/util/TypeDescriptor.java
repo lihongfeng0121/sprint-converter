@@ -64,7 +64,7 @@ public class TypeDescriptor implements Serializable {
     }
 
     public Type getCollectionItemType() {
-        return Miscs.at(Miscs.get(classGenericsType, Collection.class, () -> GenericsResolver.of(Collection.class).resolve(this)), 0);
+        return Miscs.at(classGenericsType.computeIfAbsent(Collection.class, (key) -> GenericsResolver.of(Collection.class).resolve(this)), 0);
     }
 
     public TypeDescriptor getCollectionItemTypeDescriptor() {
@@ -72,7 +72,7 @@ public class TypeDescriptor implements Serializable {
     }
 
     public Type[] getMapKVType() {
-        return Miscs.get(classGenericsType, Map.class, () -> GenericsResolver.of(Map.class).resolve(this));
+        return classGenericsType.computeIfAbsent(Map.class, (key) -> GenericsResolver.of(Map.class).resolve(this));
     }
 
     public TypeDescriptor[] getMapKVTypeDescriptor() {
@@ -81,7 +81,7 @@ public class TypeDescriptor implements Serializable {
     }
 
     public Type[] getGenericsTypes(Class<?> actualClass) {
-        return Miscs.get(classGenericsType, actualClass, () -> GenericsResolver.of(actualClass).resolve(this));
+        return classGenericsType.computeIfAbsent(actualClass, (key) -> GenericsResolver.of(key).resolve(this));
     }
 
     /**
@@ -97,6 +97,11 @@ public class TypeDescriptor implements Serializable {
     @Transient
     public boolean isBean() {
         return Types.isBean(getActualClass());
+    }
+
+    @Transient
+    public boolean isBeanOrMap() {
+        return isBean() || isMap();
     }
 
     @Transient
@@ -218,7 +223,7 @@ public class TypeDescriptor implements Serializable {
         if (type == null) {
             return OBJ_TYPE_DESCRIPTOR;
         }
-        return Miscs.get(TYPE_CACHE, type, () -> new TypeDescriptor(null, type));
+        return TYPE_CACHE.computeIfAbsent(type, (key) -> new TypeDescriptor(null, key));
     }
 
     public static TypeDescriptor of(Type declaringType, Type rawType) {
@@ -228,6 +233,6 @@ public class TypeDescriptor implements Serializable {
         if (rawType == null) {
             return OBJ_TYPE_DESCRIPTOR;
         }
-        return Miscs.get(RAW_TYPE_CACHE, declaringType, ConcurrentReferenceHashMap::new).get(rawType, () -> new TypeDescriptor(declaringType, rawType));
+        return RAW_TYPE_CACHE.computeIfAbsent(declaringType, (key) -> new ConcurrentReferenceHashMap<>()).get(rawType, () -> new TypeDescriptor(declaringType, rawType));
     }
 }

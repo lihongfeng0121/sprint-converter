@@ -39,10 +39,12 @@ public class JsonObject extends LinkedHashMap<String, Object> {
         }
     }
 
+    @Transient
     public <T> T get(String key, Class<T> type) {
         return AnyConverter.convert(get(key), type);
     }
 
+    @Transient
     public <T> T get(String key, Class<T> type, Supplier<T> supplier) {
         return Optional.ofNullable(get(key)).map(val -> AnyConverter.convert(val, type)).orElseGet(supplier::get);
     }

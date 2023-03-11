@@ -191,7 +191,7 @@ public final class NestedConverters {
         }
 
         private Object castBaseOrBase(TypeDescriptor sourceType, TypeDescriptor targetType, Object sourceValue) throws ConversionException {
-            if (sourceType.isBean() && targetType.isBean()) {
+            if (sourceType.isBeanOrMap() && targetType.isBeanOrMap()) {
                 return Beans.cast(sourceValue, targetType.getActualType(), true);
             } else {
                 return BaseConverter.convert(sourceValue, targetType.getActualClass());

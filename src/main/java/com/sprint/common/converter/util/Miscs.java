@@ -113,42 +113,6 @@ public class Miscs {
         return result.toString();
     }
 
-    /**
-     * convert to map
-     *
-     * @param keys keys
-     * @param vals vals
-     * @param <K>  key类型
-     * @param <V>  val 类型
-     * @return map
-     */
-    public static <K, V> Map<K, V> toMap(K[] keys, V[] vals) {
-        return toMap(new LinkedHashMap<>(), keys, vals);
-    }
-
-
-    private static <K, V> Map<K, V> toMap(Map<K, V> map, K[] keys, V[] vals) {
-        if (keys.length != vals.length) {
-            throw new IllegalArgumentException("keys/vals length not equal");
-        }
-
-        for (int i = 0; i < keys.length; i++) {
-            map.put(keys[i], vals[i]);
-        }
-
-        return map;
-    }
-
-    public static <K, V> V get(Map<K, V> map, K key, Supplier<V> supplier) {
-        V v = map.get(key);
-        if (v != null) {
-            return v;
-        }
-        V value = supplier.get();
-        map.put(key, value);
-        return value;
-    }
-
     public static final int BUFFER_SIZE = 4096;
 
     /**

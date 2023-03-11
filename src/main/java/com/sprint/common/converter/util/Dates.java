@@ -89,6 +89,13 @@ public class Dates {
                 .replace("月", "").replace("日", "").replace("时", "").replace("分", "").replace("秒", "").replace("T", "");
     }
 
+    public static java.sql.Date toSqlDate(String dateStr) {
+        if (Miscs.isBlank(dateStr)) {
+            return null;
+        }
+        return toSqlDate(toDate(dateStr));
+    }
+
     public static java.sql.Date toSqlDate(java.util.Date date) {
         if (date == null) {
             return null;

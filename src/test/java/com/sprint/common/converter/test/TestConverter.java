@@ -7,11 +7,8 @@ import com.sprint.common.converter.test.bean.*;
 import com.sprint.common.converter.util.*;
 import org.junit.Test;
 
-import javax.sql.rowset.serial.SerialBlob;
-import java.lang.reflect.Type;
 import java.math.BigDecimal;
 import java.math.BigInteger;
-import java.sql.Blob;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.time.LocalDate;
@@ -25,7 +22,7 @@ import java.util.stream.Stream;
  * @author hongfeng.li
  * @since 2021/11/25
  */
-public class TestConverter {
+public class TestConverter extends BaseTest {
 
 
     public static class ClazzTypeImpl extends ClazzType<Student, Student2> {
@@ -34,224 +31,186 @@ public class TestConverter {
     public static class ClazzTypeImpl2 extends ClazzTypeImpl {
     }
 
-    @Test
-    public void testTypes() {
-        System.out.println(Arrays.toString(Types.getClassSuperclassType(ClazzTypeImpl.class)));
-        System.out.println(Arrays.toString(Types.getClassSuperclassType(ClazzTypeImpl2.class)));
-        System.out.println(Arrays.toString(GenericsResolver.of(ClazzType.class).resolve(ClazzTypeImpl.class)));
-        System.out.println(Arrays.toString(GenericsResolver.of(ClazzType.class).resolve(ClazzTypeImpl2.class)));
-        System.out.println(Arrays.toString(Types.getClassSuperclassType(MMap.class)));
-        System.out.println(Arrays.toString(GenericsResolver.of(Map.class).resolve(new TypeReference<MMap<String>>() {
-        })));
-    }
-
     /**
      * 测试范型解析
      */
     @Test
-    public void testGenericsResolver() {
-        Type type = new TypeReference<MMap<String>>() {
-        }.getType();
-        Type[] types = Types.getMapKVType(null, type);
-        System.out.println(Arrays.toString(types));
-        GenericsResolver resolver = GenericsResolver.of(Map.class);
-        System.out.println(Arrays.toString(resolver.resolve(type)));
+    public void testTypeUtil() {
+        test("测试范型解析", "Types#getClassSuperclassType", () -> Arrays.toString(Types.getClassSuperclassType(ClazzTypeImpl.class)));
+        test("测试范型解析", "Types#getClassSuperclassType", () -> Arrays.toString(Types.getClassSuperclassType(ClazzTypeImpl2.class)));
+        test("测试范型解析", "GenericsResolver#resolve", () -> Arrays.toString(GenericsResolver.of(ClazzType.class).resolve(ClazzTypeImpl.class)));
+        test("测试范型解析", "GenericsResolver#resolve", () -> Arrays.toString(GenericsResolver.of(ClazzType.class).resolve(ClazzTypeImpl2.class)));
+        test("测试范型解析", "Types.getClassSuperclassType", () -> Arrays.toString(Types.getClassSuperclassType(MMap.class)));
+        test("测试范型解析", "GenericsResolver#resolve", () -> Arrays.toString(GenericsResolver.of(Map.class).resolve(new TypeReference<MMap<String>>() {
+        })));
     }
 
     @Test
     public void testReferCustomMapConvert() {
         TestBean<Map<String, String>> bean = new TestBean<>();
         bean.setObj(Collections.singletonMap("12121", "23123145"));
-        TestBean<MMap<String>> res = AnyConverter.convert(bean, new TypeReference<TestBean<MMap<String>>>() {
-        });
-        System.out.println(res);
-    }
+        test("自定义MAP转换", "AnyConverter#convert", () -> AnyConverter.convert(bean, new TypeReference<TestBean<MMap<String>>>() {
+        }));
+        Map<String, String> map = new HashMap<>();
+        map.put("name", "zhangsan");
 
-    /**
-     * 测试自定义Map转换
-     */
-    @Test
-    public void testCustomMapConvert() {
+        test("自定义MAP转换", "AnyConverter#convert", () -> AnyConverter.convert(map, Student.class));
+
         CustomMap<String, Long> customMap = new CustomMap<>();
         customMap.setAddress("beijing");
         customMap.setAge("29");
         customMap.setName("zhangsan");
         customMap.put("hahaha", System.currentTimeMillis());
 
-        {//测试自定义map转自定义map
-            CustomMap2<String, Date> map = AnyConverter.convert(customMap, new TypeReference<CustomMap2<String, Date>>() {
+        test("自定义MAP转换", "测试自定义map转自定义map", () -> {
+            CustomMap2<String, Date> customMap2 = AnyConverter.convert(customMap, new TypeReference<CustomMap2<String, Date>>() {
             });
-            Assert.isTrue(Objects.equals(map.size(), customMap.size()), "map 条数发生变化，failed!");
-            Assert.isTrue(Objects.equals(map.get("hahaha").getTime(), customMap.get("hahaha")), "map value long->date，failed!");
-        }
+            Assert.isTrue(Objects.equals(customMap2.size(), customMap.size()), "map 条数发生变化，failed!");
+            Assert.isTrue(Objects.equals(customMap2.get("hahaha").getTime(), customMap.get("hahaha")), "map value long->date，failed!");
+            return customMap2;
+        });
 
-        {//测试自定义map转Map
+        test("自定义MAP转换", "测试自定义map转Map", () -> {
             Map<String, Date> map4 = AnyConverter.convert(customMap, new TypeReference<Map<String, Date>>() {
             });
-
             Assert.isTrue(Objects.equals(Beans.toMap(map4).size(), 4), "to map 条数错误，failed!");
-        }
-        System.out.println("test1:CustomMapConvert success");
+            return map4;
+        });
     }
+
 
     @Test
     public void testBeanConvert() {
         TypeBean<Object> bean = new TypeBean<>();
         bean.setName("zhangsan");
         bean.setArray("zhegshiyige");
-        System.out.println(bean);
-        System.out.println(AnyConverter.convert(bean, TypeBean.class));
-        System.out.println(AnyConverter.convert(bean, TypeBean2.class));
+        test("自定义MAP转换", "测试自定义map转Map", () -> bean);
 
-        System.out.println("----------------test beans---------------------");
+        test("Bean转换", "测试自定义map转Map", () -> AnyConverter.convert(bean, TypeBean.class));
+        test("Bean转换", "测试自定义map转Map", () -> AnyConverter.convert(bean, TypeBean2.class));
 
         TypeBean<List<List<String>>> bean1 = new TypeBean<>();
         bean1.setData(Collections.singletonList(Collections.singletonList("1231314")));
         bean1.setName("zhangsan");
         bean1.setList(Collections.singletonList(Collections.singletonList(Collections.singletonList("1000"))));
+
         TypeBean.Inner inner1 = new TypeBean.Inner();
         inner1.setInner("100000");
         bean1.setListList(Collections.singletonList(Collections.singletonList(inner1)));
         bean1.setHouse(Collections.singletonList("yanchengyuan"));
         bean1.setArray("[\"1231231\"]");
-
         TypeBean2<List<List<Integer>>> bean2 = AnyConverter.convert(bean1,
                 new TypeReference<TypeBean2<List<List<Integer>>>>() {
                 });
 
-        long tms = System.currentTimeMillis();
-
-        for (int i = 0; i < 100000; i++) {
-            TypeBean2<List<List<Integer>>> item = AnyConverter.convert(bean1,
+        test("Bean转换", "测试转换1性能", () -> {
+            AnyConverter.convert(bean1,
                     new TypeReference<TypeBean2<List<List<Integer>>>>() {
                     });
-        }
+            return "";
+        });
 
-        System.out.println("test first 100000 bean convert total cost:" + (System.currentTimeMillis() - tms));
+        test("Bean转换", "测试转换100000性能", () -> {
+            for (int i = 0; i < 100000; i++) {
+                TypeBean2<List<List<Integer>>> item = AnyConverter.convert(bean1,
+                        new TypeReference<TypeBean2<List<List<Integer>>>>() {
+                        });
+            }
+            return "";
+        });
+        test("Bean转换", "TypeBean2<List<List<Integer>>> -> TypeBean2<List<List<Integer>>>", () -> AnyConverter.convert(bean2, new TypeReference<TypeBean2<List<List<Integer>>>>() {
+        }));
 
-        tms = System.currentTimeMillis();
-        TypeBean2<List<List<Integer>>> bean3 = AnyConverter.convert(bean2,
-                new TypeReference<TypeBean2<List<List<Integer>>>>() {
-                });
-        System.out.println("test bean convert total cost:" + (System.currentTimeMillis() - tms));
-        Object obj = Beans.getProperty(bean2, "list[0]");
-        Object list = Beans.getProperty(bean2, "list");
+        test("Bean转换", "Beans.getProperty list", () -> Beans.getProperty(bean2, "list"));
+        test("Bean转换", "Beans.getProperty list[0]", () -> Beans.getProperty(bean2, "list[0]"));
 
-        System.out.println(list + "------" + obj);
 
-        System.out.println(bean1);
-        System.out.println(bean2);
+        test("Bean转换", "Beans多级set/get", () -> {
+            String value = "2123131";
+            Beans.setProperty(bean1, "inner.test.test", "2123131");
+            Object property = Beans.getProperty(bean1, "inner.test.test");
+            Assert.isTrue(Objects.equals(value, property), "属性不一致");
+            return bean1;
+        });
 
-        Beans.setProperty(bean1, "inner.test.test", "2123131");
+        test("Bean转换", "AnyConverter Str -> Map", () -> AnyConverter.convert("{\"name\":\"zhangsan\"}", TypeReference.STR_OBJ_MAP));
 
-        System.out.println(bean1);
 
-        System.out.println("test bean convert total cost:" + (System.currentTimeMillis() - tms));
+        TypeBean<List<TestBean<String>>> singletonList = new TypeBean<>();
+        singletonList.setData(Collections.singletonList(new TestBean<>("12131231")));
 
-        System.out.println("----------------test json to bean---------------------");
+        test("Bean转换", "AnyConverter singletonList -> singletonArray", () -> AnyConverter.convert(singletonList,
+                new TypeReference<TypeBean<TestBean<Integer[]>>>() {
+                }));
 
-        Map<String, Object> res = AnyConverter.convert("{\"name\":\"zhangsan\"}", TypeReference.STR_OBJ_MAP);
-        System.out.println(res);
+        test("Bean转换", "AnyConverter singletonList -> singleton", () -> AnyConverter.convert(bean,
+                new TypeReference<TypeBean<List<TestBean<String>>>>() {
+                }));
     }
 
     @Test
     public void testSetBeanProperty() {
-        HashMap<String, Object> obj = new HashMap<>();
-        Beans.setProperty(new TypeReference<HashMap<String, Object>>() {
-        }.getType(), obj, "test.inner.test", "hahahah", true, false);
-        System.out.println(obj);
-        Map<String, Object> map = AnyConverter.convert(obj, new TypeReference<Map<String, Object>>() {
+        test("Bean转换(MAP)", "Beans多级set/get", () -> {
+            HashMap<String, Object> obj = new HashMap<>();
+            Beans.setProperty(new TypeReference<HashMap<String, Object>>() {
+            }.getType(), obj, "test.inner.test", "hahahah", true, false);
+            Map<String, Object> map = AnyConverter.convert(obj, new TypeReference<Map<String, Object>>() {
+            });
+
+            Object property = Beans.getProperty(map, "test.inner.test");
+            Assert.isTrue(Objects.equals("hahahah", property), "属性不一致");
+
+            return obj;
         });
-        System.out.println(map);
+
     }
 
     @Test
     public void testBaseConvert() {
-        long tms = System.currentTimeMillis();
-        System.out.println(AnyConverter.convert(null, boolean.class));
-        System.out.println(AnyConverter.convert(null, int.class));
-        System.out.println(AnyConverter.convert(null, double.class));
-        System.out.println(AnyConverter.convert(1, Boolean.class));
-        System.out.println(AnyConverter.convert(1L, Boolean.class));
-        System.out.println(AnyConverter.convert(1D, Boolean.class));
-        System.out.println(AnyConverter.convert(1F, Boolean.class));
-        System.out.println(AnyConverter.convert("TRUE", Boolean.class));
-        System.out.println(AnyConverter.convert("是", Boolean.class));
-        System.out.println(AnyConverter.convert("Y", Boolean.class));
-        System.out.println(AnyConverter.convert("1", Integer.class));
-        System.out.println(AnyConverter.convert("1", Integer.TYPE));
-        System.out.println(AnyConverter.convert("1.10", Integer.class));
-        System.out.println(AnyConverter.convert("1.10", Integer.TYPE));
-        System.out.println(AnyConverter.convert("1.10", Double.class));
-        System.out.println(AnyConverter.convert("1.10", Double.TYPE));
-        System.out.println(AnyConverter.convert("1.10", Float.class));
-        System.out.println(AnyConverter.convert("1.10", Float.TYPE));
-        System.out.println(AnyConverter.convert("1.10", BigInteger.class));
-        System.out.println(AnyConverter.convert("1.10", BigDecimal.class));
-        System.out.println(AnyConverter.convert("2021-01-01 10:10:10", Date.class));
-        System.out.println(AnyConverter.convert("2021-01-01 10:10:10", java.sql.Date.class));
-        System.out.println(AnyConverter.convert("2021-01-01 10:10:10", Timestamp.class));
-        System.out.println(AnyConverter.convert("2021-01-01 10:10:10", LocalDate.class));
-        System.out.println(AnyConverter.convert("2021-01-01 10:10:10", LocalDateTime.class));
-        System.out.println(
-                AnyConverter.convert(AnyConverter.convert("2021-01-01 10:10:10", LocalDateTime.class), Long.class));
-        System.out.println(AnyConverter.convert(Collections.singletonList("12313.4"), BigDecimal.class));
-        System.out.println(AnyConverter.convert("12313.4", BigDecimal.class));
-        System.out.println(AnyConverter.convert("12313.4", Double.class));
-        System.out.println(AnyConverter.convert("12313.4", Integer.class));
-        System.out.println(AnyConverter.convert("2021-11-12", LocalDate.class));
-        System.out.println(AnyConverter.convert("2021-11-12", Date.class));
-        System.out.println(AnyConverter.convert("2021-11-12", Year.class));
-
-        System.out.println("test base convert success, total cost:" + (System.currentTimeMillis() - tms));
+        test("Base转换", "AnyConverter null -> boolean", () -> AnyConverter.convert(null, boolean.class));
+        test("Base转换", "AnyConverter null -> int", () -> AnyConverter.convert(null, int.class));
+        test("Base转换", "AnyConverter null -> double", () -> AnyConverter.convert(null, double.class));
+        test("Base转换", "AnyConverter int -> boolean", () -> AnyConverter.convert(1, Boolean.class));
+        test("Base转换", "AnyConverter long -> boolean", () -> AnyConverter.convert(1L, Boolean.class));
+        test("Base转换", "AnyConverter double -> boolean", () -> AnyConverter.convert(1D, Boolean.class));
+        test("Base转换", "AnyConverter flot -> boolean", () -> AnyConverter.convert(1F, Boolean.class));
+        test("Base转换", "AnyConverter String -> boolean", () -> AnyConverter.convert("TRUE", Boolean.class));
+        test("Base转换", "AnyConverter String -> boolean", () -> AnyConverter.convert("是", Boolean.class));
+        test("Base转换", "AnyConverter String -> boolean", () -> AnyConverter.convert("Y", Boolean.class));
+        test("Base转换", "AnyConverter String -> Integer", () -> AnyConverter.convert("1", Integer.class));
+        test("Base转换", "AnyConverter String -> int", () -> AnyConverter.convert("1", Integer.TYPE));
+        test("Base转换", "AnyConverter String -> Integer", () -> AnyConverter.convert("1.10", Integer.class));
+        test("Base转换", "AnyConverter String -> int", () -> AnyConverter.convert("1.10", Integer.TYPE));
+        test("Base转换", "AnyConverter String -> Double", () -> AnyConverter.convert("1.10", Double.class));
+        test("Base转换", "AnyConverter String -> double", () -> AnyConverter.convert("1.10", Double.TYPE));
+        test("Base转换", "AnyConverter String -> Float", () -> AnyConverter.convert("1.10", Float.class));
+        test("Base转换", "AnyConverter String -> float", () -> AnyConverter.convert("1.10", Float.TYPE));
+        test("Base转换", "AnyConverter String -> BigInteger", () -> AnyConverter.convert("1.10", BigInteger.class));
+        test("Base转换", "AnyConverter String -> BigDecimal", () -> AnyConverter.convert("1.10", BigDecimal.class));
+        test("Base转换", "AnyConverter String -> Date", () -> AnyConverter.convert("2021-01-01 10:10:10", Date.class));
+        test("Base转换", "AnyConverter String -> java.sql.Date", () -> AnyConverter.convert("2021-01-01 10:10:10", java.sql.Date.class));
+        test("Base转换", "AnyConverter String -> Timestamp", () -> AnyConverter.convert("2021-01-01 10:10:10", Timestamp.class));
+        test("Base转换", "AnyConverter String -> LocalDate", () -> AnyConverter.convert("2021-01-01 10:10:10", LocalDate.class));
+        test("Base转换", "AnyConverter String -> LocalDateTime", () -> AnyConverter.convert("2021-01-01 10:10:10", LocalDateTime.class));
+        test("Base转换", "AnyConverter String -> LocalDateTime", () -> AnyConverter.convert(AnyConverter.convert("2021-01-01 10:10:10", LocalDateTime.class), Long.class));
+        test("Base转换", "AnyConverter List<String> -> BigDecimal", () -> AnyConverter.convert(Collections.singletonList("12313.4"), BigDecimal.class));
+        test("Base转换", "AnyConverter String -> BigDecimal", () -> AnyConverter.convert("12313.4", BigDecimal.class));
+        test("Base转换", "AnyConverter String -> Double", () -> AnyConverter.convert("12313.4", Double.class));
+        test("Base转换", "AnyConverter String -> Integer", () -> AnyConverter.convert("12313.4", Integer.class));
+        test("Base转换", "AnyConverter String -> LocalDate", () -> AnyConverter.convert("2021-11-12", LocalDate.class));
+        test("Base转换", "AnyConverter String -> Date", () -> AnyConverter.convert("2021-11-12", Date.class));
+        test("Base转换", "AnyConverter String -> Year", () -> AnyConverter.convert("2021-11-12", Year.class));
     }
 
     @Test
     public void testConstructor() throws JsonException {
-        //测试构造函数转换
-        System.out.println(AnyConverter.convert(1, AtomicReference.class));
-        //测试构造函数转换
-        System.out.println(AnyConverter.convert("ceshi", TestBean.class));
-
-        TypeBean<List<TestBean<String>>> bean = new TypeBean<>();
-        bean.setData(Collections.singletonList(new TestBean<>("12131231")));
-
-        System.out.println("bean ->" + Jsons.toJsonString(bean));
-
-        TypeBean<TestBean<Integer[]>> bean1 = AnyConverter.convert(bean,
-                new TypeReference<TypeBean<TestBean<Integer[]>>>() {
-                });
-        System.out.println("bean1 ->" + Jsons.toJsonString(bean1));
-        TypeBean<List<TestBean<String>>> bean2 = AnyConverter.convert(bean,
-                new TypeReference<TypeBean<List<TestBean<String>>>>() {
-                });
-        System.out.println("bean2 ->" + Jsons.toJsonString(bean2));
+        test("测试构造函数转换", "AnyConverter int -> AtomicReference", () -> AnyConverter.convert(1, AtomicReference.class));
+        test("测试构造函数转换", "AnyConverter String -> TestBean", () -> AnyConverter.convert("ceshi", TestBean.class));
     }
 
     @Test
     public void testPathConverter() throws ConversionException {
-        Object ob = AnyConverter.convert(Collections.singletonMap("local", AnyConverter.convert("2021-01-01 10:10:10", LocalDateTime.class, Long.class)), String.class);
-        System.out.println(ob);
-
-        Converter<String, Timestamp> converter = AnyConverter.converter(String.class, Long.class, Timestamp.class);
-        Converter<Long, Timestamp> converter2 = AnyConverter.converter(Long.class, String.class, Long.class,
-                Timestamp.class);
-
-        Long ts = System.currentTimeMillis();
-        String tsStr = String.valueOf(ts);
-        Timestamp timestamp = converter.convert(tsStr);
-        Timestamp timestamp2 = converter2.convert(ts);
-        Timestamp timestamp3 = AnyConverter.convert(tsStr, Timestamp.class);
-        Timestamp timestamp4 = AnyConverter.convert(tsStr, Long.class, Timestamp.class);
-        System.out.println(ts);
-        System.out.println(timestamp);
-        System.out.println(timestamp2);
-        System.out.println(timestamp3);
-        System.out.println(timestamp4);
-        System.out.println(timestamp.getTime());
-        System.out.println(timestamp2.getTime());
-        System.out.println(timestamp3.getTime());
-        System.out.println(timestamp4.getTime());
+        test("测试多级路径转换", "testPathConverter", () ->AnyConverter.convert(Collections.singletonMap("local", AnyConverter.convert("2021-01-01 10:10:10", LocalDateTime.class, Long.class)), String.class));
     }
 
     @Test
@@ -268,17 +227,14 @@ public class TestConverter {
     @Test
     public void testString() throws ConversionException {
         String aa = "zhangsan";
-        long ts = System.currentTimeMillis();
-        System.out.println(Arrays.toString(AnyConverter.convert(aa, byte[].class)));
-        System.out.println(System.currentTimeMillis() - ts);
-        System.out.println(Arrays.toString(AnyConverter.convert(aa, char[].class)));
-        System.out.println(System.currentTimeMillis() - ts);
-        byte[] bytes = BaseConverter.convert(aa, byte[].class);
-        System.out.println(Arrays.toString(bytes));
-        System.out.println(System.currentTimeMillis() - ts);
-        System.out.println(BaseConverter.convert(bytes, String.class));
-        System.out.println(System.currentTimeMillis() - ts);
-        //System.out.println(Arrays.toString(AnyConverter.convert(bytes, char[].class)));
+        test("测试String转数组", "testString", () ->{
+            byte[] bytes  = AnyConverter.convert(aa, byte[].class);
+            String convert = BaseConverter.convert(bytes, String.class);
+            char[] chars = AnyConverter.convert(aa, char[].class);
+            String convert2 = BaseConverter.convert(chars, String.class);
+            Assert.isTrue(Objects.equals(convert, convert2), "转换异常");
+            return true;
+        });
     }
 
     @Test
@@ -323,8 +279,8 @@ public class TestConverter {
     }
 
     @Test
-    public void testByteConverter() throws SQLException {
-        char[] convert = AnyConverter.convert(new Character[]{'1','2'}, new TypeReference<char[]>() {
+    public void testByteConverter() {
+        char[] convert = AnyConverter.convert(new Character[]{'1', '2'}, new TypeReference<char[]>() {
         });
         System.out.println(Arrays.toString(convert));
     }

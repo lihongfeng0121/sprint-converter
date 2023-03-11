@@ -6,7 +6,7 @@ package com.sprint.common.converter.test.bean;
  */
 public class Man {
 
-    private String name;
+    protected String name;
 
     public String getName() {
         return name;
