@@ -15,8 +15,8 @@
         <javadoc.opts>-Xdoclint:none</javadoc.opts>
         <maven.compiler.source>${java.version}</maven.compiler.source>
         <maven.compiler.target>${java.version}</maven.compiler.target>
-        <slf4j.version>2.0.5</slf4j.version>
-        <jackson.version>2.14.0</jackson.version>
+        <slf4j.version>1.7.25</slf4j.version>
+        <jackson.version>2.14.2</jackson.version>
         <junit.version>4.13.2</junit.version>
         <!--插件版本-->
         <nexus-staging-maven-plugin.version>1.6.8</nexus-staging-maven-plugin.version>

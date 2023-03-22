@@ -78,4 +78,31 @@ public class StringConverters implements SpecificConverterLoader {
             return new String(source);
         }
     }
+
+    public static class CharacterArrayToString implements SpecificConverter<Character[], String> {
+
+        @Override
+        public Class<Character[]> getSourceClass() {
+            return Character[].class;
+        }
+
+        @Override
+        public Class<String> getTargetClass() {
+            return String.class;
+        }
+
+        @Override
+        public String convert(Character[] source) throws ConversionException {
+            if (source == null) {
+                return null;
+            }
+
+            char[] chars = new char[source.length];
+            for (int i = 0, length = source.length; i < length; i++) {
+                chars[i] = source[i];
+            }
+
+            return new String(chars);
+        }
+    }
 }

@@ -1,16 +1,18 @@
 package com.sprint.common.converter.conversion.nested.json;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.core.JsonParser;
-import com.fasterxml.jackson.databind.DeserializationFeature;
-import com.fasterxml.jackson.databind.JavaType;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.*;
 import com.fasterxml.jackson.databind.ser.impl.SimpleFilterProvider;
 import com.fasterxml.jackson.databind.type.TypeFactory;
 import com.sprint.common.converter.exception.JsonException;
+import com.sprint.common.converter.util.Beans;
+import com.sprint.common.converter.util.Types;
 
 import java.lang.reflect.Type;
 import java.util.Collection;
 import java.util.Objects;
+import java.util.TimeZone;
 
 /**
  * jackson转换器
@@ -23,27 +25,91 @@ public class JacksonConverter implements JsonConverter {
 
     private final ObjectMapper mapper;
 
+    private final ClassLoader moduleClassLoader = JacksonConverter.class.getClassLoader();
+
     /**
      * 设置一些通用的属性
      */ {
         mapper = new ObjectMapper();
-        // 如果json中有新增的字段并且是实体类类中不存在的，不报错
-        // mapper.configure(DeserializationFeature.FAIL_ON_IGNORED_PROPERTIES, false);
-        // 如果存在未知属性，则忽略不报错
-        mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
-        // 允许key没有双引号
-        mapper.configure(JsonParser.Feature.ALLOW_UNQUOTED_FIELD_NAMES, true);
-        // 允许key有单引号
-        mapper.configure(JsonParser.Feature.ALLOW_SINGLE_QUOTES, true);
-        // 允许整数以0开头
-        mapper.configure(JsonParser.Feature.ALLOW_NUMERIC_LEADING_ZEROS, true);
-        // 允许字符串中存在回车换行控制符
-        mapper.configure(JsonParser.Feature.ALLOW_UNQUOTED_CONTROL_CHARS, true);
+        mapper.setTimeZone(TimeZone.getDefault());
+        mapper.configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, true);
+        mapper.configure(SerializationFeature.WRITE_NULL_MAP_VALUES, false)                // 默认为true
+                .configure(SerializationFeature.FAIL_ON_EMPTY_BEANS, false)                // 默认为true
+                .configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)        // 默认为true
+                .configure(DeserializationFeature.ACCEPT_SINGLE_VALUE_AS_ARRAY, true)       // 默认为false
+                .configure(JsonParser.Feature.ALLOW_COMMENTS, true)                        // 默认为false
+                .configure(JsonParser.Feature.ALLOW_YAML_COMMENTS, true)                    // 默认为false
+                .configure(JsonParser.Feature.ALLOW_BACKSLASH_ESCAPING_ANY_CHARACTER, true)    // 默认为false
+                .configure(JsonParser.Feature.ALLOW_NON_NUMERIC_NUMBERS, true)                // 默认为false
+                .configure(JsonParser.Feature.ALLOW_NUMERIC_LEADING_ZEROS, true)            // 默认为false
+                .configure(JsonParser.Feature.ALLOW_UNQUOTED_CONTROL_CHARS, true)            // 默认为false
+                .configure(JsonParser.Feature.ALLOW_UNQUOTED_FIELD_NAMES, true)            // 默认为false
+                .configure(JsonParser.Feature.ALLOW_SINGLE_QUOTES, true)                    // 默认为false
+                .configure(JsonParser.Feature.IGNORE_UNDEFINED, true)                         // 默认为false
+                .setSerializationInclusion(JsonInclude.Include.NON_NULL);
 
-        SimpleFilterProvider filters = new SimpleFilterProvider();
-        filters.setFailOnUnknownId(false);
+        registerWellKnownModulesIfAvailable(mapper);
 
+        SimpleFilterProvider filters = new SimpleFilterProvider().setFailOnUnknownId(false);
         mapper.setFilterProvider(filters);
+    }
+
+    @SuppressWarnings("unchecked")
+    private void registerWellKnownModulesIfAvailable(ObjectMapper objectMapper) {
+        // Java 7 java.nio.file.Path class present?
+        if (Types.isPresent("java.nio.file.Path", this.moduleClassLoader)) {
+            try {
+                Class<? extends Module> jdk7Module = (Class<? extends Module>)
+                        Types.forName("com.fasterxml.jackson.datatype.jdk7.Jdk7Module", this.moduleClassLoader);
+                objectMapper.registerModule(Beans.instance(jdk7Module));
+            } catch (ClassNotFoundException ex) {
+                // jackson-datatype-jdk7 not available
+            }
+        }
+
+        // Java 8 java.util.Optional class present?
+        if (Types.isPresent("java.util.Optional", this.moduleClassLoader)) {
+            try {
+                Class<? extends Module> jdk8Module = (Class<? extends Module>)
+                        Types.forName("com.fasterxml.jackson.datatype.jdk8.Jdk8Module", this.moduleClassLoader);
+                objectMapper.registerModule(Beans.instance(jdk8Module));
+            } catch (ClassNotFoundException ex) {
+                // jackson-datatype-jdk8 not available
+            }
+        }
+
+        // Java 8 java.time package present?
+        if (Types.isPresent("java.time.LocalDate", this.moduleClassLoader)) {
+            try {
+                Class<? extends Module> javaTimeModule = (Class<? extends Module>)
+                        Types.forName("com.fasterxml.jackson.datatype.jsr310.JavaTimeModule", this.moduleClassLoader);
+                objectMapper.registerModule(Beans.instance(javaTimeModule));
+            } catch (ClassNotFoundException ex) {
+                // jackson-datatype-jsr310 not available
+            }
+        }
+
+        // Joda-Time present?
+        if (Types.isPresent("org.joda.time.LocalDate", this.moduleClassLoader)) {
+            try {
+                Class<? extends Module> jodaModule = (Class<? extends Module>)
+                        Types.forName("com.fasterxml.jackson.datatype.joda.JodaModule", this.moduleClassLoader);
+                objectMapper.registerModule(Beans.instance(jodaModule));
+            } catch (ClassNotFoundException ex) {
+                // jackson-datatype-joda not available
+            }
+        }
+
+        // Kotlin present?
+        if (Types.isPresent("kotlin.Unit", this.moduleClassLoader)) {
+            try {
+                Class<? extends Module> kotlinModule = (Class<? extends Module>)
+                        Types.forName("com.fasterxml.jackson.module.kotlin.KotlinModule", this.moduleClassLoader);
+                objectMapper.registerModule(Beans.instance(kotlinModule));
+            } catch (ClassNotFoundException ex) {
+                // jackson-module-kotlin not available
+            }
+        }
     }
 
     @Override

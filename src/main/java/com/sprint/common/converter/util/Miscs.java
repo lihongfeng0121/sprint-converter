@@ -4,9 +4,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.Collection;
-import java.util.LinkedHashMap;
-import java.util.Map;
-import java.util.function.Supplier;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -15,6 +12,16 @@ import java.util.regex.Pattern;
  * @since 2022/6/5
  */
 public class Miscs {
+
+    public static String lowerFirst(String str) {
+        if (isBlank(str)) {
+            return str;
+        }
+        // 同理
+        char[] cs = str.toCharArray();
+        cs[0] += 32;
+        return String.valueOf(cs);
+    }
 
     public static boolean isBlank(CharSequence cs) {
         int strLen;
@@ -54,9 +61,9 @@ public class Miscs {
     /**
      * 获取数据元素
      *
-     * @param ts           数组
-     * @param i            位置
-     * @param <T>          数组元素类型
+     * @param ts  数组
+     * @param i   位置
+     * @param <T> 数组元素类型
      * @return 数组元素
      */
     public static <T> T at(T[] ts, int i) {

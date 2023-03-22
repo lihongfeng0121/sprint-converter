@@ -1,8 +1,10 @@
 package com.sprint.common.converter.util;
 
 import com.sprint.common.converter.AnyConverter;
+import com.sprint.common.converter.TypeReference;
 
 import java.beans.Transient;
+import java.io.Serializable;
 import java.sql.Timestamp;
 import java.time.*;
 import java.util.Date;
@@ -15,7 +17,7 @@ import java.util.function.Supplier;
  * @author hongfeng.li
  * @since 2023/2/2
  */
-public class JsonObject extends LinkedHashMap<String, Object> {
+public class JsonObject extends LinkedHashMap<String, Object> implements Serializable {
 
     public JsonObject() {
     }
@@ -208,4 +210,13 @@ public class JsonObject extends LinkedHashMap<String, Object> {
     public String toString() {
         return Jsons.toJsonString(this);
     }
+
+    public <T> T toJavaObject(Class<T> tClass) {
+        return AnyConverter.convert(this, tClass);
+    }
+
+    public <T> T toJavaObject(TypeReference<T> tClass) {
+        return AnyConverter.convert(this, tClass);
+    }
+
 }

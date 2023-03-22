@@ -9,19 +9,29 @@ import com.sprint.common.converter.util.Jsons;
 import com.sprint.common.converter.util.TypeDescriptor;
 import com.sprint.common.converter.util.Types;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.LinkedHashMap;
+import java.util.*;
 
 /**
  * @author hongfeng.li
  * @since 2021/1/25
  */
 public class JsonConverters implements NestedConverterLoader {
+
     /**
      * 集合或者Bean 转json
      */
     public static class MultiOrBean2JsonStr implements NestedConverter {
+
+        static final Set<Class<?>> NOT_SUPPORT_SOURCE_CLASSES;
+
+        static {
+            Set<Class<?>> source = new HashSet<>();
+            source.add(byte[].class);
+            source.add(char[].class);
+            source.add(Byte[].class);
+            source.add(Character[].class);
+            NOT_SUPPORT_SOURCE_CLASSES = Collections.unmodifiableSet(source);
+        }
 
         @Override
         public int sort() {
@@ -30,7 +40,7 @@ public class JsonConverters implements NestedConverterLoader {
 
         @Override
         public boolean support(TypeDescriptor sourceType, TypeDescriptor targetType) {
-            return (sourceType.isMulti() || sourceType.isBean())
+            return !NOT_SUPPORT_SOURCE_CLASSES.contains(sourceType.getActualClass()) && (sourceType.isMulti() || sourceType.isBean())
                     && String.class.isAssignableFrom(targetType.getActualClass());
         }
 
@@ -159,6 +169,17 @@ public class JsonConverters implements NestedConverterLoader {
      */
     public static class JsonStr2Array implements NestedConverter {
 
+        static final Set<Class<?>> NOT_SUPPORT_TARGET_CLASSES;
+
+        static {
+            Set<Class<?>> target = new HashSet<>();
+            target.add(byte[].class);
+            target.add(char[].class);
+            target.add(Byte[].class);
+            target.add(Character[].class);
+            NOT_SUPPORT_TARGET_CLASSES = Collections.unmodifiableSet(target);
+        }
+
         @Override
         public int sort() {
             return 8;
@@ -166,7 +187,7 @@ public class JsonConverters implements NestedConverterLoader {
 
         @Override
         public boolean support(TypeDescriptor sourceType, TypeDescriptor targetType) {
-            return String.class.isAssignableFrom(sourceType.getActualClass()) && targetType.isArray();
+            return String.class.isAssignableFrom(sourceType.getActualClass()) && targetType.isArray() && !NOT_SUPPORT_TARGET_CLASSES.contains(targetType.getActualClass());
         }
 
         @Override

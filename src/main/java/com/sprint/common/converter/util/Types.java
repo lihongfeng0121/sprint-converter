@@ -104,6 +104,23 @@ public class Types {
     }
 
     /**
+     * 是否存在类
+     *
+     * @param className   类名
+     * @param classLoader 类加载器
+     * @return 是否存在。
+     */
+    public static boolean isPresent(String className, ClassLoader classLoader) {
+        try {
+            forName(className, classLoader);
+            return true;
+        } catch (Throwable ex) {
+            // Class or one of its dependencies is not present...
+            return false;
+        }
+    }
+
+    /**
      * 获取类
      *
      * @param name        类名
@@ -612,11 +629,11 @@ public class Types {
         return primitiveTypeToWrapperMap.containsKey(clazz);
     }
 
-    public static Class<?> getPrimitiveTypeClass(Class<?> clazz){
+    public static Class<?> getPrimitiveTypeClass(Class<?> clazz) {
         return primitiveWrapperTypeMap.get(clazz);
     }
 
-    public static Class<?> getPrimitiveWrapTypeClass(Class<?> clazz){
+    public static Class<?> getPrimitiveWrapTypeClass(Class<?> clazz) {
         return primitiveTypeToWrapperMap.get(clazz);
     }
 

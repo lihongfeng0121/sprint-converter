@@ -192,6 +192,18 @@ public class Properties {
         return Arrays.asList(introspectionResults.getReadPropertyAccess());
     }
 
+
+    /**
+     * 获取对象所有可读属性名字
+     *
+     * @param obj obj
+     * @return list
+     */
+    public static List<PropertyAccess> getReadPropertyAccessFromClass(Class<?> obj) {
+        CachedIntrospectionResults introspectionResults = CachedIntrospectionResults.forClass(obj);
+        return Arrays.asList(introspectionResults.getReadPropertyAccess());
+    }
+
     /**
      * 获取对象所有可写属性名字
      *

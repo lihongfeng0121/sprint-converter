@@ -1,15 +1,16 @@
 package com.sprint.common.converter.test;
 
 import com.sprint.common.converter.*;
+import com.sprint.common.converter.conversion.nested.bean.introspection.PropertyAccess;
 import com.sprint.common.converter.exception.ConversionException;
 import com.sprint.common.converter.exception.JsonException;
 import com.sprint.common.converter.test.bean.*;
 import com.sprint.common.converter.util.*;
+import com.sprint.common.converter.util.Properties;
 import org.junit.Test;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
-import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -210,7 +211,7 @@ public class TestConverter extends BaseTest {
 
     @Test
     public void testPathConverter() throws ConversionException {
-        test("测试多级路径转换", "testPathConverter", () ->AnyConverter.convert(Collections.singletonMap("local", AnyConverter.convert("2021-01-01 10:10:10", LocalDateTime.class, Long.class)), String.class));
+        test("测试多级路径转换", "testPathConverter", () -> AnyConverter.convert(Collections.singletonMap("local", AnyConverter.convert("2021-01-01 10:10:10", LocalDateTime.class, Long.class)), String.class));
     }
 
     @Test
@@ -227,11 +228,11 @@ public class TestConverter extends BaseTest {
     @Test
     public void testString() throws ConversionException {
         String aa = "zhangsan";
-        test("测试String转数组", "testString", () ->{
-            byte[] bytes  = AnyConverter.convert(aa, byte[].class);
-            String convert = BaseConverter.convert(bytes, String.class);
-            char[] chars = AnyConverter.convert(aa, char[].class);
-            String convert2 = BaseConverter.convert(chars, String.class);
+        test("测试String转数组", "testString", () -> {
+            Byte[] bytes = AnyConverter.convert(aa, Byte[].class);
+            String convert = AnyConverter.convert(bytes, String.class);
+            Character[] chars = AnyConverter.convert(aa, Character[].class);
+            String convert2 = AnyConverter.convert(chars, String.class);
             Assert.isTrue(Objects.equals(convert, convert2), "转换异常");
             return true;
         });
@@ -242,21 +243,27 @@ public class TestConverter extends BaseTest {
         Student student = new Student();
         student.setName("zhangsan");
         student.setLevel("一年级");
-        Student2 student2 = BeanConverter.convert(student, Student2.class);
-        System.out.println("student1 ->" + Jsons.toJsonString(student));
-        System.out.println("student2 ->" + Jsons.toJsonString(student2));
+
+        test("简单类型的Bean转换", "bean1->bean2", () -> {
+            Student2 student2 = BeanConverter.convert(student, Student2.class);
+            Assert.isTrue(Objects.equals(Jsons.toJsonString(student), Jsons.toJsonString(student2)), "转换异常");
+            return true;
+        });
     }
 
     @Test
     public void testJson() {
-        JsonObject parse = JsonObject.parse("{\"name\":\"2022-12-01\"}");
-        ObjectValue name = parse.getObjectValue("name");
-        System.out.println(parse);
-        System.out.println(name);
-        System.out.println(name.getLocalDateTime().toString());
-
-        JsonArray values = AnyConverter.convert(parse, JsonArray.class);
-        System.out.println(values.toString());
+        test("JSON转换", "str->json", () -> {
+            JsonObject parse1 = AnyConverter.convert("{\"name\":\"2022-12-01\"}", JsonObject.class);
+            JsonObject parse2 = JsonObject.parse("{\"name\":\"2022-12-01\"}");
+            Assert.equal(parse1, parse2, "转换异常");
+            ObjectValue name1 = parse1.getObjectValue("name");
+            ObjectValue name2 = parse2.getObjectValue("name");
+            Assert.equal(Objects.requireNonNull(name1), Objects.requireNonNull(name2), "转换异常");
+            JsonArray values = AnyConverter.convert(parse2, JsonArray.class);
+            Assert.isTrue(values.size() == 1, "转换异常");
+            return true;
+        });
     }
 
     @Test
@@ -282,6 +289,22 @@ public class TestConverter extends BaseTest {
     public void testByteConverter() {
         char[] convert = AnyConverter.convert(new Character[]{'1', '2'}, new TypeReference<char[]>() {
         });
-        System.out.println(Arrays.toString(convert));
+
+    }
+
+    @Test
+    public void testInterface() {
+        List<PropertyAccess> readPropertyAccess = Properties.getReadPropertyAccessFromClass(People.class);
+        System.out.println(readPropertyAccess);
+
+        Man man = new Man();
+        man.setName("lihongfeng");
+        People convert = AnyConverter.convert(man, People.class);
+        System.out.println(convert.getAge());
+        System.out.println(convert.getName());
+        man.setName("zhangsan");
+        System.out.println(convert.getName());
+        System.out.println(convert.equals(1));
+        System.out.println(convert);
     }
 }
