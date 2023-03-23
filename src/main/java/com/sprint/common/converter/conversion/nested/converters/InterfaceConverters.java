@@ -2,6 +2,8 @@ package com.sprint.common.converter.conversion.nested.converters;
 
 import com.sprint.common.converter.conversion.nested.NestedConverter;
 import com.sprint.common.converter.conversion.nested.NestedConverterLoader;
+import com.sprint.common.converter.conversion.nested.NestedConverters;
+import com.sprint.common.converter.conversion.nested.bean.introspection.PropertyAccess;
 import com.sprint.common.converter.exception.ConversionException;
 import com.sprint.common.converter.util.Beans;
 import com.sprint.common.converter.util.TypeDescriptor;
@@ -24,10 +26,11 @@ public class InterfaceConverters implements NestedConverterLoader {
         public Object convert(Object sourceValue, TypeDescriptor targetTypeDescriptor) throws ConversionException {
             Class<?> actualType = targetTypeDescriptor.getActualClass();
             VirtualBean<?> virtualBean = new VirtualBean<>(actualType);
-            for (String name : virtualBean.getProperties()) {
-                Object property = Beans.getProperty(sourceValue, name);
+            for (PropertyAccess propertyAccess : virtualBean.getProperties()) {
+                Object property = Beans.getProperty(sourceValue, propertyAccess.getName());
                 if (property != null) {
-                    virtualBean.setProperty(name, property);
+                    Object targetVal = NestedConverters.convert(property, TypeDescriptor.of(propertyAccess.extractClass()));
+                    virtualBean.setProperty(propertyAccess.getName(), targetVal);
                 }
             }
             return virtualBean.getObject();

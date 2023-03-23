@@ -1,6 +1,5 @@
 package com.sprint.common.converter.util;
 
-import com.sprint.common.converter.AnyConverter;
 import com.sprint.common.converter.conversion.nested.bean.introspection.CachedIntrospectionResults;
 import com.sprint.common.converter.conversion.nested.bean.introspection.PropertyAccess;
 
@@ -9,10 +8,7 @@ import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.lang.reflect.Parameter;
 import java.lang.reflect.Proxy;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * @author hongfeng.li
@@ -32,12 +28,8 @@ public final class VirtualBean<T> {
         this.introspectionResults = CachedIntrospectionResults.forClass(type);
     }
 
-    public List<String> getProperties() {
-        List<String> names = new ArrayList<>();
-        for (PropertyAccess propertyAccess : introspectionResults.getPropertyAccesses()) {
-            names.add(propertyAccess.getName());
-        }
-        return names;
+    public List<PropertyAccess> getProperties() {
+        return new ArrayList<>(Arrays.asList(introspectionResults.getPropertyAccesses()));
     }
 
     public T getObject() {
@@ -47,10 +39,13 @@ public final class VirtualBean<T> {
     public void setProperty(String name, Object value) {
         PropertyAccess propertyAccess = introspectionResults.getPropertyAccess(name);
         if (propertyAccess == null) {
-            return;
+            throw new IllegalArgumentException(String.format("not exit name[%s]", name));
         }
-        Object targetValue = AnyConverter.convert(value, propertyAccess.extractClass());
-        holder.put(name, targetValue);
+        Class<?> aClass = propertyAccess.extractClass();
+        if (!aClass.isAssignableFrom(value.getClass())) {
+            throw new IllegalArgumentException("type not match");
+        }
+        holder.put(name, value);
     }
 
     public Object getProperty(String name) {
@@ -80,14 +75,32 @@ public final class VirtualBean<T> {
                 }
             }
             if ("equals".equals(name)) {
-                return (proxy == args[0]);
+                return VirtualBean.this.equals(args[0]);
             } else if ("hashCode".equals(name)) {
-                return hashCode();
+                return VirtualBean.this.hashCode();
             } else if ("toString".equals(name)) {
-                return toString();
+                return VirtualBean.this.toString();
             } else {
                 throw new IllegalArgumentException("Unknown method: " + method);
             }
         }
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof VirtualBean)) return false;
+        VirtualBean<?> that = (VirtualBean<?>) o;
+        return Objects.equals(holder, that.holder) && Objects.equals(type, that.type);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(holder, type);
+    }
+
+    @Override
+    public String toString() {
+        return "$Virtual." + type.getSimpleName() + "{holder=" + holder + '}';
     }
 }
