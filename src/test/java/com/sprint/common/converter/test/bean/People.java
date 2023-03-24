@@ -8,6 +8,8 @@ public interface People {
 
     String getName();
 
+    void setName(String name);
+
     Integer getAge();
 
 }

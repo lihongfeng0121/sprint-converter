@@ -296,15 +296,19 @@ public class TestConverter extends BaseTest {
     public void testInterface() {
         List<PropertyAccess> readPropertyAccess = Properties.getReadPropertyAccessFromClass(People.class);
         System.out.println(readPropertyAccess);
-
+        TypeDescriptor of = TypeDescriptor.of(People.class);
+        System.out.println(of.isInterface());
+        System.out.println(of.isBean());
         Man man = new Man();
         man.setName("lihongfeng");
         People convert = AnyConverter.convert(man, People.class);
+        People convert2 = AnyConverter.convert(man, People.class);
         System.out.println(convert.getAge());
         System.out.println(convert.getName());
-        man.setName("zhangsan");
-        System.out.println(convert.getName());
-        System.out.println(convert.equals(1));
         System.out.println(convert);
+        System.out.println(Jsons.toJsonString(convert));
+        System.out.println(convert.equals(convert2));
+        convert.setName("zhangsan");
+        System.out.println(Jsons.toJsonString(convert));
     }
 }
