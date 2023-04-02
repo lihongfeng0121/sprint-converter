@@ -1,8 +1,8 @@
 package com.sprint.common.converter.conversion.nested.converters;
 
-import com.sprint.common.converter.conversion.nested.NestedConverter;
 import com.sprint.common.converter.conversion.nested.NestedConverterLoader;
 import com.sprint.common.converter.conversion.nested.NestedConverters;
+import com.sprint.common.converter.conversion.nested.NestedPreCheckConverter;
 import com.sprint.common.converter.exception.ConversionException;
 import com.sprint.common.converter.exception.NotSupportConvertException;
 import com.sprint.common.converter.util.Beans;
@@ -23,7 +23,7 @@ public class Multi2SingleConverters implements NestedConverterLoader {
     /**
      * 单集合转单对象
      */
-    public static class SingleCollection2Single implements NestedConverter {
+    public static class SingleCollection2Single implements NestedPreCheckConverter {
 
         @Override
         public int sort() {
@@ -36,7 +36,7 @@ public class Multi2SingleConverters implements NestedConverterLoader {
         }
 
         @Override
-        public boolean preCheckSourceVal(Object sourceValue) {
+        public boolean preCheckSourceVal(Object sourceValue, TypeDescriptor targetTypeDescriptor) {
             return sourceValue != null && ((Collection<?>) sourceValue).size() <= 1;
         }
 
@@ -66,7 +66,7 @@ public class Multi2SingleConverters implements NestedConverterLoader {
     /**
      * 单集合转单对象
      */
-    public static class SingleArray2Single implements NestedConverter {
+    public static class SingleArray2Single implements NestedPreCheckConverter {
 
         @Override
         public int sort() {
@@ -79,7 +79,7 @@ public class Multi2SingleConverters implements NestedConverterLoader {
         }
 
         @Override
-        public boolean preCheckSourceVal(Object sourceValue) {
+        public boolean preCheckSourceVal(Object sourceValue, TypeDescriptor targetTypeDescriptor) {
             return sourceValue != null && Array.getLength(sourceValue) <= 1;
         }
 

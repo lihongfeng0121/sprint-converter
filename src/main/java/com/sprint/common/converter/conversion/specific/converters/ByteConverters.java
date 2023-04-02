@@ -4,6 +4,7 @@ import com.sprint.common.converter.conversion.specific.SpecificConverter;
 import com.sprint.common.converter.conversion.specific.SpecificConverterLoader;
 import com.sprint.common.converter.exception.ConversionException;
 import com.sprint.common.converter.util.Miscs;
+import com.sprint.common.converter.util.Strings;
 
 /**
  * Byte转换器
@@ -72,7 +73,7 @@ public class ByteConverters implements SpecificConverterLoader {
 
         @Override
         public Byte convert(String obj) throws ConversionException {
-            return Miscs.isBlank(obj) ? 0 : Double.valueOf(obj).byteValue();
+            return Strings.isBlank(obj) ? 0 : Double.valueOf(obj).byteValue();
         }
 
         @Override
@@ -90,7 +91,7 @@ public class ByteConverters implements SpecificConverterLoader {
 
         @Override
         public Byte convert(String obj) throws ConversionException {
-            return Miscs.isBlank(obj) ? null : Double.valueOf(obj).byteValue();
+            return Strings.isBlank(obj) ? null : Double.valueOf(obj).byteValue();
         }
 
         @Override

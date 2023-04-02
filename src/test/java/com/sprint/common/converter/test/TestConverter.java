@@ -5,8 +5,8 @@ import com.sprint.common.converter.conversion.nested.bean.introspection.Property
 import com.sprint.common.converter.exception.ConversionException;
 import com.sprint.common.converter.exception.JsonException;
 import com.sprint.common.converter.test.bean.*;
-import com.sprint.common.converter.util.*;
 import com.sprint.common.converter.util.Properties;
+import com.sprint.common.converter.util.*;
 import org.junit.Test;
 
 import java.math.BigDecimal;
@@ -310,5 +310,18 @@ public class TestConverter extends BaseTest {
         System.out.println(convert.equals(convert2));
         convert.setName("zhangsan");
         System.out.println(Jsons.toJsonString(convert));
+    }
+
+    @Test
+    public void test() {
+        AnyConverter.registerConverter(Integer.class, Timestamp.class, new Converter<Integer, Timestamp>() {
+            @Override
+            public Timestamp convert(Integer source) throws ConversionException {
+                return new Timestamp(source.longValue());
+            }
+        });
+
+        Timestamp convert = AnyConverter.convert(11201185, Timestamp.class);
+        System.out.println(convert);
     }
 }

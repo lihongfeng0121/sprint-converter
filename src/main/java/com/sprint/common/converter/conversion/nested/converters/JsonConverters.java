@@ -3,6 +3,7 @@ package com.sprint.common.converter.conversion.nested.converters;
 import com.sprint.common.converter.conversion.nested.NestedConverter;
 import com.sprint.common.converter.conversion.nested.NestedConverterLoader;
 import com.sprint.common.converter.conversion.nested.NestedConverters;
+import com.sprint.common.converter.conversion.nested.NestedPreCheckConverter;
 import com.sprint.common.converter.exception.ConversionException;
 import com.sprint.common.converter.exception.NotSupportConvertException;
 import com.sprint.common.converter.util.Jsons;
@@ -57,7 +58,7 @@ public class JsonConverters implements NestedConverterLoader {
     /**
      * Json转bean
      */
-    public static class JsonStr2Bean implements NestedConverter {
+    public static class JsonStr2Bean implements NestedPreCheckConverter {
 
         @Override
         public int sort() {
@@ -70,7 +71,7 @@ public class JsonConverters implements NestedConverterLoader {
         }
 
         @Override
-        public boolean preCheckSourceVal(Object sourceValue) {
+        public boolean preCheckSourceVal(Object sourceValue, TypeDescriptor targetTypeDescriptor) {
             return sourceValue != null && Types.isJsonObject((String) sourceValue);
         }
 
@@ -93,7 +94,7 @@ public class JsonConverters implements NestedConverterLoader {
     /**
      * Json转bean
      */
-    public static class JsonStr2Map implements NestedConverter {
+    public static class JsonStr2Map implements NestedPreCheckConverter {
 
         @Override
         public int sort() {
@@ -106,7 +107,7 @@ public class JsonConverters implements NestedConverterLoader {
         }
 
         @Override
-        public boolean preCheckSourceVal(Object sourceValue) {
+        public boolean preCheckSourceVal(Object sourceValue, TypeDescriptor targetTypeDescriptor) {
             return sourceValue != null && Types.isJsonObject((String) sourceValue);
         }
 
@@ -129,7 +130,7 @@ public class JsonConverters implements NestedConverterLoader {
     /**
      * json 转集合
      */
-    public static class JsonStr2Collection implements NestedConverter {
+    public static class JsonStr2Collection implements NestedPreCheckConverter {
 
         @Override
         public int sort() {
@@ -142,7 +143,7 @@ public class JsonConverters implements NestedConverterLoader {
         }
 
         @Override
-        public boolean preCheckSourceVal(Object sourceValue) {
+        public boolean preCheckSourceVal(Object sourceValue, TypeDescriptor targetTypeDescriptor) {
             return sourceValue != null && Types.isJsonArray((String) sourceValue);
         }
 
@@ -167,7 +168,7 @@ public class JsonConverters implements NestedConverterLoader {
     /**
      * json 转集合
      */
-    public static class JsonStr2Array implements NestedConverter {
+    public static class JsonStr2Array implements NestedPreCheckConverter {
 
         static final Set<Class<?>> NOT_SUPPORT_TARGET_CLASSES;
 
@@ -191,7 +192,7 @@ public class JsonConverters implements NestedConverterLoader {
         }
 
         @Override
-        public boolean preCheckSourceVal(Object sourceValue) {
+        public boolean preCheckSourceVal(Object sourceValue, TypeDescriptor targetTypeDescriptor) {
             return sourceValue != null && Types.isJsonArray((String) sourceValue);
         }
 

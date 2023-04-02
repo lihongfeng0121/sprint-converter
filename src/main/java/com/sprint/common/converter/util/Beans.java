@@ -761,7 +761,7 @@ public final class Beans {
         List<String> propertyNames = Properties.getReadPropertyNames(source, true);
         Map<String, Object> map = new HashMap<>(propertyNames.size());
         propertyNames.stream().filter(property -> !Miscs.contained(ignoreProperties, property))
-                .forEach(property -> map.put(Miscs.pointToCamel(property), getProperty(source, property)));
+                .forEach(property -> map.put(Strings.pointToCamel(property), getProperty(source, property)));
         return map;
     }
 

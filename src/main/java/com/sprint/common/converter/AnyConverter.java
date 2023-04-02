@@ -1,7 +1,9 @@
 package com.sprint.common.converter;
 
+import com.sprint.common.converter.conversion.nested.NestedConverter;
 import com.sprint.common.converter.conversion.nested.NestedConverters;
 import com.sprint.common.converter.exception.BeansException;
+import com.sprint.common.converter.exception.ConversionException;
 import com.sprint.common.converter.util.Assert;
 import com.sprint.common.converter.util.TypeDescriptor;
 
@@ -17,6 +19,21 @@ import java.util.function.Supplier;
 public final class AnyConverter {
 
     private AnyConverter() {
+    }
+
+    public static <S, T> void registerConverter(Class<S> sourceClass, Class<T> targetClass, Converter<S, T> converter) {
+        NestedConverters.registerNestedConverter(new NestedConverter() {
+
+            @Override
+            public boolean support(TypeDescriptor sourceType, TypeDescriptor targetType) {
+                return sourceType.isExtendableFrom(sourceClass) && targetType.isExtendableFrom(targetClass);
+            }
+
+            @Override
+            public Object convert(Object sourceValue, TypeDescriptor targetTypeDescriptor) throws ConversionException {
+                return converter.convert((S) sourceValue);
+            }
+        });
     }
 
     /**

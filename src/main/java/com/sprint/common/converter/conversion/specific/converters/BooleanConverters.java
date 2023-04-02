@@ -4,6 +4,7 @@ import com.sprint.common.converter.conversion.specific.SpecificConverter;
 import com.sprint.common.converter.conversion.specific.SpecificConverterLoader;
 import com.sprint.common.converter.exception.ConversionException;
 import com.sprint.common.converter.util.Miscs;
+import com.sprint.common.converter.util.Strings;
 
 /**
  * Boolean转换器
@@ -65,7 +66,7 @@ public class BooleanConverters implements SpecificConverterLoader {
 
         @Override
         public Boolean convert(String source) throws ConversionException {
-            if (Miscs.isBlank(source)) {
+            if (Strings.isBlank(source)) {
                 return Boolean.FALSE;
             } else {
                 return toBoolean(source);
@@ -87,7 +88,7 @@ public class BooleanConverters implements SpecificConverterLoader {
 
         @Override
         public Boolean convert(String source) throws ConversionException {
-            if (Miscs.isBlank(source)) {
+            if (Strings.isBlank(source)) {
                 return null;
             } else {
                 return toBoolean(source);

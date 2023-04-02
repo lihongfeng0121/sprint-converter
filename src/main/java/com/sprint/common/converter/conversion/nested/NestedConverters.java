@@ -6,17 +6,14 @@ import com.sprint.common.converter.ErrorHandler;
 import com.sprint.common.converter.exception.ConversionException;
 import com.sprint.common.converter.exception.NotSupportConvertException;
 import com.sprint.common.converter.util.Beans;
+import com.sprint.common.converter.util.ConcurrentReferenceHashMap;
 import com.sprint.common.converter.util.Defaults;
 import com.sprint.common.converter.util.TypeDescriptor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.lang.reflect.Modifier;
-import java.util.Comparator;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.ServiceLoader;
-import java.util.stream.Collectors;
+import java.util.*;
 
 /**
  * 嵌套属性转换
@@ -32,6 +29,8 @@ public final class NestedConverters {
     private static final List<NestedConverter> NESTED_CONVERTERS = new LinkedList<>();
     private static final NestedConverter DEFAULT_NESTED_CONVERTER = new DefaultNestedConverter();
 
+    private static final ConcurrentReferenceHashMap<String, Optional<Converter<?, ?>>> cache = new ConcurrentReferenceHashMap<>();
+    private static final String DELIMITER = "->";
 
     static {
         ClassLoader loader = Thread.currentThread().getContextClassLoader();
@@ -61,6 +60,10 @@ public final class NestedConverters {
         NESTED_CONVERTERS.sort(Comparator.comparingInt(NestedConverter::sort));
     }
 
+    private static String getKey(TypeDescriptor sourceType, TypeDescriptor targetType) {
+        return sourceType.getId().concat(DELIMITER).concat(targetType.getId());
+    }
+
     /**
      * 获取转换器
      *
@@ -71,8 +74,14 @@ public final class NestedConverters {
      * @return converter
      */
     public static <S, T> Converter<S, T> getConverter(TypeDescriptor sourceType, TypeDescriptor targetType) {
-        Converter<?, ?> stConverter = doGetConverter(sourceType, targetType);
-        return stConverter.enforce();
+        TypeDescriptor finalTargetType = targetType.isObjectType() ? sourceType : targetType;
+        if (sourceType.isObjectType() && finalTargetType.isObjectType()) {
+            Converter<?, ?> stConverter = doGetConverter(sourceType, finalTargetType);
+            return stConverter.enforce();
+        } else {
+            Optional<Converter<?, ?>> converterOptional = cache.computeIfAbsent(getKey(sourceType, finalTargetType), (k) -> Optional.of(doGetConverter(sourceType, finalTargetType)));
+            return converterOptional.<Converter<S, T>>map(converter -> converter.enforce()).orElse(null);
+        }
     }
 
     /**
@@ -85,30 +94,41 @@ public final class NestedConverters {
      * @return converter
      */
     public static <S, T> Converter<S, T> getConverter(Class<?> sourceClass, Class<?> targetClass) {
-        return doGetConverter(TypeDescriptor.of(sourceClass), TypeDescriptor.of(targetClass)).enforce();
+        return getConverter(TypeDescriptor.of(sourceClass), TypeDescriptor.of(targetClass)).enforce();
     }
 
     private static Converter<?, ?> doGetConverter(TypeDescriptor sourceType, TypeDescriptor targetType) {
-        TypeDescriptor finalTargetType = targetType.isObjectType() ? sourceType : targetType;
-        List<NestedConverter> nestedConverters = NESTED_CONVERTERS.stream()
-                .filter(item -> item.support(sourceType, finalTargetType)).collect(Collectors.toList());
-        if (nestedConverters.size() == 0) {
-            return (source) -> DEFAULT_NESTED_CONVERTER.convert(source, finalTargetType);
+        List<NestedConverter> supports = new ArrayList<>();
+        for (NestedConverter item : NESTED_CONVERTERS) {
+            if (item.support(sourceType, targetType)) {
+                supports.add(item);
+            }
+        }
+        if (supports.size() == 0) {
+            return (source) -> DEFAULT_NESTED_CONVERTER.convert(source, targetType);
         }
         return (source) -> {
             if (source == null) {
-                return Converter.enforce(Defaults.defaultValue(finalTargetType.getActualClass()));
+                return Converter.enforce(Defaults.defaultValue(targetType.getActualClass()));
             }
-            for (NestedConverter nestedConverter : nestedConverters) {
-                if (nestedConverter.preCheckSourceVal(source)) {
+            for (NestedConverter nestedConverter : supports) {
+                if (nestedConverter instanceof NestedPreCheckConverter) {
+                    if (((NestedPreCheckConverter) nestedConverter).preCheckSourceVal(source, targetType)) {
+                        try {
+                            return nestedConverter.convert(source, targetType);
+                        } catch (ConversionException e) {
+                            logger.warn("this converter not support, use next converter, convert msg :{}", e.getMessage());
+                        }
+                    }
+                } else {
                     try {
-                        return nestedConverter.convert(source, finalTargetType);
+                        return nestedConverter.convert(source, targetType);
                     } catch (ConversionException e) {
                         logger.warn("this converter not support, use next converter, convert msg :{}", e.getMessage());
                     }
                 }
             }
-            return DEFAULT_NESTED_CONVERTER.convert(source, finalTargetType);
+            return DEFAULT_NESTED_CONVERTER.convert(source, targetType);
         };
     }
 

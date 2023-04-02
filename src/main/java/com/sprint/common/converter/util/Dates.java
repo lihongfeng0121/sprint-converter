@@ -52,7 +52,7 @@ public class Dates {
     }
 
     public static Date toDate(String dateString) {
-        if (Miscs.isBlank(dateString)) {
+        if (Strings.isBlank(dateString)) {
             return null;
         }
         dateString = removeDateStringSplit(dateString);
@@ -78,7 +78,7 @@ public class Dates {
     }
 
     public static LocalDateTime toLocalDateTime(String dateString) {
-        if (Miscs.isBlank(dateString)) {
+        if (Strings.isBlank(dateString)) {
             return null;
         }
         return toLocalDateTime(toDate(dateString));
@@ -90,7 +90,7 @@ public class Dates {
     }
 
     public static java.sql.Date toSqlDate(String dateStr) {
-        if (Miscs.isBlank(dateStr)) {
+        if (Strings.isBlank(dateStr)) {
             return null;
         }
         return toSqlDate(toDate(dateStr));
@@ -250,7 +250,7 @@ public class Dates {
     }
 
     public static Year toYear(String dateStr) {
-        if (Miscs.isBlank(dateStr)) {
+        if (Strings.isBlank(dateStr)) {
             return null;
         }
         return toYear(toLocalDateTime(dateStr));

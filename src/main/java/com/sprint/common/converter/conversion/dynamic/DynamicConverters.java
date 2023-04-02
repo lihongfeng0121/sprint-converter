@@ -7,6 +7,7 @@ import org.slf4j.LoggerFactory;
 
 import java.lang.reflect.Modifier;
 import java.util.*;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 /**
  * 动态属性转换器
@@ -19,7 +20,7 @@ public final class DynamicConverters {
 
     private static final Logger logger = LoggerFactory.getLogger(DynamicConverters.class);
 
-    private static final List<DynamicConverter<?>> DYNAMIC_CONVERTER_CACHE = new LinkedList<>();
+    private static final List<DynamicConverter<?>> DYNAMIC_CONVERTER_CACHE = new CopyOnWriteArrayList<>();
     private static final ConcurrentReferenceHashMap<String, Optional<Converter<?, ?>>> cache = new ConcurrentReferenceHashMap<>();
     private static final String DELIMITER = "->";
 
@@ -80,11 +81,17 @@ public final class DynamicConverters {
      */
     public static <S, T> Converter<S, T> getConverter(Class<S> sourceClass, Class<T> targetClass) {
         Optional<Converter<?, ?>> converterOptional = cache.computeIfAbsent(getKey(sourceClass, targetClass), (k) -> {
-            DynamicConverter<T> dynamicConverter = Converter.enforce(DYNAMIC_CONVERTER_CACHE.stream()
-                    .filter(item -> item.support(sourceClass, targetClass)).findFirst().orElse(null));
-            if (dynamicConverter == null) {
+            DynamicConverter<?> found = null;
+            for (DynamicConverter<?> item : DYNAMIC_CONVERTER_CACHE) {
+                if (item.support(sourceClass, targetClass)) {
+                    found = item;
+                    break;
+                }
+            }
+            if (found == null) {
                 return Optional.empty();
             }
+            DynamicConverter<T> dynamicConverter = Converter.enforce(found);
             return Optional.of((source) -> dynamicConverter.convert(source, targetClass));
         });
         return converterOptional.<Converter<S, T>>map(converter -> converter.enforce()).orElse(null);

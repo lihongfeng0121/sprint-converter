@@ -5,6 +5,7 @@ import com.sprint.common.converter.conversion.specific.SpecificConverterLoader;
 import com.sprint.common.converter.exception.ConversionException;
 import com.sprint.common.converter.util.Dates;
 import com.sprint.common.converter.util.Miscs;
+import com.sprint.common.converter.util.Strings;
 
 import java.sql.Timestamp;
 import java.time.LocalDate;
@@ -42,7 +43,7 @@ public class TimestampConverters implements SpecificConverterLoader {
 
         @Override
         public Timestamp convert(String obj) throws ConversionException {
-            if (Miscs.isBlank(obj)) {
+            if (Strings.isBlank(obj)) {
                 return null;
             } else {
                 return Dates.toTimestamp(Dates.toDate(obj));

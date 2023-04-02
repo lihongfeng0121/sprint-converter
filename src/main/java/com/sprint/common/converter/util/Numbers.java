@@ -20,7 +20,7 @@ public class Numbers {
      * @return <code>true</code> if the string is a correctly formatted number
      */
     public static boolean isNumber(String str) {
-        if (Miscs.isBlank(str)) {
+        if (Strings.isBlank(str)) {
             return false;
         }
         char[] chars = str.toCharArray();

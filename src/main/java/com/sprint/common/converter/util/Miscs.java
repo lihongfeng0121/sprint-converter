@@ -4,39 +4,12 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.Collection;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 /**
  * @author hongfeng.li
  * @since 2022/6/5
  */
 public class Miscs {
-
-    public static String lowerFirst(String str) {
-        if (isBlank(str)) {
-            return str;
-        }
-        // 同理
-        char[] cs = str.toCharArray();
-        cs[0] += 32;
-        return String.valueOf(cs);
-    }
-
-    public static boolean isBlank(CharSequence cs) {
-        int strLen;
-        if (cs == null || (strLen = cs.length()) == 0) {
-            return true;
-        }
-        for (int i = 0; i < strLen; i++) {
-            if (!Character.isWhitespace(cs.charAt(i))) {
-                return false;
-            }
-        }
-        return true;
-    }
-
-    private static final Pattern POINT_PATTERN = Pattern.compile("\\.(\\w)");
 
     /**
      * 获取数据元素
@@ -99,25 +72,6 @@ public class Miscs {
             return 0;
         }
         return collection.size();
-    }
-
-    /**
-     * 点转驼峰
-     *
-     * @param source 源
-     * @return 驼峰
-     */
-    public static String pointToCamel(String source) {
-        if (source == null || source.isEmpty()) {
-            return source;
-        }
-        Matcher matcher = POINT_PATTERN.matcher(source);
-        StringBuffer result = new StringBuffer();
-        while (matcher.find()) {
-            matcher.appendReplacement(result, matcher.group(1).toUpperCase());
-        }
-        matcher.appendTail(result);
-        return result.toString();
     }
 
     public static final int BUFFER_SIZE = 4096;

@@ -31,12 +31,10 @@ public final class SpecificConverters {
 
     static {
         ClassLoader loader = Thread.currentThread().getContextClassLoader();
-
         for (SpecificConverterLoader specificConverterLoader : ServiceLoader.load(SpecificConverterLoader.class,
                 loader)) {
             specificConverterLoader.loadConverters();
         }
-
     }
 
     public static void loadContainedConverters(Class<?> containerClass) {
@@ -60,7 +58,11 @@ public final class SpecificConverters {
     }
 
     public static void registerSpecificConverter(SpecificConverter<?, ?> specificConverter) {
-        String key = getKey(specificConverter.getSourceClass(), specificConverter.getTargetClass());
+        registerSpecificConverter(specificConverter.getSourceClass(), specificConverter.getTargetClass(), specificConverter);
+    }
+
+    public static void registerSpecificConverter(Class<?> sourceClass, Class<?> targetClass, SpecificConverter<?, ?> specificConverter) {
+        String key = getKey(sourceClass, targetClass);
         SPECIFIC_CONVERTER_CACHE.put(key, specificConverter);
     }
 

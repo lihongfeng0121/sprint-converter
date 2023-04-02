@@ -1,5 +1,6 @@
 package com.sprint.common.converter.conversion.nested;
 
+import com.sprint.common.converter.ConvertMatcher;
 import com.sprint.common.converter.exception.ConversionException;
 import com.sprint.common.converter.util.TypeDescriptor;
 
@@ -10,7 +11,7 @@ import com.sprint.common.converter.util.TypeDescriptor;
  * @version 1.0
  * @since 2021年02月05日
  */
-public interface NestedConverter {
+public interface NestedConverter extends ConvertMatcher {
 
     /**
      * 排序
@@ -19,26 +20,6 @@ public interface NestedConverter {
      */
     default int sort() {
         return 0;
-    }
-
-    /**
-     * 是否支持
-     *
-     * @param sourceType sourceType
-     * @param targetType targetType
-     * @return 是否支持
-     */
-    boolean support(TypeDescriptor sourceType, TypeDescriptor targetType);
-
-
-    /**
-     * 是否支持源对象
-     *
-     * @param sourceValue 值
-     * @return 对象
-     */
-    default boolean preCheckSourceVal(Object sourceValue) {
-        return true;
     }
 
     /**

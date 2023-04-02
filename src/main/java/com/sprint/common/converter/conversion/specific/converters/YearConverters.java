@@ -5,6 +5,7 @@ import com.sprint.common.converter.conversion.specific.SpecificConverterLoader;
 import com.sprint.common.converter.exception.ConversionException;
 import com.sprint.common.converter.util.Dates;
 import com.sprint.common.converter.util.Miscs;
+import com.sprint.common.converter.util.Strings;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -215,7 +216,7 @@ public class YearConverters implements SpecificConverterLoader {
 
         @Override
         public Year convert(String source) throws ConversionException {
-            if (Miscs.isBlank(source)) {
+            if (Strings.isBlank(source)) {
                 return null;
             }
             return Dates.toYear(source);

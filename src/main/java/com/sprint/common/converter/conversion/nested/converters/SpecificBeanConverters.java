@@ -44,9 +44,7 @@ public class SpecificBeanConverters implements NestedConverterLoader {
                     return baos.toByteArray();
                 }
 
-            } catch (SQLException e) {
-                throw new ConversionException("Couldn't retrieve data from blob.", e);
-            } catch (IOException e) {
+            } catch (SQLException | IOException e) {
                 throw new ConversionException("Couldn't retrieve data from blob.", e);
             } finally {
                 if (blobStream != null) {

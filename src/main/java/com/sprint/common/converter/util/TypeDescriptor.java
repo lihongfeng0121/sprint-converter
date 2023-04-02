@@ -1,5 +1,7 @@
 package com.sprint.common.converter.util;
 
+import com.sprint.common.converter.TypeReference;
+
 import java.beans.Transient;
 import java.io.Serializable;
 import java.lang.reflect.Modifier;
@@ -15,18 +17,27 @@ import java.util.concurrent.ConcurrentHashMap;
  */
 public class TypeDescriptor implements Serializable {
 
+    private final String id;
     private final Type declaringType;
     private final Type rawType;
-
 
     private volatile Class<?> actualClass = null;
     private volatile Type actualType = null;
     private volatile Type arrayComponentType = null;
     private final Map<Class<?>, Type[]> classGenericsType = new ConcurrentHashMap<>();
 
-    public TypeDescriptor(Type declaringType, Type rawType) {
+    protected TypeDescriptor(String id, Type declaringType, Type rawType) {
+        this.id = id;
         this.declaringType = declaringType;
         this.rawType = rawType;
+    }
+
+    protected TypeDescriptor(Type declaringType, Type rawType) {
+        this(rawType.getTypeName().concat(declaringType == null ? "" : "@".concat(declaringType.getTypeName())), declaringType, rawType);
+    }
+
+    public String getId() {
+        return id;
     }
 
     public Type getDeclaringType() {
@@ -142,6 +153,14 @@ public class TypeDescriptor implements Serializable {
         return getActualClass().isAssignableFrom(descriptor.getActualClass());
     }
 
+    public boolean isExtendableFrom(TypeDescriptor descriptor) {
+        return descriptor.getActualClass().isAssignableFrom(getActualClass());
+    }
+
+    public boolean isExtendableFrom(Class<?> actualType) {
+        return actualType.isAssignableFrom(getActualClass());
+    }
+
 
     @Override
     public boolean equals(Object o) {
@@ -219,6 +238,10 @@ public class TypeDescriptor implements Serializable {
         }
     };
 
+    public static TypeDescriptor of(TypeReference<?> type) {
+        return of(type.getType());
+    }
+
     public static TypeDescriptor of(Type type) {
         if (type == null) {
             return OBJ_TYPE_DESCRIPTOR;
@@ -232,6 +255,9 @@ public class TypeDescriptor implements Serializable {
         }
         if (rawType == null) {
             return OBJ_TYPE_DESCRIPTOR;
+        }
+        if (rawType instanceof Class) {
+            return of(rawType);
         }
         return RAW_TYPE_CACHE.computeIfAbsent(declaringType, (key) -> new ConcurrentReferenceHashMap<>()).get(rawType, () -> new TypeDescriptor(declaringType, rawType));
     }

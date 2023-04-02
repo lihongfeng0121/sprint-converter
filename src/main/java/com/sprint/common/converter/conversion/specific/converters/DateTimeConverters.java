@@ -5,6 +5,7 @@ import com.sprint.common.converter.conversion.specific.SpecificConverterLoader;
 import com.sprint.common.converter.exception.ConversionException;
 import com.sprint.common.converter.util.Dates;
 import com.sprint.common.converter.util.Miscs;
+import com.sprint.common.converter.util.Strings;
 
 import java.math.BigInteger;
 import java.time.LocalDate;
@@ -60,7 +61,7 @@ public class DateTimeConverters implements SpecificConverterLoader {
 
         @Override
         public Date convert(String obj) throws ConversionException {
-            if (Miscs.isBlank(obj)) {
+            if (Strings.isBlank(obj)) {
                 return null;
             } else {
                 return Dates.toDate(obj);
