@@ -15,7 +15,7 @@
         <javadoc.opts>-Xdoclint:none</javadoc.opts>
         <maven.compiler.source>${java.version}</maven.compiler.source>
         <maven.compiler.target>${java.version}</maven.compiler.target>
-        <slf4j.version>1.7.25</slf4j.version>
+        <slf4j.version>1.7.30</slf4j.version>
         <jackson.version>2.14.2</jackson.version>
         <junit.version>4.13.2</junit.version>
         <!--插件版本-->
