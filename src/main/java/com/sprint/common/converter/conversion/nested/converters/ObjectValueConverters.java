@@ -25,7 +25,7 @@ public class ObjectValueConverters implements NestedConverterLoader {
 
         @Override
         public boolean support(TypeDescriptor sourceType, TypeDescriptor targetType) {
-            return ObjectValue.class.isAssignableFrom(sourceType.getActualClass());
+            return ObjectValue.class.isAssignableFrom(sourceType.getActualClass()) && !ObjectValue.class.isAssignableFrom(targetType.getActualClass());
         }
 
         @Override

@@ -6,7 +6,6 @@ import com.sprint.common.converter.conversion.dynamic.DynamicConverterLoader;
 import com.sprint.common.converter.exception.ConversionException;
 
 import java.lang.reflect.Constructor;
-import java.lang.reflect.Type;
 
 /**
  * @author hongfeng.li

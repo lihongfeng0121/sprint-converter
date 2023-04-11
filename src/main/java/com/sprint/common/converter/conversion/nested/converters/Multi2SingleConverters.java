@@ -36,7 +36,7 @@ public class Multi2SingleConverters implements NestedConverterLoader {
         }
 
         @Override
-        public boolean preCheckSourceVal(Object sourceValue, TypeDescriptor targetTypeDescriptor) {
+        public boolean preCheckSourceVal(Object sourceValue, TypeDescriptor sourceType, TypeDescriptor targetTypeDescriptor) {
             return sourceValue != null && ((Collection<?>) sourceValue).size() <= 1;
         }
 
@@ -79,7 +79,7 @@ public class Multi2SingleConverters implements NestedConverterLoader {
         }
 
         @Override
-        public boolean preCheckSourceVal(Object sourceValue, TypeDescriptor targetTypeDescriptor) {
+        public boolean preCheckSourceVal(Object sourceValue, TypeDescriptor sourceType, TypeDescriptor targetTypeDescriptor) {
             return sourceValue != null && Array.getLength(sourceValue) <= 1;
         }
 

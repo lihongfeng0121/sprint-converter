@@ -21,7 +21,7 @@ public final class DynamicConverters {
     private static final Logger logger = LoggerFactory.getLogger(DynamicConverters.class);
 
     private static final List<DynamicConverter<?>> DYNAMIC_CONVERTER_CACHE = new CopyOnWriteArrayList<>();
-    private static final ConcurrentReferenceHashMap<String, Optional<Converter<?, ?>>> cache = new ConcurrentReferenceHashMap<>();
+    private static final ConcurrentReferenceHashMap<String, Optional<Converter<?, ?>>> CONVERTER_MAP = new ConcurrentReferenceHashMap<>();
     private static final String DELIMITER = "->";
 
     private DynamicConverters() {
@@ -80,7 +80,7 @@ public final class DynamicConverters {
      * @return converter
      */
     public static <S, T> Converter<S, T> getConverter(Class<S> sourceClass, Class<T> targetClass) {
-        Optional<Converter<?, ?>> converterOptional = cache.computeIfAbsent(getKey(sourceClass, targetClass), (k) -> {
+        Optional<Converter<?, ?>> converterOptional = CONVERTER_MAP.computeIfAbsent(getKey(sourceClass, targetClass), (k) -> {
             DynamicConverter<?> found = null;
             for (DynamicConverter<?> item : DYNAMIC_CONVERTER_CACHE) {
                 if (item.support(sourceClass, targetClass)) {

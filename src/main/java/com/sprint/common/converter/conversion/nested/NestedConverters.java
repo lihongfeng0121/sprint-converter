@@ -113,7 +113,7 @@ public final class NestedConverters {
             }
             for (NestedConverter nestedConverter : supports) {
                 if (nestedConverter instanceof NestedPreCheckConverter) {
-                    if (((NestedPreCheckConverter) nestedConverter).preCheckSourceVal(source, targetType)) {
+                    if (((NestedPreCheckConverter) nestedConverter).preCheckSourceVal(source, sourceType, targetType)) {
                         try {
                             return nestedConverter.convert(source, targetType);
                         } catch (ConversionException e) {

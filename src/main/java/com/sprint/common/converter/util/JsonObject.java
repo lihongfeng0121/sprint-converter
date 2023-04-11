@@ -19,6 +19,8 @@ import java.util.function.Supplier;
  */
 public class JsonObject extends LinkedHashMap<String, Object> implements Serializable {
 
+    private static final long serialVersionUID = 1801021242820209131L;
+
     public JsonObject() {
     }
 
@@ -30,7 +32,7 @@ public class JsonObject extends LinkedHashMap<String, Object> implements Seriali
         return Jsons.toJavaObject(json, JsonObject.class);
     }
 
-    public static JsonObject toJavaObject(Object value) {
+    public static JsonObject toJsonObject(Object value) {
         if (value == null) {
             return null;
         }

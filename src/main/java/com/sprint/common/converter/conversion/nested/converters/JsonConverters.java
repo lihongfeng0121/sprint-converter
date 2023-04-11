@@ -71,7 +71,7 @@ public class JsonConverters implements NestedConverterLoader {
         }
 
         @Override
-        public boolean preCheckSourceVal(Object sourceValue, TypeDescriptor targetTypeDescriptor) {
+        public boolean preCheckSourceVal(Object sourceValue, TypeDescriptor sourceType, TypeDescriptor targetTypeDescriptor) {
             return sourceValue != null && Types.isJsonObject((String) sourceValue);
         }
 
@@ -107,7 +107,7 @@ public class JsonConverters implements NestedConverterLoader {
         }
 
         @Override
-        public boolean preCheckSourceVal(Object sourceValue, TypeDescriptor targetTypeDescriptor) {
+        public boolean preCheckSourceVal(Object sourceValue, TypeDescriptor sourceType, TypeDescriptor targetTypeDescriptor) {
             return sourceValue != null && Types.isJsonObject((String) sourceValue);
         }
 
@@ -143,7 +143,7 @@ public class JsonConverters implements NestedConverterLoader {
         }
 
         @Override
-        public boolean preCheckSourceVal(Object sourceValue, TypeDescriptor targetTypeDescriptor) {
+        public boolean preCheckSourceVal(Object sourceValue, TypeDescriptor sourceType, TypeDescriptor targetTypeDescriptor) {
             return sourceValue != null && Types.isJsonArray((String) sourceValue);
         }
 
@@ -192,7 +192,7 @@ public class JsonConverters implements NestedConverterLoader {
         }
 
         @Override
-        public boolean preCheckSourceVal(Object sourceValue, TypeDescriptor targetTypeDescriptor) {
+        public boolean preCheckSourceVal(Object sourceValue, TypeDescriptor sourceType, TypeDescriptor targetTypeDescriptor) {
             return sourceValue != null && Types.isJsonArray((String) sourceValue);
         }
 

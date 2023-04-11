@@ -12,7 +12,7 @@ import java.util.Optional;
  * @version 1.0
  * @since 2021年02月05日
  */
-public class ConverterContext {
+public class ConvertContext {
 
     private static final ThreadLocal<Context<?, ?>> THREAD_LOCAL = new ThreadLocal<>();
 
@@ -74,13 +74,13 @@ public class ConverterContext {
 
         @Override
         public S before(S source) {
-            ConverterContext.initContext(this);
+            ConvertContext.initContext(this);
             return AroundHandler.super.before(source);
         }
 
         @Override
         public T after(S source, T target) {
-            ConverterContext.clear();
+            ConvertContext.clear();
             return AroundHandler.super.after(source, target);
         }
     }

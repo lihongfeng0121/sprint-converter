@@ -113,7 +113,7 @@ public class JsonArray implements List<Object>, Cloneable, RandomAccess, Seriali
     }
 
     public JsonObject getJsonObject(int index) {
-        return JsonObject.toJavaObject(this.list.get(index));
+        return JsonObject.toJsonObject(this.list.get(index));
     }
 
     public JsonArray getJsonArray(int index) {
@@ -265,7 +265,7 @@ public class JsonArray implements List<Object>, Cloneable, RandomAccess, Seriali
         List<T> list = new ArrayList<>(this.size());
         if (JsonObject.class.isAssignableFrom(clazz)) {
             for (Object item : this) {
-                list.add((T) JsonObject.toJavaObject(item));
+                list.add((T) JsonObject.toJsonObject(item));
             }
         } else if (ObjectValue.class.isAssignableFrom(clazz)) {
             for (Object item : this) {
