@@ -676,8 +676,7 @@ public class Types {
             return false;
         }
 
-        return !clazz.isPrimitive()
-                && (clazz.getClassLoader() != null && Objects.equals(clazz.getClassLoader(), APP_CLASS_LOADER));
+        return !clazz.isPrimitive() && (clazz.getClassLoader() != null);
     }
 
     /**
