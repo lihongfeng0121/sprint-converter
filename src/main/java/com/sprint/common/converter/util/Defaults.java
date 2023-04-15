@@ -37,6 +37,10 @@ public class Defaults {
      * Returns the default value of {@code type} as defined by JLS --- {@code 0} for numbers, {@code
      * false} for {@code boolean} and {@code '\0'} for {@code char}. For non-primitive types and
      * {@code void}, {@code null} is returned.
+     *
+     * @param type 类型
+     * @param <T>  t
+     * @return default value.
      */
     public static <T> T defaultValue(Class<T> type) {
         // Primitives.wrap(type).cast(...) would avoid the warning, but we can't use that from here

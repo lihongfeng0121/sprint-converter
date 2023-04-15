@@ -104,9 +104,10 @@ public final class BaseConverter {
     /**
      * 忽略转换异常
      *
-     * @param source      源对象
-     * @param targetClass 目标类型
-     * @param <T>         t
+     * @param source       源对象
+     * @param targetClass  目标类型
+     * @param defaultValue 默认值
+     * @param <T>          t
      * @return target
      */
     public static <T> T convertIgnore(Object source, Class<T> targetClass, Supplier<T> defaultValue) {
@@ -136,9 +137,10 @@ public final class BaseConverter {
     /**
      * 转换
      *
-     * @param source      源
-     * @param targetClass 目标类型
-     * @param <T>         t
+     * @param source       源
+     * @param targetClass  目标类型
+     * @param defaultValue 默认值
+     * @param <T>          t
      * @return target
      * @throws ConversionException ex
      */
@@ -150,9 +152,10 @@ public final class BaseConverter {
     /**
      * 转换
      *
-     * @param source      源
-     * @param targetClass 目标类型
-     * @param <T>         t
+     * @param source       源
+     * @param targetClass  目标类型
+     * @param defaultValue 默认值
+     * @param <T>          t
      * @return target
      * @throws ConversionException ex
      */
@@ -201,6 +204,7 @@ public final class BaseConverter {
      * @param source       源
      * @param targetClass  target类型
      * @param errorHandler 异常处理
+     * @param defaultValue 默认值
      * @param <T>          t
      * @return target
      * @throws ConversionException ex

@@ -73,7 +73,7 @@ public class Maps {
      * @param <K>       源Map key的范型
      * @param <K2>      目标Map的key值
      * @param <V>       源Map val的范型
-     * @return
+     * @return rewrite key map.
      */
     public static <K, V, K2> Map<K2, V> rewriteKey(Map<K, V> map, Function<K, K2> keyWriter) {
         Map<K2, V> rewrite;
@@ -124,6 +124,8 @@ public class Maps {
      * 翻转K-V
      *
      * @param map 源map
+     * @param <K> key type
+     * @param <V> value type
      * @return 返回翻转后的map
      */
     public static <K, V> Map<V, K> reverse(Map<K, V> map) {
@@ -148,6 +150,8 @@ public class Maps {
      * 合并map
      *
      * @param maps 源maps
+     * @param <K>  key type
+     * @param <V>  value type
      * @return 返回合并后的map
      */
     public static <K, V> Map<K, V> merge(Map<K, V>... maps) {
