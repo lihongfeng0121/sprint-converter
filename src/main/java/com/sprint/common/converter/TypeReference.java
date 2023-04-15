@@ -87,11 +87,18 @@ public abstract class TypeReference<T> implements Comparable<TypeReference<T>> {
      * @return Map 引用的类型
      */
     public static <T> TypeReference<T> of(Class<T> type) {
-        return new TypeReference<T>() {
-            @Override
-            public Type getType() {
-                return type;
-            }
+        return new TypeReference<T>(type) {
+        };
+    }
+
+
+    /**
+     * @param type 参数类型
+     * @param <T>  参数类型
+     * @return Map 引用的类型
+     */
+    public static <T> TypeReference<T> of(Type type) {
+        return new TypeReference<T>(type) {
         };
     }
 
@@ -143,6 +150,10 @@ public abstract class TypeReference<T> implements Comparable<TypeReference<T>> {
 
     protected TypeReference() {
         this.type = Types.getClassSuperclassType(getClass(), 0);
+    }
+
+    protected TypeReference(Type type) {
+        this.type = type;
     }
 
     public Type getType() {

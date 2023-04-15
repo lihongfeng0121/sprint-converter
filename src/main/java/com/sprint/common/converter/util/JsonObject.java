@@ -54,6 +54,16 @@ public class JsonObject extends LinkedHashMap<String, Object> implements Seriali
     }
 
     @Transient
+    public <T> T get(String key, TypeReference<T> type) {
+        return AnyConverter.convert(get(key), type);
+    }
+
+    @Transient
+    public <T> T get(String key, TypeReference<T> type, Supplier<T> supplier) {
+        return Optional.ofNullable(get(key)).map(val -> AnyConverter.convert(val, type)).orElseGet(supplier::get);
+    }
+
+    @Transient
     public ObjectValue getObjectValue(String key) {
         return ObjectValue.ofNullable(get(key));
     }
