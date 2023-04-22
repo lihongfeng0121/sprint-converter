@@ -85,8 +85,7 @@ public class Dates {
     }
 
     private static String removeDateStringSplit(String dateString) {
-        return dateString.trim().replace(" ", "").replace("-", "").replace("/", "").replace(":", "").replace("年", "")
-                .replace("月", "").replace("日", "").replace("时", "").replace("分", "").replace("秒", "").replace("T", "");
+        return Strings.remove(dateString.trim(), " ", "-", "/", ":", "年", "月", "日", "时", "分", "秒", "T");
     }
 
     public static java.sql.Date toSqlDate(String dateStr) {

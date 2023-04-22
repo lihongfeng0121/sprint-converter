@@ -33,7 +33,7 @@ public class TypeDescriptor implements Serializable {
     }
 
     protected TypeDescriptor(Type declaringType, Type rawType) {
-        this(rawType.getTypeName().concat(declaringType == null ? "" : "@".concat(declaringType.getTypeName())), declaringType, rawType);
+        this(rawType.getTypeName().concat(declaringType == null ? Strings.EMPTY : "@".concat(declaringType.getTypeName())), declaringType, rawType);
     }
 
     public String getId() {

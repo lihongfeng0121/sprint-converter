@@ -9,6 +9,8 @@ import java.util.regex.Pattern;
  */
 public class Strings {
 
+    public static final String EMPTY = "";
+
     private static final Pattern POINT_PATTERN = Pattern.compile("\\.(\\w)");
 
     /**
@@ -74,5 +76,16 @@ public class Strings {
         }
         matcher.appendTail(result);
         return result.toString();
+    }
+
+    public static String remove(String str, String... keywords) {
+        if (keywords == null || keywords.length == 0) {
+            return str;
+        }
+        String res = str;
+        for (String keyword : keywords) {
+            res = res.replace(keyword, EMPTY);
+        }
+        return res;
     }
 }

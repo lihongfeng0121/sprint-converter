@@ -85,13 +85,13 @@ public final class VirtualBean<T> {
                 Transient annotation = method.getAnnotation(Transient.class);
                 Class<?> returnType = method.getReturnType();
                 if (name.startsWith("get") && args.length == 0 && annotation == null && returnType != Void.class) {
-                    String p = Strings.lowerFirst(name.replace("get", ""));
+                    String p = Strings.lowerFirst(Strings.remove(name, "get"));
                     if (Strings.isNotBlank(p)) {
                         return getProperty(p);
                     }
                 }
                 if (name.startsWith("set") && args.length == 1 && annotation == null && (returnType == Void.class || returnType == Void.TYPE)) {
-                    String p = Strings.lowerFirst(name.replace("set", ""));
+                    String p = Strings.lowerFirst(Strings.remove(name, "set"));
                     if (Strings.isNotBlank(p)) {
                         setProperty(p, args[0]);
                         return null;
