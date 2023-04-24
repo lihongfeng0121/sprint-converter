@@ -10,7 +10,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.*;
-import java.util.stream.Collectors;
 
 /**
  * Property工具
@@ -36,8 +35,9 @@ public class Properties {
         for (PropertyAccess propertyAccess : propertyAccesses) {
             Class<?> type = propertyAccess.extractClass();
             if (inner && !Types.isIterable(type) && !Types.isMap(type) && Types.isBean(type)) {
-                propertyNames.addAll(doGetPropertyNames(type, true).stream()
-                        .map(item -> propertyAccess.getName() + "." + item).collect(Collectors.toList()));
+                for (String item : doGetPropertyNames(type, true)) {
+                    propertyNames.add(propertyAccess.getName() + "." + item);
+                }
             } else {
                 propertyNames.add(propertyAccess.getName());
             }
@@ -56,8 +56,9 @@ public class Properties {
             if (propertyAccess.isReadAccessible()) {
                 Class<?> type = propertyAccess.extractClass();
                 if (inner && !Types.isIterable(type) && !Types.isMap(type) && Types.isBean(type)) {
-                    propertyNames.addAll(doGetReadPropertyNames(type, true).stream()
-                            .map(item -> propertyAccess.getName() + "." + item).collect(Collectors.toList()));
+                    for (String item : doGetReadPropertyNames(type, true)) {
+                        propertyNames.add(propertyAccess.getName() + "." + item);
+                    }
                 } else {
                     propertyNames.add(propertyAccess.getName());
                 }
@@ -77,8 +78,9 @@ public class Properties {
             if (propertyAccess.isWriteAccessible()) {
                 Class<?> type = propertyAccess.extractClass();
                 if (inner && !Types.isIterable(type) && !Types.isMap(type) && Types.isBean(type)) {
-                    propertyNames.addAll(doGetWritePropertyNames(type, true).stream()
-                            .map(item -> propertyAccess.getName() + "." + item).collect(Collectors.toList()));
+                    for (String item : doGetWritePropertyNames(type, true)) {
+                        propertyNames.add(propertyAccess.getName() + "." + item);
+                    }
                 } else {
                     propertyNames.add(propertyAccess.getName());
                 }
@@ -101,10 +103,12 @@ public class Properties {
                     .load(PropertyAnnotationParser.class, loader)) {
                 EXT_ANNOTATION_PARSER_LIST.add(propertyAnnotationParser);
             }
-        } catch (Exception ex) {
-
+        } catch (Exception ignored) {
         }
+    }
 
+    public static void registerAnnotationParser(PropertyAnnotationParser<?> annotationParser) {
+        EXT_ANNOTATION_PARSER_LIST.add(annotationParser);
     }
 
     /**
@@ -113,30 +117,16 @@ public class Properties {
      * @param propertyAccess propertyAccess
      * @return PropertyInfoHolder
      */
-    public static PropertyInfo parsePropertyInfo(
-            PropertyAccess propertyAccess) {
+    public static PropertyInfo parsePropertyInfo(PropertyAccess propertyAccess) {
         PropertyInfo propertyInfo = new PropertyInfo();
         propertyInfo.setPropertyAccess(propertyAccess);
         propertyInfo.setAccess(Access.AUTO);
         propertyInfo.setIndex(-1);
         propertyInfo.setName(propertyAccess.getName());
-        if (DEFAULT_ANNOTATION_PARSER.support(propertyAccess)) {
-            PropertyInfo parsePropertyInfo = DEFAULT_ANNOTATION_PARSER
-                    .parse(propertyAccess.getAnnotation(DEFAULT_ANNOTATION_PARSER.annotationType()));
-            if (parsePropertyInfo.getName() != null && !parsePropertyInfo.getName().isEmpty()) {
-                propertyInfo.setName(parsePropertyInfo.getName());
-            }
-            if (!Objects.equals(propertyInfo.getAccess(), Access.AUTO)) {
-                propertyInfo.setAccess(parsePropertyInfo.getAccess());
-            }
-            if (parsePropertyInfo.getIndex() > -1) {
-                propertyInfo.setIndex(parsePropertyInfo.getIndex());
-            }
-        }
-        if (!EXT_ANNOTATION_PARSER_LIST.isEmpty()) {
-            EXT_ANNOTATION_PARSER_LIST.stream().filter(item -> item.support(propertyAccess)).forEach(item -> {
-                PropertyInfo parsePropertyInfo = item
-                        .parse(propertyAccess.getAnnotation(item.annotationType()));
+        if (propertyAccess.getAnnotations().size() > 0) {
+            if (DEFAULT_ANNOTATION_PARSER.support(propertyAccess)) {
+                PropertyInfo parsePropertyInfo = DEFAULT_ANNOTATION_PARSER
+                        .parse(propertyAccess.getAnnotation(DEFAULT_ANNOTATION_PARSER.annotationType()));
                 if (parsePropertyInfo.getName() != null && !parsePropertyInfo.getName().isEmpty()) {
                     propertyInfo.setName(parsePropertyInfo.getName());
                 }
@@ -146,7 +136,24 @@ public class Properties {
                 if (parsePropertyInfo.getIndex() > -1) {
                     propertyInfo.setIndex(parsePropertyInfo.getIndex());
                 }
-            });
+            }
+            if (!EXT_ANNOTATION_PARSER_LIST.isEmpty()) {
+                for (PropertyAnnotationParser<?> item : EXT_ANNOTATION_PARSER_LIST) {
+                    if (item.support(propertyAccess)) {
+                        PropertyInfo parsePropertyInfo = item
+                                .parse(propertyAccess.getAnnotation(item.annotationType()));
+                        if (parsePropertyInfo.getName() != null && !parsePropertyInfo.getName().isEmpty()) {
+                            propertyInfo.setName(parsePropertyInfo.getName());
+                        }
+                        if (!Objects.equals(propertyInfo.getAccess(), Access.AUTO)) {
+                            propertyInfo.setAccess(parsePropertyInfo.getAccess());
+                        }
+                        if (parsePropertyInfo.getIndex() > -1) {
+                            propertyInfo.setIndex(parsePropertyInfo.getIndex());
+                        }
+                    }
+                }
+            }
         }
         return propertyInfo;
     }
@@ -188,8 +195,7 @@ public class Properties {
      * @return list
      */
     public static List<PropertyAccess> getReadPropertyAccess(Object obj) {
-        CachedIntrospectionResults introspectionResults = CachedIntrospectionResults.forClass(obj.getClass());
-        return Arrays.asList(introspectionResults.getReadPropertyAccess());
+        return getReadPropertyAccessFromClass(obj.getClass());
     }
 
 
@@ -201,7 +207,7 @@ public class Properties {
      */
     public static List<PropertyAccess> getReadPropertyAccessFromClass(Class<?> obj) {
         CachedIntrospectionResults introspectionResults = CachedIntrospectionResults.forClass(obj);
-        return Arrays.asList(introspectionResults.getReadPropertyAccess());
+        return introspectionResults.getReadPropertyAccess();
     }
 
     /**
@@ -211,8 +217,18 @@ public class Properties {
      * @return list
      */
     public static List<PropertyAccess> getWritePropertyAccess(Object obj) {
-        CachedIntrospectionResults introspectionResults = CachedIntrospectionResults.forClass(obj.getClass());
-        return Arrays.asList(introspectionResults.getWritePropertyAccess());
+        return getWritePropertyAccessFromClass(obj.getClass());
+    }
+
+    /**
+     * 获取对象所有可写属性名字
+     *
+     * @param obj 对象
+     * @return list
+     */
+    public static List<PropertyAccess> getWritePropertyAccessFromClass(Class<?> obj) {
+        CachedIntrospectionResults introspectionResults = CachedIntrospectionResults.forClass(obj);
+        return introspectionResults.getWritePropertyAccess();
     }
 
     /**
@@ -295,10 +311,12 @@ public class Properties {
         List<String> targetProperty = new LinkedList<>();
 
         if (supportMapKV) {
-            List<String> mapCommonProperties = getMapPropertyMapper(source, sourceReadPropertyAccess, target,
+            Map<String, String> mapCommonProperties = getMapPropertyMapper(source, sourceReadPropertyAccess, target,
                     targetWritePropertyAccess, ignore);
-            sourceProperty.addAll(mapCommonProperties);
-            targetProperty.addAll(mapCommonProperties);
+            for (Map.Entry<String, String> entry : mapCommonProperties.entrySet()) {
+                sourceProperty.add(entry.getKey());
+                targetProperty.add(entry.getValue());
+            }
         }
 
         for (Map.Entry<String, PropertyAccess> targetEntry : targetWritePropertyAccess.entrySet()) {
@@ -313,29 +331,37 @@ public class Properties {
     }
 
     private static Map<String, PropertyAccess> getReadAblePropertyAccessMap(Object source, Set<String> ignore) {
-        return getReadPropertyAccess(source).stream().map(Properties::parsePropertyInfo)
-                .filter(item -> !ignore.contains(item.getName()))
-                .filter(item -> !Objects.equals(item.getAccess(), Access.WRITE_ONLY))
-                .collect(Collectors.toMap(PropertyInfo::getName, PropertyInfo::getPropertyAccess));
+        Map<String, PropertyAccess> propertyAccessMap = new HashMap<>();
+        for (PropertyAccess propertyAccess : getReadPropertyAccess(source)) {
+            PropertyInfo propertyInfo = parsePropertyInfo(propertyAccess);
+            if (!ignore.contains(propertyInfo.getName()) && !Objects.equals(propertyInfo.getAccess(), Access.WRITE_ONLY)) {
+                propertyAccessMap.put(propertyInfo.getName(), propertyInfo.getPropertyAccess());
+            }
+        }
+        return propertyAccessMap;
     }
 
     private static Map<String, PropertyAccess> getWriteAblePropertyAccessMap(Object target, Set<String> ignore) {
-        return getWritePropertyAccess(target).stream().map(Properties::parsePropertyInfo)
-                .filter(item -> !ignore.contains(item.getName()))
-                .filter(item -> !Objects.equals(item.getAccess(), Access.READ_ONLY))
-                .collect(Collectors.toMap(PropertyInfo::getName, PropertyInfo::getPropertyAccess));
+        Map<String, PropertyAccess> propertyAccessMap = new HashMap<>();
+        for (PropertyAccess propertyAccess : getWritePropertyAccess(target)) {
+            PropertyInfo propertyInfo = parsePropertyInfo(propertyAccess);
+            if (!ignore.contains(propertyInfo.getName()) && !Objects.equals(propertyInfo.getAccess(), Access.READ_ONLY)) {
+                propertyAccessMap.put(propertyInfo.getName(), propertyInfo.getPropertyAccess());
+            }
+        }
+        return propertyAccessMap;
     }
 
     // 获取map 属性映射
-    private static List<String> getMapPropertyMapper(Object source,
-                                                     Map<String, PropertyAccess> sourceReadPropertyAccess, Object target,
-                                                     Map<String, PropertyAccess> targetWritePropertyAccess, Set<String> ignore) {
-        Set<String> propertyNames = new HashSet<>();
+    private static Map<String, String> getMapPropertyMapper(Object source,
+                                                            Map<String, PropertyAccess> sourceReadPropertyAccess, Object target,
+                                                            Map<String, PropertyAccess> targetWritePropertyAccess, Set<String> ignore) {
+        Map<String, String> propertyNames = new HashMap<>();
         if (target instanceof Map) {
             if (source instanceof Map) {
                 for (String item : Properties.getMapPropertyNames((Map<String, ?>) source)) {
                     if (!ignore.contains(item)) {
-                        propertyNames.add(item);
+                        propertyNames.put(item, item);
                     }
                 }
             }
@@ -345,15 +371,15 @@ public class Properties {
                 if (source instanceof Map && MAP_IGNORE_PROPERTY.contains(propertyName)) {
                     continue;
                 }
-                propertyNames.add(sourceEntry.getValue().getName());
+                propertyNames.put(sourceEntry.getValue().getName(), sourceEntry.getKey());
             }
         } else if (source instanceof Map) {
             for (Map.Entry<String, PropertyAccess> targetEntry : targetWritePropertyAccess.entrySet()) {
                 if (((Map<?, ?>) source).containsKey(targetEntry.getKey())) {
-                    propertyNames.add(targetEntry.getValue().getName());
+                    propertyNames.put(targetEntry.getKey(), targetEntry.getValue().getName());
                 }
             }
         }
-        return new ArrayList<>(propertyNames);
+        return propertyNames;
     }
 }

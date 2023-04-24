@@ -10,10 +10,7 @@ import java.beans.Introspector;
 import java.beans.PropertyDescriptor;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
-import java.util.HashSet;
-import java.util.LinkedHashMap;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 /**
  * 内省缓存
@@ -130,9 +127,14 @@ public class CachedIntrospectionResults {
      *
      * @return PropertyAccess[]
      */
-    public PropertyAccess[] getReadPropertyAccess() {
-        return this.propertyAccessCache.values().stream().filter(PropertyAccess::isReadAccessible)
-                .toArray(PropertyAccess[]::new);
+    public List<PropertyAccess> getReadPropertyAccess() {
+        List<PropertyAccess> list = new LinkedList<>();
+        for (PropertyAccess propertyAccess : this.propertyAccessCache.values()) {
+            if (propertyAccess.isReadAccessible()) {
+                list.add(propertyAccess);
+            }
+        }
+        return Collections.unmodifiableList(list);
     }
 
     /**
@@ -140,9 +142,14 @@ public class CachedIntrospectionResults {
      *
      * @return PropertyAccess[]
      */
-    public PropertyAccess[] getWritePropertyAccess() {
-        return this.propertyAccessCache.values().stream().filter(PropertyAccess::isWriteAccessible)
-                .toArray(PropertyAccess[]::new);
+    public List<PropertyAccess> getWritePropertyAccess() {
+        List<PropertyAccess> list = new LinkedList<>();
+        for (PropertyAccess propertyAccess : this.propertyAccessCache.values()) {
+            if (propertyAccess.isWriteAccessible()) {
+                list.add(propertyAccess);
+            }
+        }
+        return Collections.unmodifiableList(list);
     }
 
     /**

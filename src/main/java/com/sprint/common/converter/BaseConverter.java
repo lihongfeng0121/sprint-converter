@@ -85,9 +85,10 @@ public final class BaseConverter {
     /**
      * 忽略转换异常
      *
-     * @param source      源对象
-     * @param targetClass 目标类型
-     * @param <T>         t
+     * @param source       源对象
+     * @param targetClass  目标类型
+     * @param defaultValue 默认值
+     * @param <T>          t
      * @return target
      */
     public static <T> T convertIgnore(Object source, Class<T> targetClass, T defaultValue) {

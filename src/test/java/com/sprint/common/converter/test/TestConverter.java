@@ -262,6 +262,10 @@ public class TestConverter extends BaseTest {
             Assert.equal(Objects.requireNonNull(name1), Objects.requireNonNull(name2), "转换异常");
             JsonArray values = AnyConverter.convert(parse2, JsonArray.class);
             Assert.isTrue(values.size() == 1, "转换异常");
+
+            Man2 javaObject = parse2.toJavaObject(Man2.class);
+            Man2 javaObject2 = AnyConverter.convert(javaObject, Man2.class);
+            System.out.println(Jsons.toJsonString(javaObject2));
             return true;
         });
     }

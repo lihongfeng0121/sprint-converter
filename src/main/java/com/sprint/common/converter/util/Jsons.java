@@ -1,6 +1,8 @@
 package com.sprint.common.converter.util;
 
 import com.sprint.common.converter.TypeReference;
+import com.sprint.common.converter.conversion.nested.bean.PropertyAnnotationParser;
+import com.sprint.common.converter.conversion.nested.json.JacksonPropertyAnnotationParser;
 import com.sprint.common.converter.conversion.nested.json.JsonConverter;
 import com.sprint.common.converter.exception.JsonException;
 import org.slf4j.Logger;
@@ -42,12 +44,22 @@ public class Jsons {
                 Class.forName("com.fasterxml.jackson.databind.ObjectMapper");
                 Jsons.jsonConverter = (JsonConverter) Beans.instance(
                         Types.forName("com.sprint.common.converter.conversion.nested.json.JacksonConverter", Types.getDefaultClassLoader()));
+                PropertyAnnotationParser<?> annotationParser = (JacksonPropertyAnnotationParser) Beans.instance(
+                        Types.forName("com.sprint.common.converter.conversion.nested.json.JacksonPropertyAnnotationParser", Types.getDefaultClassLoader()));
+                Properties.registerAnnotationParser(annotationParser);
                 log.warn("Jsons use jackson as JsonConverter.");
             } catch (Throwable ignored) {
             }
         }
     }
 
+    /**
+     * Helper method to generate a JSON string representation of the given object.
+     *
+     * @param obj the object to be serialized
+     * @return a JSON string representation of the given object, or null if an error occurs
+     * @throws JsonException if an error occurs during serialization
+     */
     public static String toJsonString(Object obj) throws JsonException {
         if (jsonConverter == null) {
             return null;
@@ -55,6 +67,15 @@ public class Jsons {
         return jsonConverter.toJsonString(obj);
     }
 
+    /**
+     * Converts a JSON string value to a Java object.
+     *
+     * @param <T> The type of the object to be converted.
+     * @param value The JSON string value.
+     * @param type The type of the object to be converted.
+     * @return The Java object created from the JSON string.
+     * @throws JsonException If there is an error in the conversion process.
+     */
     public static <T> T toJavaObject(String value, Class<T> type) throws JsonException {
         if (jsonConverter == null) {
             return null;

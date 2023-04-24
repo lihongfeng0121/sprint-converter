@@ -227,6 +227,14 @@ public class Types {
         return fieldMap;
     }
 
+    /**
+     * Retrieves a declared field from the class and its superclasses.
+     *
+     * @param clazz The {@link Class} object to retrieve the field from.
+     * @param fieldName The name of the field to retrieve.
+     * @return The {@link Field} object representing the declared field.
+     * @throws NoSuchFieldException If the field does not exist in the class or any of its superclasses.
+     */
     public static Field getDeclaredField(Class<?> clazz, String fieldName) throws NoSuchFieldException {
         Assert.notNull(clazz, "clazz can't be null");
         NoSuchFieldException ex = null;

@@ -9,10 +9,7 @@ import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Type;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -43,7 +40,7 @@ public class PropertyAccess implements Cloneable {
         this.beanClass = beanClass;
         this.field = getBeanPropertyField(name, beanClass);
         this.type = getBeanPropertyType(name, beanClass, readMethod, writeMethod);
-        this.annotations = getBeanPropertyAnnotations(name, beanClass, readMethod, writeMethod);
+        this.annotations = Collections.unmodifiableMap(getBeanPropertyAnnotations(name, beanClass, readMethod, writeMethod));
     }
 
     public String getName() {
