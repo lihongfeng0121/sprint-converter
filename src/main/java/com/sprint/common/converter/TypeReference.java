@@ -97,7 +97,7 @@ public abstract class TypeReference<T> {
      * @param <T>  参数类型
      * @return Map 引用的类型
      */
-    public static <T> TypeReference<T> of(Type type) {
+    public static <T> TypeReference<T> ofType(Type type) {
         return new TypeReference<T>(type) {
         };
     }

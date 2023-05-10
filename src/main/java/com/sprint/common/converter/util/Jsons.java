@@ -44,7 +44,7 @@ public class Jsons {
                 Class.forName("com.fasterxml.jackson.databind.ObjectMapper");
                 Jsons.jsonConverter = (JsonConverter) Beans.instance(
                         Types.forName("com.sprint.common.converter.conversion.nested.json.JacksonConverter", Types.getDefaultClassLoader()));
-                PropertyAnnotationParser<?> annotationParser = (JacksonPropertyAnnotationParser) Beans.instance(
+                PropertyAnnotationParser<?> annotationParser = (PropertyAnnotationParser<?>) Beans.instance(
                         Types.forName("com.sprint.common.converter.conversion.nested.json.JacksonPropertyAnnotationParser", Types.getDefaultClassLoader()));
                 Properties.registerAnnotationParser(annotationParser);
                 log.warn("Jsons use jackson as JsonConverter.");
