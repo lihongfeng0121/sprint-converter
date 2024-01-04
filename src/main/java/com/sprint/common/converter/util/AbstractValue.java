@@ -4,6 +4,7 @@ import com.sprint.common.converter.AnyConverter;
 import com.sprint.common.converter.BaseConverter;
 import com.sprint.common.converter.Converter;
 import com.sprint.common.converter.TypeReference;
+import com.sprint.common.converter.exception.NotSupportConvertException;
 
 import java.beans.Transient;
 import java.lang.reflect.Type;
@@ -32,7 +33,15 @@ public abstract class AbstractValue {
 
     @Transient
     public <T> BeanOptional<T> getBeanOptional() {
-        return Converter.enforce(BeanOptional.ofNullable(getValue()));
+        if (getValue() instanceof String) {
+            if (Types.isJsonObject((String) getValue())) {
+                return Converter.enforce(JsonObject.parse((String) getValue()));
+            } else {
+                throw new NotSupportConvertException(String.class, BeanOptional.class);
+            }
+        } else {
+            return Converter.enforce(BeanOptional.ofNullable(getValue()));
+        }
     }
 
     @Transient
